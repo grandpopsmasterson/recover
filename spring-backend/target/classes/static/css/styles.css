@@ -1,0 +1,71 @@
+@import url('https://fonts.googleapis.com/css2?Roboto&display=swap');
+
+body {
+    background-color: #080538; /* Dark background */
+    color: white; /* Text color */
+    font-family: "system-ui";
+}
+
+header {
+    border-bottom: 1px solid #e8e8e8;
+}
+.create-project {
+    cursor: pointer;
+    border: 0px solid rgb(187, 204, 0);
+    font-family: "system-ui";
+    font-size: 16px;
+    color: rgb(8, 5, 56);
+    padding: 12px 30px;
+    transition: 217ms;
+    width: 173px;
+    box-shadow: rgb(0, 0, 0) 0px 0px 0px 0px;
+    border-radius: 8px;
+    background: rgb(36, 219, 131);
+    --hover-width: 185px;
+    --hover-bgc: #1bde79;
+    --hover-color: #080538;
+    --hover-borderSize: 0px;
+}
+
+.create-project:hover{
+    color: rgb(8, 5, 56);
+    width: 185px;
+    background: rgb(27, 222, 121) none repeat scroll 0% 0% / auto padding-box border-box;
+    border-color: rgb(204, 0, 105);
+    border-width: 0px;
+    border-style: solid;
+}
+
+.btn-success {
+    background-color: #28a745;
+    border-color: #28a745;
+}
+
+.card {
+    border: none;
+    border-radius: 12px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.card img {
+    border-top-left-radius: 12px;
+    border-top-right-radius: 12px;
+    height: 200px;
+    object-fit: cover;
+}
+
+.card-body {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.card-title {
+    font-size: 1.2rem;
+    font-weight: bold;
+}
+
+.card-text {
+    font-size: 0.9rem;
+    color: #9acd32; /* Light green for owner name */
+}
