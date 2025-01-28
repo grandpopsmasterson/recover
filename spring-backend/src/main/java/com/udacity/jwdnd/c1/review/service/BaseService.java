@@ -4,6 +4,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.udacity.jwdnd.c1.review.model.BaseEntity;
 import com.udacity.jwdnd.c1.review.dto.BaseDTO;
 import com.udacity.jwdnd.c1.review.repository.BaseRepository;
+import com.udacity.jwdnd.c1.review.utils.exceptions.ResourceNotFoundException;
 import com.udacity.jwdnd.c1.review.mapper.BaseMapper;
 import lombok.RequiredArgsConstructor;
 

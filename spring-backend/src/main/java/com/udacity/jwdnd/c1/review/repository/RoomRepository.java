@@ -11,6 +11,6 @@ import org.springframework.data.repository.query.Param;
 
 public interface RoomRepository extends JpaRepository<Room, Long> {
     
-    @Query("SELECT r FROM Room r WHERE r.project.id = :projectId")
-    List<Room> findByProjectId(@Param("projectId") Long projectId);
+    @Query("SELECT r FROM Room r WHERE r.floor.id = :floorId")
+    List<Room> findByFloorLevel(@Param("floorId") Long floorId);
 }

@@ -31,7 +31,7 @@ public class RoomService {
         }
     }
 
-    public void addRoomToProject(Long projectId, Room room) {
+    public void addRoomToProject(Long floorId, Room room) {
         Project project = projectRepository.findProjectById(projectId);
         if (project == null) {
             throw new RuntimeException("Project not found with ID: " + projectId);

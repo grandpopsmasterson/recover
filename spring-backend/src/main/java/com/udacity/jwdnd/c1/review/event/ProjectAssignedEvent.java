@@ -2,28 +2,24 @@ package com.udacity.jwdnd.c1.review.event;
 
 import org.springframework.context.ApplicationEvent;
 
+import com.udacity.jwdnd.c1.review.model.Role;
+
 public class ProjectAssignedEvent extends ApplicationEvent {
     private final Long projectId;
-    private final String projectName;
-    private final String technicianUsername;
+    private final Long userId;
 
-    public ProjectAssignedEvent(Object source, Long projectId, String projectName, String technicianUsername) {
-        super(source);
+    public ProjectAssignedEvent(Role role, Long projectId, Long userId) {
+        super(role);
         this.projectId = projectId;
-        this.projectName = projectName;
-        this.technicianUsername = technicianUsername;
+        this.userId = userId;
     }
 
     public Long getProjectId() {
         return projectId;
     }
 
-    public String getProjectName() {
-        return projectName;
-    }
-
-    public String getTechnicianUsername() {
-        return technicianUsername;
+    public Long getUserId() {
+        return userId;
     }
     
 }

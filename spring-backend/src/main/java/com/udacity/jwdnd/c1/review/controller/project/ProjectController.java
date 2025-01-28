@@ -1,19 +1,25 @@
 package com.udacity.jwdnd.c1.review.controller.project;
 
-import com.udacity.jwdnd.c1.review.dto.project.ProjectResponse;
-import com.udacity.jwdnd.c1.review.dto.project.ProjectRoleDTO;
-import com.udacity.jwdnd.c1.review.dto.response.role.TechnicianSummaryDTO;
-import com.udacity.jwdnd.c1.review.dto.response.technician.TechnicianAssignmentRequest;
+import com.udacity.jwdnd.c1.review.dto.project.CreateProject;
+import com.udacity.jwdnd.c1.review.dto.project.LongProjectSummary;
+import com.udacity.jwdnd.c1.review.dto.project.ShortProjectDto;
+import com.udacity.jwdnd.c1.review.dto.user.ShortUser;
+import com.udacity.jwdnd.c1.review.dto.user.ProjectRoleRequest;
 import com.udacity.jwdnd.c1.review.model.*;
-import com.udacity.jwdnd.c1.review.service.TechnicianService;
-import com.udacity.jwdnd.c1.review.service.login.UserDetailsImpl;
+import com.udacity.jwdnd.c1.review.service.roles.ProjectRoleService;
+import com.udacity.jwdnd.c1.review.service.search.ProjectCriteria;
+import com.udacity.jwdnd.c1.review.service.authorization.UserDetailsImpl;
 import com.udacity.jwdnd.c1.review.service.project.ProjectService;
 
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
+import org.hibernate.query.SortDirection;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -28,29 +34,29 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor
 public class ProjectController {
     private final ProjectService projectService;
-    private final TechnicianService technicianService;
+    private final ProjectRoleService projectRoleService;
 
     @PostMapping
     @PreAuthorize("hasRole('PROJECT_MANAGER')")
-    public ResponseEntity<ProjectResponse> createProject(
+    public ResponseEntity<LongProjectSummary> createProject(
             @Valid @RequestBody CreateProject request) {
         return ResponseEntity.ok(projectService.createProject(request));
     }
 
     @GetMapping
-    public ResponseEntity<Page<ProjectResponse>> getProjects(
+    public ResponseEntity<Page<ShortProjectDto>> searchProjects(
             ProjectCriteria criteria,
             @PageableDefault(sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable) {
-        return ResponseEntity.ok(projectService.findProjects(criteria, pageable));
+        return ResponseEntity.ok(projectService.searchProjects(criteria, pageable));
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<ProjectResponse> getProject(@PathVariable Long id) {
+    public ResponseEntity<LongProjectSummary> getProject(@PathVariable Long id) {
         return ResponseEntity.ok(projectService.findById(id));
     }
 
     @GetMapping("/available-technicians")
-    public ResponseEntity<List<TechnicianSummaryDTO>> getAvailableTechnicians() {
+    public ResponseEntity<List<ShortUser>> getAvailableTechnicians() {
         return ResponseEntity.ok(technicianService.getAvailableTechnicians());
     }
 

@@ -1,7 +1,7 @@
 package com.udacity.jwdnd.c1.review.controller.dashboards;
 
 import com.udacity.jwdnd.c1.review.model.Project;
-import com.udacity.jwdnd.c1.review.service.login.UserDetailsImpl;
+import com.udacity.jwdnd.c1.review.service.authorization.UserDetailsImpl;
 import com.udacity.jwdnd.c1.review.service.project.ProjectService;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,12 +16,12 @@ import java.util.List;
 
 
 @RestController
-public class DashboardController {
+public class BaseDashboardController {
 
     private final ProjectService projectService;
 
     @Autowired
-    public DashboardController(ProjectService projectService) {
+    public BaseDashboardController(ProjectService projectService) {
         this.projectService = projectService;
     }
     

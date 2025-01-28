@@ -34,7 +34,7 @@ public class Room {
     @Column(name = "dmg_percent")
     private double dmgPercent;
     @Column(name = "damaged")
-    private boolean damaged;
+    private boolean isDamaged;
 
     @OneToMany(mappedBy = "room", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Loss> lossType = new ArrayList<>(); // "Fire", "Mold", "Water"
@@ -43,6 +43,7 @@ public class Room {
     @Column(name = "class_rating")
     private ClassRating classRating;
 
+    // floor is upstream, it has the project id
     @ManyToOne
     @JoinColumn(name = "floor_id")
     private Floor floor; // The project this room belongs to

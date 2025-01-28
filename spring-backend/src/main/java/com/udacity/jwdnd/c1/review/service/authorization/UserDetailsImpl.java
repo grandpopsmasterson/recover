@@ -1,6 +1,5 @@
-package com.udacity.jwdnd.c1.review.service.login;
+package com.udacity.jwdnd.c1.review.service.authorization;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.udacity.jwdnd.c1.review.model.User;
 
 import org.springframework.security.core.GrantedAuthority;
@@ -10,32 +9,19 @@ import org.springframework.security.core.userdetails.UserDetails;
 import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
-import java.util.stream.Collectors;
 
 public class UserDetailsImpl implements UserDetails {
 
     private static final long serialVersionUID = 1L;
 
-    private Long id;
+    private final Long id;
+    private final String username;
+    private final String password;
+    private final User user;
+    private final Collection<? extends GrantedAuthority> authorities;
 
-    private String username;
-
-    @JsonIgnore
-    private String password;
-
-    public UserDetailsImpl(Long id, String username, String password) {
-        this.id = id;
-        this.username = username;
-        this.password = password;
-    }
-    private User user;
-
-    private Collection<? extends GrantedAuthority> authorities;
-
-
-
-
-    public UserDetailsImpl(Long id, String username, String password, User user, Collection<? extends GrantedAuthority> authorities ) {
+    // Remove first constructor if not used
+    public UserDetailsImpl(Long id, String username, String password, User user, Collection<? extends GrantedAuthority> authorities) {
         this.id = id;
         this.username = username;
         this.password = password;
@@ -44,11 +30,10 @@ public class UserDetailsImpl implements UserDetails {
     }
 
     public static UserDetailsImpl build(User user) {
-        List<GrantedAuthority> authorities = user.getRoles().stream()
-            .map(role -> new SimpleGrantedAuthority(role.getName()))
-            .collect(Collectors.toList());
-
-        return new UserDetailsImpl(user.getUserId(), user.getUsername(), user.getPassword(), user, authorities);
+        List<GrantedAuthority> authorities = List.of(
+        new SimpleGrantedAuthority("ROLE_" + user.getUserType().name())
+        );
+        return new UserDetailsImpl(user.getId(), user.getUsername(), user.getPassword(), user, authorities);
     }
     
     public User getUser() {
@@ -65,7 +50,7 @@ public class UserDetailsImpl implements UserDetails {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return null;
+        return authorities;
     }
 
     @Override

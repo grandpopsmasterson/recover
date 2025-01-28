@@ -1,4 +1,5 @@
 package com.udacity.jwdnd.c1.review.dto.user;
+import com.udacity.jwdnd.c1.review.model.enums.ReferenceType;
 import com.udacity.jwdnd.c1.review.model.enums.UserType;
 
 import lombok.Getter;
@@ -8,7 +9,7 @@ import lombok.Setter;
 @Setter
 public class ShortUser {
 
-    // for displaying available technicians, managers, adjusters, or clients
+    private ReferenceType referenceType; // "Entity: user" //
     private String username;
     private String shortName;  // "Joey B"
     private String profileImageUrl;

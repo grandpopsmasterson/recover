@@ -21,9 +21,9 @@ public class ProjectEventListener {
     @EventListener
     public void onProjectAssigned(ProjectAssignedEvent event) {
         notificationService.createNotification(
-            event.getTechnicianUsername(),
+            event.getUserId(),
             NotificationType.PROJECT_ASSIGNED,
-            "New project assigned: " + event.getProjectName(),
+            "New project assigned: " + event.getProjectId(),
             event.getProjectId()  // referenceId points to the project
         );
     }

@@ -1,26 +1,25 @@
 package com.udacity.jwdnd.c1.review.mapper;
 
+import java.util.List;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
-import org.mapstruct.Named;
-
-import com.udacity.jwdnd.c1.review.dto.project.ProjectResponse;
+import com.udacity.jwdnd.c1.review.dto.project.ProjectSummaryDto;
 import com.udacity.jwdnd.c1.review.model.Project;
 
-@Mapper(componentModel = "spring", uses = {UserMapper.class, RoomMapper.class})
-public interface ProjectMapper extends BaseMapper<ProjectResponse, Project> {
 
-    @Override
-    @Mapping(target = "stage", expression = "java(entity.getStage().name())")
-    @Mapping(target = "assignedTechnicians", qualifiedByName = "toSummary")
-    @Mapping(target = "address", expression = "java(entity.getstreetAddress() + ', ' + entity.getCity() + ', ' + entity.getState() + ' ' + entity.getZipcode())")
-    ProjectResponse toDto(Project entity);
+@Mapper(componentModel = "spring", uses = {RoleMapper.class, FloorplanMapper.class})
+public interface ProjectMapper {
 
+    @Mapping(source = "roles", target = "assignedRoles")  // assigned roles is a dto that was packaged and passed in from RoleMapper
+    ProjectSummaryDto toSummaryDto(Project project);
 
+    List<ProjectSummaryDto> toSummaryDtoList(List<Project> projects);
 
-    // Special mapping for creating new projects
-    @Named("forCreate")
-    @Mapping(target = "id", ignore = true)
-    @Mapping(target = "rooms", ignore = true)
-    Project toEntityForCreate(ProjectResponse createDTO);
+    default String getFullAddress(Project project) {
+        return String.format("%s%s%s %s",
+            project.getStreetAddress() != null ? project.getStreetAddress() + ", " : "",
+            project.getCity() != null ? project.getCity() + ", " : "",
+            project.getState() != null ? project.getState() : "",
+            project.getZipcode() != null ? project.getZipcode() : "").trim();
+    }
 }

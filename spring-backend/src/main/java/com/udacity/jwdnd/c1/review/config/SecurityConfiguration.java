@@ -1,6 +1,5 @@
 package com.udacity.jwdnd.c1.review.config;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -11,6 +10,7 @@ import org.springframework.security.config.annotation.method.configuration.Enabl
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -24,10 +24,10 @@ import org.springframework.web.servlet.handler.HandlerMappingIntrospector;
 import com.udacity.jwdnd.c1.review.utils.auth.AuthEntryPointJwt;
 import com.udacity.jwdnd.c1.review.utils.auth.AuthTokenFilter;
 
-import org.springframework.security.config.Customizer;
+import io.github.resilience4j.ratelimiter.RateLimiter;
+import io.github.resilience4j.ratelimiter.RateLimiterConfig;
 
-import static org.springframework.security.config.http.SessionCreationPolicy.STATELESS;
-
+import java.time.Duration;
 import java.util.Arrays;
 import java.util.List;
 
@@ -36,67 +36,88 @@ import java.util.List;
 @EnableMethodSecurity
 public class SecurityConfiguration {
 
-    @Autowired
-    UserDetailsService userDetailsService;
-    @Autowired
-    private AuthEntryPointJwt unauthorizedHandler;
+   private final UserDetailsService userDetailsService;
+   private final AuthEntryPointJwt unauthorizedHandler;
+   private final String[] allowedOrigins;
 
-    private static final String[] WHITE_LIST_URL = { "/error","/login","/h2-console/**", "/signup"};
+   private static final String[] WHITE_LIST_URL = {"/error", "/login", "/h2-console/**", "/signup", "/refresh-token"};
 
-    @Bean
-    public AuthTokenFilter authenticationJwtTokenFilter() {
-        return new AuthTokenFilter();
+   public SecurityConfiguration(
+           UserDetailsService userDetailsService,
+           AuthEntryPointJwt unauthorizedHandler,
+           @Value("${cors.allowed-origins}") String[] allowedOrigins) {
+       this.userDetailsService = userDetailsService;
+       this.unauthorizedHandler = unauthorizedHandler;
+       this.allowedOrigins = allowedOrigins;
+   }
+
+   @Bean
+   public AuthTokenFilter authenticationJwtTokenFilter() {
+       return new AuthTokenFilter();
+   }
+
+   @Bean
+    public RateLimiter authRateLimiter() {
+        return RateLimiter.of("authLimiter", RateLimiterConfig.custom()
+                .limitForPeriod(5) // 5 requests allowed
+                .limitRefreshPeriod(Duration.ofSeconds(30)) // refresh every 30 seconds
+                .timeoutDuration(Duration.ofMillis(500)) // wait for a permit for up to 500 ms
+                .build());
     }
 
-    @Bean
-    public DaoAuthenticationProvider authenticationProvider() {
-        DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider();
+   @Bean
+   public DaoAuthenticationProvider authenticationProvider() {
+       DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider();
+       authProvider.setUserDetailsService(userDetailsService);
+       authProvider.setPasswordEncoder(passwordEncoder());
+       return authProvider;
+   }
 
-        authProvider.setUserDetailsService(userDetailsService);
-        authProvider.setPasswordEncoder(passwordEncoder());
+   @Bean
+   public PasswordEncoder passwordEncoder() {
+       return new BCryptPasswordEncoder(12);
+   }
 
-        return authProvider;
-    }
+   @Bean
+   public AuthenticationManager authenticationManager(AuthenticationConfiguration authConfig) throws Exception {
+       return authConfig.getAuthenticationManager();
+   }
 
-    @Bean
-    public PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder();
-    }
+   @Bean
+   public CorsConfigurationSource corsConfigurationSource() {
+       CorsConfiguration configuration = new CorsConfiguration();
+       configuration.setAllowedOrigins(Arrays.asList(allowedOrigins));
+       configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
+       configuration.setAllowedHeaders(List.of("*"));
+       configuration.setAllowCredentials(true);
+       configuration.setMaxAge(3600L);
 
-    @Bean
-    public AuthenticationManager authenticationManager(AuthenticationConfiguration authConfig) throws Exception {
-        return authConfig.getAuthenticationManager();
-    }
-    @Value("${cors.allowed-origins}")
-    private String[] allowedOrigins;
+       UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+       source.registerCorsConfiguration("/**", configuration);
+       return source;
+   }
 
-    @Bean
-    public CorsConfigurationSource corsConfigurationSource() {
-        CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOrigins(Arrays.asList(allowedOrigins)); // Use environment-specific origins
-        configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
-        configuration.setAllowedHeaders(List.of("*"));
-        configuration.setAllowCredentials(true);
-
-        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-        source.registerCorsConfiguration("/**", configuration);
-        return source;
-    }
-
-    @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http, HandlerMappingIntrospector introspector) throws Exception {
-        http.csrf(AbstractHttpConfigurer::disable)
-        .cors(Customizer.withDefaults())
-            .authorizeHttpRequests(req -> req.requestMatchers(WHITE_LIST_URL)
-                .permitAll()
-                .anyRequest()
-                .authenticated())
-            .exceptionHandling(ex -> ex.authenticationEntryPoint(unauthorizedHandler))
-            .sessionManagement(session -> session.sessionCreationPolicy(STATELESS))
-            .authenticationProvider(authenticationProvider())
-            .addFilterBefore(authenticationJwtTokenFilter(), UsernamePasswordAuthenticationFilter.class);
-
-        return http.build();
-    }
-
+   @Bean
+   public SecurityFilterChain securityFilterChain(HttpSecurity http, HandlerMappingIntrospector introspector) throws Exception {
+       return http
+           .csrf(AbstractHttpConfigurer::disable)
+           .cors(cors -> cors.configurationSource(corsConfigurationSource()))
+           .headers(headers -> headers
+               .frameOptions(frame -> frame.sameOrigin())
+               .contentSecurityPolicy(csp -> 
+                   csp.policyDirectives("default-src 'self'; frame-ancestors 'self';")))
+           .authorizeHttpRequests(req -> req
+               .requestMatchers(WHITE_LIST_URL).permitAll()
+               .anyRequest().authenticated())
+           .exceptionHandling(ex -> ex
+               .authenticationEntryPoint(unauthorizedHandler)
+               .accessDeniedHandler(new CustomAccessDeniedHandler()))
+           .sessionManagement(session -> 
+               session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+           .authenticationProvider(authenticationProvider())
+           .userDetailsService(userDetailsService)
+           .addFilterBefore(authenticationJwtTokenFilter(), 
+               UsernamePasswordAuthenticationFilter.class)
+           .build();
+   }
 }

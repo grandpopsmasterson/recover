@@ -42,14 +42,14 @@ public class NotificationService {
         messagingTemplate.convertAndSendToUser(
             username,
             "/queue/notifications",
-            NotificationDTO.fromEntity(notification)
+            NotificationDTO.toDto(notification)
         );
     }
     
     public Page<NotificationDTO> getNotifications(String username, Pageable pageable) {
         return notificationRepository
             .findByRecipientUsernameOrderByTimestampDesc(username, pageable)
-            .map(NotificationDTO::fromEntity);
+            .map(NotificationDTO::toDto);
     }
     
     public List<NotificationDTO> getRecentNotifications(String username) {

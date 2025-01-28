@@ -22,8 +22,11 @@ public class Floor {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     
-    private Integer floorNumber;
-    private Integer floors;
+    private Integer floorLevel;
+
+    private String floorName;
+
+    private String matterportFloorplanUrl;
     
     @ManyToOne
     @JoinColumn(name = "project_id")
