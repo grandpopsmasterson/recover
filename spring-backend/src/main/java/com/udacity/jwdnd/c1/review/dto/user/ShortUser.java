@@ -9,9 +9,10 @@ import lombok.Setter;
 @Setter
 public class ShortUser {
 
+    private Long id;
     private ReferenceType referenceType; // "Entity: user" //
     private String username;
-    private String shortName;  // "Joey B"
+    private String FullName;
     private String profileImageUrl;
     private UserType userType;
     private boolean isAvailable;

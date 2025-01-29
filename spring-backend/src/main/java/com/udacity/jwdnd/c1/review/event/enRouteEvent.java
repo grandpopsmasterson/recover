@@ -2,23 +2,25 @@ package com.udacity.jwdnd.c1.review.event;
 
 import org.springframework.context.ApplicationEvent;
 
-import com.udacity.jwdnd.c1.review.model.User;
+import com.udacity.jwdnd.c1.review.dto.project.ShortProjectDto;
+import com.udacity.jwdnd.c1.review.dto.user.ShortUser;
+
 
 public class enRouteEvent extends ApplicationEvent {
-    private final Long projectId;
-    private final User homeowner;
+    private final ShortProjectDto project;
+    private final ShortUser client;
     
-        public enRouteEvent(Object source, Long projectId, User homeowner) {
+        public enRouteEvent(Object source, ShortProjectDto project, ShortUser client) {
             super(source);
-            this.projectId = projectId;
-            this.homeowner = homeowner;
+            this.project = project;
+            this.client = client;
     }
 
-    public Long getProjectId() {
-        return projectId;
+    public ShortProjectDto getProject() {
+        return project;
     }
 
-    public User getHomeowner() {
-        return homeowner;
+    public ShortUser getClient() {
+        return client;
     }
 }

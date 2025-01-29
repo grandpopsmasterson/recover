@@ -18,6 +18,8 @@ public interface FloorplanMapper {
   
     RoomDto toRoomDto(Room room);
 
+    Room toRoomEntity(RoomDto roomDto);
+
     @Mapping(target = "floorLevel", source = "floorLevel")
     @Mapping(target = "floorName", source = "floorName")
     @Mapping(target = "rooms", source = "rooms")

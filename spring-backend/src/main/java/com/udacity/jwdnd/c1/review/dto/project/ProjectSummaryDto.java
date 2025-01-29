@@ -3,7 +3,6 @@ package com.udacity.jwdnd.c1.review.dto.project;
 import java.time.LocalDate;
 import java.util.List;
 
-import com.udacity.jwdnd.c1.review.dto.floorplan.FloorplanDto;
 import com.udacity.jwdnd.c1.review.dto.user.AssignedRoleDto;
 import com.udacity.jwdnd.c1.review.model.enums.ProjectStage;
 import com.udacity.jwdnd.c1.review.model.enums.ProjectType;
@@ -27,5 +26,4 @@ public class ProjectSummaryDto {
     private ProjectType projectType;
     private String carrier;
     private List<AssignedRoleDto> assignedRoles;
-    private FloorplanDto floorplanDto;
 }

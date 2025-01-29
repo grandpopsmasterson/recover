@@ -1,21 +1,27 @@
 package com.udacity.jwdnd.c1.review.event;
+import org.springframework.context.ApplicationEvent;
+
+import com.udacity.jwdnd.c1.review.dto.project.ShortProjectDto;
+import com.udacity.jwdnd.c1.review.model.enums.ProjectStage;
+
 import lombok.Data;
 
 @Data
-public class ProjectStageUpdatedEvent {
-    private Long projectId;
-    private Integer stage;
-
-    public ProjectStageUpdatedEvent(Long projectId, Integer stage) {
-        this.projectId = projectId;
-        this.stage = stage;
+public class ProjectStageUpdatedEvent extends ApplicationEvent {
+    private final ShortProjectDto project;
+    private final ProjectStage stage;
+    
+        public ProjectStageUpdatedEvent(Object source, ShortProjectDto project, ProjectStage stage) {
+            super(source);
+            this.project = project;
+            this.stage = stage;
     }
 
-    public Long getProjectId() {
-        return projectId;
+    public ShortProjectDto getProject() {
+        return project;
     }
 
-    public Integer getStage() {
+    public ProjectStage getStage() {
         return stage;
     }
 }

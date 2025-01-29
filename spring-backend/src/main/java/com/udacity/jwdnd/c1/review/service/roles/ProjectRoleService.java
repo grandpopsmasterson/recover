@@ -30,16 +30,16 @@ public class ProjectRoleService {
     }
  
     // do not call this one by itself, call the one above
-    private AssignedRoleDto assignSingleRole(ProjectRoleRequest request) {
+    private AssignedRoleDto assignSingleRole(ProjectRoleRequest request) {  //first check if the role exists
         Role role = roleRepository.findRoleByAllOptions(request.getUserId(), request.getProjectId(), request.getProjectRole())
             .map(existingRole -> {
-                Role updatedRole = roleMapper.toEntity(request);
+                Role updatedRole = roleMapper.toEntity(request); // if role exists, use toEntity and update it in DB
                 return roleRepository.save(updatedRole);
             })
-            .orElseGet(() -> roleRepository.save(roleMapper.toEntity(request)));
+            .orElseGet(() -> roleRepository.save(roleMapper.toEntity(request))); // if doesn't exist, save new role from request
             
         return roleMapper.toDto(role);
-        eventPublisher.publishEvent(new ProjectAssignedEvent(role, request.getProjectId(), request.getUserId())); // have to fix with better event listener
+        //eventPublisher.publishEvent(new ProjectAssignedEvent(role, request.getProjectId(), request.getUserId()));
     }
 
 }

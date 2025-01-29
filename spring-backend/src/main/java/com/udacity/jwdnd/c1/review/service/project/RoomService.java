@@ -1,54 +1,62 @@
 package com.udacity.jwdnd.c1.review.service.project;
 
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import com.udacity.jwdnd.c1.review.dto.floorplan.FloorDto;
+import com.udacity.jwdnd.c1.review.dto.floorplan.FloorplanDto;
+import com.udacity.jwdnd.c1.review.dto.floorplan.RoomDto;
+import com.udacity.jwdnd.c1.review.mapper.FloorplanMapper;
 import com.udacity.jwdnd.c1.review.model.Project;
 import com.udacity.jwdnd.c1.review.model.Room;
 import com.udacity.jwdnd.c1.review.repository.ProjectRepository;
 import com.udacity.jwdnd.c1.review.repository.RoomRepository;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
+import com.udacity.jwdnd.c1.review.utils.exceptions.ResourceNotFoundException;
+
+import lombok.RequiredArgsConstructor;
+
+import java.util.Comparator;
 import java.util.List;
+import java.util.stream.Collectors;
+
+import org.springframework.stereotype.Service;
 
 @Service
+@RequiredArgsConstructor
 public class RoomService {
 
     private final RoomRepository roomRepository;
     private final ProjectRepository projectRepository;
+    private final FloorplanMapper floorplanMapper;
 
-    @Autowired
-    public RoomService(RoomRepository roomRepository, ProjectRepository projectRepository) {
-        this.roomRepository = roomRepository;
-        this.projectRepository = projectRepository;
+    private Room addRoomToProject(RoomDto room) {
+        return floorplanMapper.toRoomEntity(room);
     }
 
-    public void createRoomsFromGeneratedCode(String codeSnippets, Long projectId) throws Exception {
-        ObjectMapper mapper = new ObjectMapper();
-        List<Room> rooms = mapper.readValue(codeSnippets, new TypeReference<>() {});
-
-        for (Room room : rooms) {
-            addRoomToProject(projectId, room);
-        }
+    // if you want to get the whole floorplan DTO
+    public FloorplanDto getFloorplanByProject(Long projectId) {
+        Project project = projectRepository.findById(projectId)
+            .orElseThrow(() -> new ResourceNotFoundException("Project not found"));
+        
+            return floorplanMapper.toFloorplanDto(project.getFloors());
     }
 
-    public void addRoomToProject(Long floorId, Room room) {
-        Project project = projectRepository.findProjectById(projectId);
-        if (project == null) {
-            throw new RuntimeException("Project not found with ID: " + projectId);
+    // if you want to get a list of floors with rooms
+    public List<FloorDto> getFloorDtosByProject(Long projectId) {
+        Project project = projectRepository.findById(projectId)
+            .orElseThrow(() -> new ResourceNotFoundException("Project not found"));
+        
+        return project.getFloors().stream()
+            .map(floorplanMapper::toFloorDto)
+            .sorted(Comparator.comparing(FloorDto::getFloorLevel))
+            .collect(Collectors.toList());
         }
-        try {
-            room.setProject(project);
-            roomRepository.save(room);
-        } catch (Exception e) {
-            throw new RuntimeException("Error adding room to project: " + e.getMessage(), e);
-        }
-    }
-
-    public List<Room> getRoomsByProjectId(Long projectId) {
-        Project project = projectRepository.findProjectById(projectId);
-        if (project == null) {
-            throw new RuntimeException("Project not found with ID: " + projectId);
-        }
-        return roomRepository.findByProjectId(projectId); // Get all rooms associated with this project
-    }
 }
+
+
+
+// public void createRoomsFromGeneratedCode(String codeSnippets, Long projectId) throws Exception {
+    //     ObjectMapper mapper = new ObjectMapper();
+    //     List<Room> rooms = mapper.readValue(codeSnippets, new TypeReference<>() {});
+
+    //     for (Room room : rooms) {
+    //         addRoomToProject(projectId, room);
+    //     }
+    // } ------> for matterport parsing in the future

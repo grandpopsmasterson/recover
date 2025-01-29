@@ -2,28 +2,29 @@ package com.udacity.jwdnd.c1.review.event;
 
 import org.springframework.context.ApplicationEvent;
 
-import com.udacity.jwdnd.c1.review.dto.project.ProjectResponse;
-import com.udacity.jwdnd.c1.review.dto.response.role.UserDTO;
+import com.udacity.jwdnd.c1.review.dto.project.ShortProjectDto;
+import com.udacity.jwdnd.c1.review.dto.user.AssignedRoleDto;
+
 
 public class checkInEvent extends ApplicationEvent {
-    private final ProjectResponse project;
-    private final UserDTO technician;
+    private final ShortProjectDto project;
+    private final AssignedRoleDto technician;
     
-        public checkInEvent(Object source, ProjectResponse project, UserDTO technician) {
+        public checkInEvent(Object source, ShortProjectDto project, AssignedRoleDto technician) {
             super(source);
             this.project = project;
             this.technician = technician;
     }
 
-    public ProjectResponse getProject() {
+    public ShortProjectDto getProject() {
         return project;
     }
 
-    public UserDTO getTechnician() {
+    public AssignedRoleDto getTechnician() {
         return technician;
     }
 
     public String getLocation() {
-        return project.getAddress();
+        return project.streetAddress();
     }
 }
