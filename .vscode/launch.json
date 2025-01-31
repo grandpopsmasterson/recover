@@ -15,7 +15,7 @@
             "type": "java",
             "name": "Recover",
             "request": "launch",
-            "mainClass": "com.udacity.jwdnd.c1.review.Recover",
+            "mainClass": "com.recover.project.Recover",
             "projectName": "review"
         }
     ]
