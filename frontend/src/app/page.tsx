@@ -1,23 +1,28 @@
 "use client"
 import {useRouter} from "next/navigation"
-import{ Button } from "@heroui/button"
+import Button1 from "./Components/ButtonC";
+import React from "react";
 
 // const recoverGreen = "#4ade80";
+
+
 
 export default function Home() {
 
   const router = useRouter();
 
-  const handleClickLogin = (e: React.MouseEvent) => {
-    e.preventDefault();
+  const handlePressLogin = () => {
+    console.log('routing to login')
     router.push('/Auth/Login')
   }
 
   return (
-    <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-2 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
+    <div className="grid grid-rows-[20px_1fr_20px] justify-items-center relative h-screen w-full min-h-screen p-8 pb-2 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
       <main className="flex flex-col gap-8 row-start-2 items-center sm:items-start">
-          <Button onClick={handleClickLogin} style={{backgroundColor:"#4ade80", color: "black"}}>Log In</Button>
-          <a href="/Auth/SignUp">Sign Up</a>
+        <nav className="absolute top-0 right-0 p-4">
+          <Button1 className='font-semibold mr-4' onPress={handlePressLogin}>Log In</Button1>
+          <a href="/Auth/SignUp" className="mr-4">Sign Up</a>
+        </nav>
         <p>HOMEPAGE</p>
         <p>about recover systems</p>
       </main>
