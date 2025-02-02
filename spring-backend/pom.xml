@@ -21,6 +21,7 @@
         <google-cloud.version>26.52.0</google-cloud.version>
         <mybatis.version>3.0.3</mybatis.version>
         <jjwt.version>0.12.5</jjwt.version>
+        <org.mapstruct.version>1.6.3</org.mapstruct.version>
     </properties>
 
     <dependencyManagement>
@@ -114,7 +115,7 @@
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
             <version>1.18.36</version>
-            <optional>true</optional>
+            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -149,15 +150,15 @@
         <dependency>
             <groupId>org.mapstruct</groupId>
             <artifactId>mapstruct</artifactId>
-            <version>1.6.3</version> <!-- Use the latest version -->
+            <version>${org.mapstruct.version}</version> <!-- Use the latest version -->
         </dependency>
-        <!-- MapStruct Annotation Processor -->
+        <!-- MapStruct Annotation Processor 
         <dependency>
             <groupId>org.mapstruct</groupId>
             <artifactId>mapstruct-processor</artifactId>
             <version>1.6.3</version>
             <scope>provided</scope>
-        </dependency>
+        </dependency> -->
         <!-- Github Rate limiter -->
         <dependency>
             <groupId>io.github.resilience4j</groupId>
@@ -168,6 +169,32 @@
 
     <build>
         <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <configuration>
+                    <annotationProcessorPaths>
+                        <path>
+                            <groupId>org.projectlombok</groupId>
+                            <artifactId>lombok</artifactId>
+                            <version>${lombok.version}</version>
+                        </path>
+                        <path>
+                            <groupId>org.mapstruct</groupId>
+                            <artifactId>mapstruct-processor</artifactId>
+                            <version>${org.mapstruct.version}</version>
+                        </path>
+                        <path>
+                            <groupId>org.projectlombok</groupId>
+                            <artifactId>lombok-mapstruct-binding</artifactId>
+                            <version>0.2.0</version>
+                        </path>
+                    </annotationProcessorPaths>
+                    <compilerArgs>
+                        <arg>-Amapstruct.defaultComponentModel=spring</arg>
+                    </compilerArgs>
+                </configuration>
+            </plugin>
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>

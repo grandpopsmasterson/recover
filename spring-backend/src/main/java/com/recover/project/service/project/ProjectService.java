@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.security.core.context.SecurityContextHolder;
 
 import com.recover.project.dto.project.CreateProject;
+import com.recover.project.dto.project.LongProjectDto;
 import com.recover.project.dto.project.ShortProjectDto;
 import com.recover.project.mapper.ProjectMapper;
 import com.recover.project.model.Project;
@@ -16,8 +17,8 @@ import com.recover.project.model.enums.ProjectRole;
 import com.recover.project.model.enums.ProjectStage;
 import com.recover.project.repository.ProjectRepository;
 import com.recover.project.repository.RoleRepository;
-import com.recover.project.service.notifications.NotificationService;
-import com.recover.project.service.roles.ProjectRoleService;
+//import com.recover.project.service.notifications.NotificationService;
+import com.recover.project.service.roles.RoleService;
 import com.recover.project.service.search.ProjectCriteria;
 import com.recover.project.service.search.ProjectSpecification;
 import com.recover.project.utils.exceptions.ResourceNotFoundException;
@@ -34,9 +35,9 @@ public class ProjectService {
 
     private final ProjectRepository projectRepository;
     private final RoleRepository roleRepository;
-    private final ProjectRoleService roleService;
+    private final RoleService roleService;
 
-    private final NotificationService notificationService;
+    //private final NotificationService notificationService;
     private final ApplicationEventPublisher eventPublisher;
     private final ProjectMapper projectMapper;
 
@@ -67,7 +68,6 @@ public class ProjectService {
        ProjectCriteria criteria = ProjectCriteria.builder()
            .searchTerm(query)
            .build();
-           
        Specification<Project> spec = ProjectSpecification.createSpecification(criteria);
        return projectRepository.findAll(spec, pageable)
            .map(projectMapper::toShortDto);
@@ -83,6 +83,12 @@ public class ProjectService {
     public ShortProjectDto getShortProjectById(Long projectId) {
         return projectRepository.findById(projectId)
             .map(projectMapper::toShortDto)
+            .orElseThrow(() -> new ResourceNotFoundException("Project not found with id: " + projectId));
+    }
+
+    public LongProjectDto getLongProjectById(Long projectId) {
+        return projectRepository.findById(projectId)
+            .map(projectMapper::toLongDto)
             .orElseThrow(() -> new ResourceNotFoundException("Project not found with id: " + projectId));
     }
 

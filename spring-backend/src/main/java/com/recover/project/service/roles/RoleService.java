@@ -1,6 +1,5 @@
 package com.recover.project.service.roles;
 
-import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -18,7 +17,7 @@ import lombok.RequiredArgsConstructor;
 
 @Service
 @RequiredArgsConstructor
-public class ProjectRoleService {
+public class RoleService {
     private final RoleRepository roleRepository;
     private final RoleMapper roleMapper;
     private final ApplicationEventPublisher eventPublisher;
@@ -41,5 +40,6 @@ public class ProjectRoleService {
         return roleMapper.toDto(role);
         //eventPublisher.publishEvent(new ProjectAssignedEvent(role, request.getProjectId(), request.getUserId()));
     }
+
 
 }

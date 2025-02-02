@@ -3,9 +3,8 @@ package com.recover.project.model;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Getter;
+import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -15,7 +14,7 @@ import com.recover.project.model.enums.UserType;
 
 @Entity
 @Table(name = "users")
-@Getter @Setter
+@Data
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
@@ -40,7 +39,7 @@ public class User {
     @Column(name = "last_name")
     private String lastName;
 
-    @Column(name = "is_available")
+    @Column(name = "available")
     private boolean isAvailable;
 
     @Column(name = "user_type")

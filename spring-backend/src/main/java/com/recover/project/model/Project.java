@@ -2,9 +2,9 @@ package com.recover.project.model;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
-import lombok.Getter;
+import lombok.Builder;
+import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -17,10 +17,15 @@ import com.recover.project.model.enums.ProjectType;
 
 @Entity
 @Table(name = "projects")
-@Getter @Setter
+@Data
+@Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class Project extends BaseEntity {
+public class Project {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
     @Column(name = "project_name")
     private String projectName;
