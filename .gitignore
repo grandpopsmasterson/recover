@@ -25,14 +25,14 @@ frontend/yarn-debug.log*
 frontend/yarn-error.log*
 
 # Backend
-backend/target/
-backend/.mvn/
-backend/!.mvn/wrapper/maven-wrapper.jar
+spring-backend/target/
+spring-backend/.mvn/
+spring-backend/!.mvn/wrapper/maven-wrapper.jar
 
 # Backend env files
-backend/.env
-backend/src/main/resources/application-local.yml
-backend/src/main/resources/application-local.properties
+spring-backend/.env
+spring-backend/src/main/resources/application-local.yml
+spring-backend/src/main/resources/application-local.properties
 
 # STS/Eclipse
 .apt_generated
