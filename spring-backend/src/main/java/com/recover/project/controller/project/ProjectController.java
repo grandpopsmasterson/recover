@@ -1,18 +1,26 @@
 package com.recover.project.controller.project;
 
+import java.util.List;
+import org.springframework.data.domain.Sort;
 import com.recover.project.dto.project.CreateProject;
-import com.recover.project.dto.project.LongProjectSummary;
+import com.recover.project.dto.project.LongProjectDto;
 import com.recover.project.dto.project.ShortProjectDto;
 import com.recover.project.dto.user.ShortUser;
+import com.recover.project.dto.user.AssignedRoleDto;
 import com.recover.project.dto.user.ProjectRoleRequest;
 import com.recover.project.model.*;
-import com.recover.project.service.roles.ProjectRoleService;
+import com.recover.project.model.enums.ProjectStage;
+import com.recover.project.service.roles.RoleService;
+import com.recover.project.service.roles.UserService;
 import com.recover.project.service.search.ProjectCriteria;
 import com.recover.project.service.authorization.UserDetailsImpl;
 import com.recover.project.service.project.ProjectService;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+
+import java.util.List;
+import java.util.Set;
 
 import org.hibernate.query.SortDirection;
 import org.slf4j.Logger;
@@ -34,44 +42,45 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor
 public class ProjectController {
     private final ProjectService projectService;
-    private final ProjectRoleService projectRoleService;
+    private final UserService userService;
+    private final RoleService roleService;
 
     @PostMapping
     @PreAuthorize("hasRole('PROJECT_MANAGER')")
-    public ResponseEntity<LongProjectSummary> createProject(
+    public ResponseEntity<ShortProjectDto> createProject(
             @Valid @RequestBody CreateProject request) {
         return ResponseEntity.ok(projectService.createProject(request));
     }
 
-    @GetMapping
-    public ResponseEntity<Page<ShortProjectDto>> searchProjects(
-            ProjectCriteria criteria,
-            @PageableDefault(sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable) {
-        return ResponseEntity.ok(projectService.searchProjects(criteria, pageable));
-    }
+    // @GetMapping
+    // public ResponseEntity<Page<ShortProjectDto>> searchProjects(
+    //         ProjectCriteria criteria,
+    //         @PageableDefault(sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable) {
+    //     return ResponseEntity.ok(projectService.searchProjects(criteria, pageable));
+    // }
 
     @GetMapping("/{id}")
-    public ResponseEntity<LongProjectSummary> getProject(@PathVariable Long id) {
-        return ResponseEntity.ok(projectService.findById(id));
+    public ResponseEntity<LongProjectDto> getProject(@PathVariable Long id) {
+        return ResponseEntity.ok(projectService.getLongProjectById(id));
     }
 
     @GetMapping("/available-technicians")
     public ResponseEntity<List<ShortUser>> getAvailableTechnicians() {
-        return ResponseEntity.ok(technicianService.getAvailableTechnicians());
+        return ResponseEntity.ok(userService.getAvailableTechnicians());
     }
 
     @PostMapping("/assign-technicians")
-    public ResponseEntity<List<ProjectRoleDTO>> assignTechnicians(
-            @RequestBody TechnicianAssignmentRequest request) {
+    public ResponseEntity<Set<AssignedRoleDto>> assignTechnicians(
+            @RequestBody Set<ProjectRoleRequest> request) {
         return ResponseEntity.ok(
-            technicianService.assignTechniciansToProject(request)
+            roleService.assignRoles(request)
         );
     }
-    @PostMapping("/update-project-stage/{projectId}") // update project stage
-    public ResponseEntity<Project> updateProjectStage(@PathVariable Long projectId, @RequestBody Integer stage) {
-        projectService.updateProjectStage(projectId, stage);
-        return ResponseEntity.ok(projectService.getProjectById(projectId));
-    }
+    // @PostMapping("/{projectId}/update-project-stage")
+    // public ResponseEntity<Project> updateProjectStage(@PathVariable Long projectId, @RequestBody ProjectStage currentStage) {
+    //     projectService.updateProjectStage(projectId, stage);
+    //     return ResponseEntity.ok(projectService.getProjectById(projectId));
+    // }
 
 
     @DeleteMapping("/projects/{projectId}") // Delete a project

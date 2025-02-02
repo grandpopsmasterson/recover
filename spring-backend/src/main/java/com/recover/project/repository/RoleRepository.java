@@ -17,7 +17,7 @@ public interface RoleRepository extends JpaRepository<Role, Long> {
   List<Role> findByUserIdAndProjectId(@Param("userId") Long userId, @Param("projectId") Long projectId);
 
 
-  // (completely useless) Returns a single role from all parameters
+  // (kinda useless) Returns a single role from all parameters
   @Query("SELECT r FROM Role r WHERE r.user.id = :userId AND r.project.id = :projectId AND r.projectRole = :projectRole")
   Optional<Role> findRoleByAllOptions(@Param("userId") Long userId, @Param("projectId") Long projectId, @Param("projectRole") ProjectRole projectRole);
 

@@ -6,7 +6,7 @@ import org.mapstruct.Mapping;
 import org.mapstruct.Mappings;
 
 import com.recover.project.dto.project.CreateProject;
-import com.recover.project.dto.project.ProjectSummaryDto;
+import com.recover.project.dto.project.LongProjectDto;
 import com.recover.project.dto.project.ShortProjectDto;
 import com.recover.project.model.Project;
 
@@ -15,16 +15,16 @@ import com.recover.project.model.Project;
 public interface ProjectMapper {
 
     @Mappings({
-        @Mapping(target = "id", ignore = true),  // Let Database generate the ID
+        @Mapping(target = "id", ignore = true), // Let Database generate the ID
         @Mapping(target = "roles", source = "assignedUsers", ignore = true),
     })
-    Project toEntity(CreateProject request);   // going into the database -->
+    Project toEntity(CreateProject request); // going into the database -->
 
 
     @Mapping(source = "roles", target = "assignedRoles")  // assignedRoles creates role DTOs in the RoleMapper.class and passes them back
-    ProjectSummaryDto toSummaryDto(Project project);
+    LongProjectDto toLongDto(Project project);
 
-    List<ProjectSummaryDto> toSummaryDtoList(List<Project> projects);
+    List<LongProjectDto> toLongDtoList(List<Project> projects);
 
     @Mapping(source = "roles", target = "assignedRoles")  // assigned roles is a dto that was packaged and passed in from RoleMapper
     ShortProjectDto toShortDto(Project project);

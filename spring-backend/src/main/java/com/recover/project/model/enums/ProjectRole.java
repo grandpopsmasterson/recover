@@ -4,6 +4,9 @@ public enum ProjectRole {
     MANAGER,
     TECHNICIAN,
     CLIENT,
+    ACCOUNTANT,
+    MARKETER,
     ADJUSTER,
     VIEWER,
+    EDITOR
 }

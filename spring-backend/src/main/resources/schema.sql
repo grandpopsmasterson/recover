@@ -1,26 +1,44 @@
 CREATE TABLE IF NOT EXISTS users (
-  user_id BIGSERIAL PRIMARY KEY,  -- Use BIGSERIAL instead of SERIAL
+  id BIGSERIAL PRIMARY KEY,  -- Use BIGSERIAL instead of SERIAL
   username VARCHAR(20),
+  email VARCHAR(30),
   salt VARCHAR,
   password VARCHAR,
   first_name VARCHAR(20),
-  last_name VARCHAR(20)
+  last_name VARCHAR(20),
+  available BOOLEAN NOT NULL DEFAULT true,
+  user_type VARCHAR(20),
+  profile_image_url VARCHAR(50),
 );
 
 CREATE TABLE IF NOT EXISTS projects (
-    project_id BIGSERIAL PRIMARY KEY,  -- Use BIGSERIAL instead of SERIAL
-    project_name VARCHAR(255) NOT NULL,
-    home_owner VARCHAR(255),
+    id BIGSERIAL PRIMARY KEY,  -- Use BIGSERIAL instead of SERIAL
+    project_name VARCHAR(20) NOT NULL,
+    client_name VARCHAR(30),
+    client_email VARCHAR(30),
+    client_phone INT,
+    start_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    loss_date TIMESTAMP,
     street_address VARCHAR(255),
     city VARCHAR(100),
     state CHAR(20),
     zipcode CHAR(20),
-    carrier VARCHAR(255)
+    carrier VARCHAR(20),
+    project_stage VARCHAR(20),
+    project_type VARCHAR(20),
 );
 
+CREATE TABLE IF NOT EXISTS floors (
+    id BIGSERIAL PRIMARY KEY,
+    floor_level INT,
+    floor_name VARCHAR(20),
+    project_id BIGINT NOT NULL,
+    FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE
+)
+
 CREATE TABLE IF NOT EXISTS rooms (
-    room_id BIGSERIAL PRIMARY KEY,  -- Use BIGSERIAL instead of SERIAL
-    project_id BIGINT NOT NULL,  -- Keep BIGINT for foreign key
+    id BIGSERIAL PRIMARY KEY,  -- Use BIGSERIAL instead of SERIAL
+    floor_id BIGINT NOT NULL,  -- Keep BIGINT for foreign key
     room_name VARCHAR(255) NOT NULL,
     room_length DECIMAL(10, 2),
     room_width DECIMAL(10, 2),
@@ -31,7 +49,7 @@ CREATE TABLE IF NOT EXISTS rooms (
     dmg_percentage DECIMAL(10, 2),
     damaged BOOLEAN NOT NULL DEFAULT false,
     class_rating VARCHAR(20),
-    FOREIGN KEY (project_id) REFERENCES projects (project_id) ON DELETE CASCADE
+    FOREIGN KEY (floor_id) REFERENCES floors(id) ON DELETE CASCADE
 );
 
 CREATE TABLE IF NOT EXITS notifications (
@@ -46,20 +64,18 @@ CREATE TABLE IF NOT EXITS notifications (
 );
 
 CREATE TABLE IF NOT EXISTS roles (
-    role_id BIGSERIAL PRIMARY KEY,  -- Use BIGSERIAL instead of SERIAL
+    id BIGSERIAL PRIMARY KEY,  -- Use BIGSERIAL instead of SERIAL
     project_id BIGINT NOT NULL,
     user_id BIGINT NOT NULL,
-    role_name VARCHAR(20) NOT NULL,
-    FOREIGN KEY (project_id) REFERENCES projects(project_id) ON DELETE CASCADE,
-    FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE
+    project_role VARCHAR(20) NOT NULL,
+    FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE,
+    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
 );
 
 CREATE TABLE IF NOT EXISTS project_losses (
-    loss_id BIGSERIAL PRIMARY KEY,  -- Use BIGSERIAL instead of SERIAL
-    project_id BIGINT NOT NULL,
+    id BIGSERIAL PRIMARY KEY,  -- Use BIGSERIAL instead of SERIAL
     room_id BIGINT NOT NULL,
     loss_type VARCHAR(255) NOT NULL,
-    FOREIGN KEY (project_id) REFERENCES projects(project_id) ON DELETE CASCADE,
-    FOREIGN KEY (room_id) REFERENCES rooms(room_id) ON DELETE CASCADE
+    FOREIGN KEY (room_id) REFERENCES rooms(id) ON DELETE CASCADE
 );
 

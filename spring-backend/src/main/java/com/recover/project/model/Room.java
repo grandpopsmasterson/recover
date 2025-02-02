@@ -1,6 +1,8 @@
 package com.recover.project.model;
 
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -12,6 +14,8 @@ import com.recover.project.model.enums.ClassRating;
 @Entity
 @Table(name = "rooms")
 @Getter @Setter
+@Builder
+@AllArgsConstructor
 @NoArgsConstructor
 public class Room {
     @Id
