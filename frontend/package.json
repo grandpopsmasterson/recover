@@ -15,6 +15,8 @@
     "@heroui/react": "^2.6.14",
     "@heroui/system": "^2.4.7",
     "@heroui/theme": "^2.4.6",
+    "@react-aria/interactions": "^3.23.0",
+    "axios": "^1.7.9",
     "clsx": "^2.1.1",
     "framer-motion": "^12.0.6",
     "next": "15.1.6",

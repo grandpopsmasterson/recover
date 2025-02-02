@@ -5,13 +5,12 @@ import { useRouter } from "next/navigation";
 export default function LogIn() {
 
     //TODO add authentication
-    //TODO add RegEx for email
     //TODO add error40 handlers (email format, blank fields)
 
     const router = useRouter();
     
-    const handleClick = (e: React.MouseEvent) => { 
-        e.preventDefault();
+    const handlePress = () => {
+        console.log('routing to login')
         router.push('/Dashboard')
     }
 
@@ -20,7 +19,7 @@ export default function LogIn() {
             <h1 className="text-3xl">Log In </h1> <br/>
             <input type="text" placeholder="E-Mail" style={{color: "black", borderRadius: '5px'}}></input> <br/>
             <input type="password" placeholder="Password" style={{color: "black", borderRadius: '5px'}}></input> <br/>
-            <Button onClick={handleClick} style={{backgroundColor:"#4ade80", color: "black"}}>Log in</Button> <br/>
+            <Button onPress={handlePress} style={{backgroundColor:"#4ade80", color: "black"}}>Log in</Button> <br/>
             <a href="/Auth/Forgot">Forgot Username or Password?</a>
         </div>
     )
