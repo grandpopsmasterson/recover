@@ -11,14 +11,13 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.Builder;
+import lombok.Data;
 
 @Entity
 @Table(name = "roles")
-@Getter @Setter 
-@NoArgsConstructor
+@Data
+@Builder
 public class Role {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -34,12 +33,5 @@ public class Role {
     
     @Column(name = "project_role")
     private ProjectRole projectRole;
-    
-    public Long getUserId() {
-        return user != null ? user.getId() : null;
-    }
-    
-    public Long getProjectId() {
-        return project != null ? project.getId() : null;
-    }
+
 }

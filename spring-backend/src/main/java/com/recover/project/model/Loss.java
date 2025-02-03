@@ -16,9 +16,11 @@ public class Loss {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "loss_id")
     private Long id;
+
     @ManyToOne
     @JoinColumn(name = "room_id")
     private Room room;
+    
     @Enumerated(EnumType.STRING)
     @Column(name = "loss_type")
     private LossType lossType;

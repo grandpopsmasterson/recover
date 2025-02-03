@@ -25,7 +25,7 @@ public interface ProjectRepository extends JpaRepository<Project, Long>, JpaSpec
     SELECT p 
     FROM Project p 
     JOIN p.roles r 
-    WHERE r.userId = :userId 
+    WHERE r.user.id = :userId 
     AND r.projectRole = :projectRole
     """)
     List<Project> findProjectsByUserIdAndRole(@Param("userId") Long userId, @Param("projectRole") ProjectRole projectRole);

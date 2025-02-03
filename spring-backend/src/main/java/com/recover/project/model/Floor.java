@@ -14,18 +14,14 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.Data;
+import lombok.ToString;
 
 @Entity
 @Table(name = "floors")
-@Getter
+@Data
 @Builder
-@Setter
-@NoArgsConstructor
-@AllArgsConstructor
+@ToString(exclude = {"rooms"})
 public class Floor {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

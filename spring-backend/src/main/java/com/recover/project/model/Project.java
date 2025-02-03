@@ -1,10 +1,9 @@
 package com.recover.project.model;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -19,8 +18,7 @@ import com.recover.project.model.enums.ProjectType;
 @Table(name = "projects")
 @Data
 @Builder
-@NoArgsConstructor
-@AllArgsConstructor
+@ToString(exclude = {"floors", "roles"})
 public class Project {
 
     @Id
@@ -68,10 +66,12 @@ public class Project {
 
     @OneToMany(mappedBy = "project", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonIgnore
+    @Builder.Default
     private List<Floor> floors = new ArrayList<>();
 
     @OneToMany(mappedBy = "project", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonIgnore
+    @Builder.Default
     private List<Role> roles = new ArrayList<>();
 
 

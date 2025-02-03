@@ -17,7 +17,6 @@ public interface UserRepository extends JpaRepository<User, Long> {
     Boolean existsByUsername(String username);
     Boolean existsByEmail(String email);
 
-    // (kinda useless) Returns a single role from all parameters
-    @Query("SELECT u FROM User u WHERE u.isAvailable = true")
+    @Query("SELECT u FROM User u WHERE u.available = true AND u.userType = 'TECHNICIAN'")
     List<User> findAvailableTechnicians();
 }

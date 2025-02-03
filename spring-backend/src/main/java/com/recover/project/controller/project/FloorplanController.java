@@ -2,12 +2,10 @@ package com.recover.project.controller.project;
 
 import com.recover.project.dto.floorplan.FloorDto;
 import com.recover.project.dto.floorplan.FloorplanDto;
-import com.recover.project.model.Room;
+import com.recover.project.dto.floorplan.RoomDto;
 import com.recover.project.service.project.FloorsRoomsService;
 
 import lombok.RequiredArgsConstructor;
-
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import org.slf4j.Logger;
@@ -36,9 +34,7 @@ public class FloorplanController {
 
     
     @GetMapping("/create-room") // Shows the create room form
-    public String showCreateRoomForm(Model model) {
-        model.addAttribute("room", new Room());
-        return "createRoomForm"; // (createRoomForm.html)
+    public RoomDto createRoom(RoomDto roomDto) {
+        return floorsRoomsService.createRoom(roomDto);
     }
-
 }

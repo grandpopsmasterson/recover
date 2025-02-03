@@ -1,23 +1,20 @@
 package com.recover.project.model;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.ToString;
+
 import java.util.HashSet;
 import java.util.Set;
-
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.recover.project.model.enums.UserType;
 
 
 @Entity
 @Table(name = "users")
 @Data
-@AllArgsConstructor
-@NoArgsConstructor
 @Builder
+@ToString(exclude = {"roles"})
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -40,7 +37,7 @@ public class User {
     private String lastName;
 
     @Column(name = "available")
-    private boolean isAvailable;
+    private boolean available;
 
     @Column(name = "user_type")
     @Enumerated(EnumType.STRING)
@@ -50,7 +47,7 @@ public class User {
     private String profileImageUrl;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
-    @JsonIgnore
+    @Builder.Default
     private Set<Role> roles = new HashSet<>();
 
 }
