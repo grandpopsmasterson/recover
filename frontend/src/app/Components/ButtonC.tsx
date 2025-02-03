@@ -7,18 +7,26 @@ import clsx from "clsx";
 import type { MouseEvent as ReactMouseEvent } from 'react';
 
 interface ButtonProps {
-    onPress: () => void;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    onPress: (e?: any) => void | Promise<void>;
     children: React.ReactNode;
     isDisabled?: boolean;
     className?: string;
-    variant?: string;
+    variant?: ButtonVariant;
+    color?: ButtonColor;
 }
+
+type ButtonVariant = 'solid' | 'faded' | 'bordered' | 'light' | 'flat' | 'ghost' | 'shadow';
+
+type ButtonColor = 'default' | 'primary' | 'secondary' | 'success' | 'warning' | 'danger'; 
 
 const Button1 = ({
     onPress,
     children,
     isDisabled = false,
     className,
+    variant,
+    color,
 }: ButtonProps) => {
     const ref = useRef<HTMLButtonElement>(null);
     const [isPressed, setIsPressed] = useState(false);
@@ -51,8 +59,10 @@ const Button1 = ({
             onMouseUp={handleMouseUp}
             onMouseEnter={pressProps.onMouseEnter}
             onMouseLeave={handleMouseLeave}
+            variant={variant}
             ref={ref}
             isDisabled={isDisabled}
+            color={color}
             style={{backgroundColor: '#4ade80', color: '#1b2722'}}
             className={clsx(`
                 px-4 py-2 rounded-md transition-colors

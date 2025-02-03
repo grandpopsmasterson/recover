@@ -1,4 +1,3 @@
-
 import SignUpCard from "../Components/SignUpCard"
 
 export default function SignUp() {
