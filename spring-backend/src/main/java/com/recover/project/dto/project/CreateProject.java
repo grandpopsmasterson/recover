@@ -8,8 +8,6 @@ import com.recover.project.dto.user.ProjectRoleRequest;
 import com.recover.project.model.enums.ProjectStage;
 import com.recover.project.model.enums.ProjectType;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Enumerated;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;

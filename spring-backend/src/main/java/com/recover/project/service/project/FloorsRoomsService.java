@@ -24,10 +24,13 @@ public class FloorsRoomsService {
 
     private final RoomRepository roomRepository;
     private final ProjectRepository projectRepository;
-    private final FloorplanMapper floorplanMapper;
+    private final FloorplanMapper floorPlanMapper;
 
-    private Room addRoomToProject(RoomDto room) {
-        return floorplanMapper.toRoomEntity(room);
+    public RoomDto createRoom(RoomDto roomDto) {
+        Room room = floorPlanMapper.toRoomEntity(roomDto);
+        Room savedRoom = roomRepository.save(room);
+        return floorPlanMapper.toRoomDto(savedRoom);
+
     }
 
     // if you want to get the whole floorplan DTO
@@ -35,7 +38,7 @@ public class FloorsRoomsService {
         Project project = projectRepository.findById(projectId)
             .orElseThrow(() -> new ResourceNotFoundException("Project not found"));
         
-            return floorplanMapper.toFloorplanDto(project.getFloors());
+            return floorPlanMapper.toFloorplanDto(project.getFloors());
     }
 
     // if you want to get a list of floors with rooms
@@ -44,7 +47,7 @@ public class FloorsRoomsService {
             .orElseThrow(() -> new ResourceNotFoundException("Project not found"));
         
         return project.getFloors().stream()
-            .map(floorplanMapper::toFloorDto)
+            .map(floorPlanMapper::toFloorDto)
             .sorted(Comparator.comparing(FloorDto::getFloorLevel))
             .collect(Collectors.toList());
         }

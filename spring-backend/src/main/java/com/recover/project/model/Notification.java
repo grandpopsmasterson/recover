@@ -1,21 +1,16 @@
 package com.recover.project.model;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.Data;
 import java.time.LocalDateTime;
 
 import com.recover.project.model.enums.NotificationType;
 
 @Entity
 @Table(name = "notifications")
-@Getter @Setter
+@Data
 @Builder
-@AllArgsConstructor
-@NoArgsConstructor
 public class Notification {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -34,11 +29,11 @@ public class Notification {
     @Column(name = "reference_id")
     private Long referenceId;
 
-    @Column(name = "recipient_user")
-    private String recipientUser;
+    @Column(name = "recipient_username")
+    private String recipientUsername;
 
     @Column(name = "read")
-    private boolean isRead = false;
+    private boolean read;
 
 }
 
