@@ -8,12 +8,13 @@ import type { MouseEvent as ReactMouseEvent } from 'react';
 
 interface ButtonProps {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    onPress: (e?: any) => void | Promise<void>;
+    onPress?: (e?: any) => void | Promise<void> | { payload: undefined; type: 'signup/prevStep'; };
     children: React.ReactNode;
     isDisabled?: boolean;
     className?: string;
     variant?: ButtonVariant;
     color?: ButtonColor;
+    type?: 'button' | 'submit' | 'reset';
 }
 
 type ButtonVariant = 'solid' | 'faded' | 'bordered' | 'light' | 'flat' | 'ghost' | 'shadow';
@@ -22,6 +23,7 @@ type ButtonColor = 'default' | 'primary' | 'secondary' | 'success' | 'warning' |
 
 const Button1 = ({
     onPress,
+    type,
     children,
     isDisabled = false,
     className,
@@ -63,6 +65,7 @@ const Button1 = ({
             ref={ref}
             isDisabled={isDisabled}
             color={color}
+            type={type}
             style={{backgroundColor: '#4ade80', color: '#1b2722'}}
             className={clsx(`
                 px-4 py-2 rounded-md transition-colors
