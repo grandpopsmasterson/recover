@@ -7,25 +7,7 @@ import { useRouter } from 'next/navigation';
 import apiClient from '@/config/apiClient';
 import { EyeFilledIcon, EyeSlashFilledIcon } from './eyePasswordIcon';
 
-//Interface for the form data
-interface FormData {
-    email: string;
-    username: string;
-    firstName: string;
-    lastName: string;
-    password: string;
-    confirmPassword: string;
-    companyId: string; // number?
-    role: string;
-    termsAccepted: boolean;
-    general?: string;
-}
 
-// sign up error interface
-interface SignUpError {
-    message: string;
-    field?: string;
-}
 
 //Start of SignUpCard logic
 const SignUpCard = () => {
@@ -57,6 +39,7 @@ const SignUpCard = () => {
     });
     // Roles enum
     const roles = [
+        'Viewer',
         'Secretary',
         'Technician',
         'Project Manager',
@@ -316,9 +299,7 @@ const SignUpCard = () => {
                                         </button>
                                     }
                                 />
-                                {errors && (
-                                    <Alert color='danger' title={errors.message}/>
-                                )}
+                                {errors && (<Alert color='danger' title={errors.message}/>)}
                                 <br/>
                             </div>
                         </div>
@@ -338,9 +319,7 @@ const SignUpCard = () => {
                                     value={formData.username}
                                     onChange={handleInputChange}
                                 />
-                                {errors && (
-                                    <Alert color='danger' title={errors.message} />
-                                )}
+                                {errors && (<Alert color='danger' title={errors.message} /> )}
                             </div> <br/>
 
                             <div>
