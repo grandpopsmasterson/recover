@@ -1,4 +1,4 @@
-package com.udacity.jwdnd.c1.review.controller.email;
+package com.recover.project.controller.email;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -6,8 +6,9 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import com.udacity.jwdnd.c1.review.service.email.EmailService;
-import com.udacity.jwdnd.c1.review.model.User;
+
+import com.recover.project.model.User;
+import com.recover.project.service.email.EmailService;
 
 @RestController
 @RequestMapping("/api/v1/emails")
