@@ -1,9 +1,8 @@
-package com.udacity.jwdnd.c1.review.service.email;
+package com.recover.project.service.email;
 
 import java.io.IOException;
 
-import com.udacity.jwdnd.c1.review.model.User;
-
+import com.recover.project.model.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -18,11 +17,11 @@ import com.sendgrid.Response;
 
 @Service
 public class EmailService {
-    private final SendGrid sendGrid;
+    @Autowired private final SendGrid sendGrid;
     private final String fromEmail;
 
     public EmailService(
-        @Autowired SendGrid sendGrid,
+        SendGrid sendGrid,
         @Value("${twilio.sengrid.from-email}") String fromEmail
     ) {
         this.sendGrid = sendGrid;
