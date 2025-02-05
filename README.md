@@ -69,12 +69,13 @@ You will need a user to run your databases with. Run this following command:
 CREATE USER $username WITH PASSWORD '$password';
 ALTER USER $username WITH SUPERUSER;
 ```
+You should be able to verify that your user was created with the `\du` command.
 Exit the CLI tool with `\q`. Now, re-enter psql with the user you created and create the database:
 ```
 psql template0 -U $username
 CREATE DATABASE $database_name;
 ```
-Again, exit `psql` with the `\q` command.
+You can verify the db was created with the proper owner by typing `\l`. This will print a table similarly to `\du`. Again, exit `psql` with the `\q` command.
 
 Locate the `pom.xml` file in your application. It should have the parent directory of `/spring-backend`.
 
