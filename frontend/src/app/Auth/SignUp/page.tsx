@@ -1,11 +1,11 @@
 //import SignupForm from "./components(redux)/SignupForm";
-import SignUpCard from "../Components/SignUpCard";
+//import SignUpCard from "../Components/SignUpCard";
 import SignUpCardLazy from "../Components/SignUpCardLazy";
 
 export default function SignUpPage() {
     return (
-        <div className="min-h-screen py-12 px-4 sm:px-6 lg:px-8">
-        <div className="max-w-md mx-auto">
+        <div className="flex justify-center min-h-screen py-12 px-4 sm:px-6 lg:px-8">
+        <div >
             <div className="text-center">
             <h2 className="mt-6 text-3xl font-extrabold text-gray-900">
                 Create your account

@@ -5,19 +5,20 @@ import { useRouter } from 'next/navigation';
 import type { FormData, SignUpError, StepOneProps } from './../../../types/signup';
 import apiClient from '@/config/apiClient';
 
-import { Button, Card, CardBody, CardHeader, Progress, Input, Alert, CardFooter } from "@heroui/react";
+import { Card, CardBody, CardHeader, Progress, Input, Alert, CardFooter } from "@heroui/react";
 import { RecoverLogo } from '@/app/Components/RecoverLogo';
 import Button1 from '@/app/Components/ButtonC';
+import { NavLink } from '@/app/Dashboard/Components/DashboardNavbar';
+import { BackArrow } from '@/app/Components/BackArrow';
 
 //lazy load the other components
 const StepTwo = lazy(() => import('./StepTwo'));
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-const StepThree = lazy(() => import('./StepThree') as Promise<{ default: React.ComponentType<any> }>);
+const StepThree = lazy(() => import('./StepThree'));
+
 //First step component - eagerly loaded
 const StepOne: React.FC<StepOneProps> =({
     formData,
     handleInputChange,
-    isInvalid,
     errors
 }) => (
     <div>
@@ -31,9 +32,9 @@ const StepOne: React.FC<StepOneProps> =({
             name='email'
             variant='bordered'
             value={formData.email}
-            isInvalid={isInvalid}
             errorMessage='Please enter a valid email. Format: example@recover.com'
             onChange={handleInputChange}
+            isInvalid={errors === null ? false : errors.field == 'email' ? true : false}
         />
     </div>
 );
@@ -41,8 +42,10 @@ const StepOne: React.FC<StepOneProps> =({
 export default function SignUpCardLazy() {
     const router = useRouter();
     const [stage, setStage] = useState<number>(1);
-    const [isLoading, setIsLoading]= useState<boolean>(false);
+    const [isLoading, setIsLoading]= useState<boolean>(false); // theres nothing currently to set is loading to true
     const [errors, setErrors] = useState<SignUpError | null>(null);
+
+    const confirmPassword: string= '';
 
     const [formData, setFormData] = useState<FormData>({
         email: '',
@@ -50,8 +53,7 @@ export default function SignUpCardLazy() {
         firstName: '',
         lastName: '',
         password: '',
-        confirmPassword: '',
-        companyId: '',
+        //companyId: '',
         role: 'Viewer',
     });
 
@@ -66,10 +68,9 @@ export default function SignUpCardLazy() {
 
     // Progress bar values
     const progress: Record<number, number> = {
-        1: 25,
-        2: 50,
-        3: 75,
-        4: 100
+        1: 33,
+        2: 66,
+        3: 100,
     };
 
     const validateEmail = (value: string): boolean => {
@@ -96,16 +97,16 @@ export default function SignUpCardLazy() {
                     setErrors({ message: 'Password must be at least 8 characters with 1 uppercase, 1 lowervase, and 1 number', field: 'password'});
                     return false;
                 }
-                if (formData.password !== formData.confirmPassword) {
+                if (formData.password !== confirmPassword) {
                     setErrors({ message: 'Passwords do not match', field: 'confirmPassword'});
                     return false;
                 }
-                break;
-            case 3:
                 if (formData.username.length < 5) {
                     setErrors({message: 'Username must be at least 5 characters long', field: 'username'});
                     return false;
                 }
+                break;
+            case 3:
                 if (!formData.firstName) {
                     setErrors({ message: 'Please enter your first name', field: 'firstName'});
                     return false;
@@ -120,11 +121,6 @@ export default function SignUpCardLazy() {
     };
     return true;
 }
-    const isInvalid = React.useMemo(() => {
-        if (formData.email === "") return false;
-        return !validateEmail(formData.email);
-    }, [formData.email]);
-
     //prefetch other steps
     const prefetchOtherSteps = () => {
         const prefetchStep = async () => {
@@ -153,7 +149,7 @@ export default function SignUpCardLazy() {
         } else if (e instanceof Object && 'target' in e) {
         const { name, value, type, checked } = e.target as HTMLInputElement;
         setFormData(prev => ({ ...prev, [name]: type === 'checkbox' ? checked : value }));
-        }
+        } 
         setErrors(null);
     };
 
@@ -164,10 +160,6 @@ export default function SignUpCardLazy() {
         }));
         setErrors(null);
     }
-
-    const handleHome = (): void => {
-        router.push('/');
-    };
     
     const handleNext = (): void => {
         if (validateStage()) {
@@ -179,9 +171,25 @@ export default function SignUpCardLazy() {
         setStage(prev => prev - 1);
     };
 
-    const handleSubmit = () => {
-        console.log(formData);
-        //enter backend linking here
+    const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
+        if (validateStage()) {
+            console.log(formData); // TODO remove this at a later date ---------------------------------------------------------------------------
+
+            //event.preventDefault();
+            
+            try {
+                const response = await apiClient.post('/signup', formData);
+
+                console.log('Success: ', response);
+            } catch (error) {
+                console.log('Submission error: ', error)
+                return 
+            }
+        
+        
+            router.push('./Login')
+        
+        }
     }
 
     const renderStep = (stage: number) => {
@@ -191,7 +199,6 @@ export default function SignUpCardLazy() {
                 <StepOne 
                     formData={formData}
                     handleInputChange={handleInputChange}
-                    isInvalid={isInvalid}
                     errors={errors}
                 />
                 );
@@ -237,17 +244,21 @@ export default function SignUpCardLazy() {
                     <div>
                         <Progress aria-label='Progress bar' size='sm' value={progress[stage]} />
                     </div> <br/>
-                    <div>
+                    <div className='flex gap-4'>
                     {stage === 1 && (
-                            <Button1 onPress={handleHome}>Home</Button1>
+                            <NavLink
+                                href='/'
+                            >
+                                <BackArrow />
+                            </NavLink>
                         )}
-                        {stage > 1 && ( //TODO change the function of back and home buttons are just the back arrow in the header
+                        {stage > 1 && ( 
                             <Button1 onPress={handleBack}>Back</Button1>
                         )}
-                    <p className='w-[10vw]'>Step {stage} of 4</p>
-                    {errors && (
-                        <Alert color='danger' title={errors.message} />
-                    )}
+                    <p className='w-[10vw]'>Step {stage} of 3</p>
+                    {errors === null ? '' : errors.field == 'server' ? (
+                        <Alert color='default' hideIconWrapper variant='bordered' className={'bg-transparent color-red'} title={errors.message} /> 
+                    ) : ''} 
                     </div>
                 </div>
             </CardHeader>
@@ -256,7 +267,7 @@ export default function SignUpCardLazy() {
             </CardBody>
             <CardFooter>
                 <div className='mt-auto'>
-                    {stage < 4 ? (
+                    {stage < 3 ? (
                         <Button1 
                             variant='ghost' 
                             className='!bg-transparent text-bold !text-green-500 w-[100%] h-[50px]' 
@@ -266,7 +277,7 @@ export default function SignUpCardLazy() {
                                 Next
                             </Button1>
                     ) : (
-                        <Button1 isDisabled={isLoading} onPress={handleSubmit}>{isLoading ? 'Signing up...' : 'Sign Up'}</Button1>
+                        <Button1 color='success' isDisabled={isLoading} onPress={handleSubmit}>{isLoading ? 'Signing up...' : 'Sign Up'}</Button1>
                     )}
                 </div>
             </CardFooter>
