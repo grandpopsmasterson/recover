@@ -3,13 +3,13 @@ package com.recover.project.service.email;
 import java.io.IOException;
 
 import com.recover.project.model.User;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import com.sendgrid.SendGrid;
 import com.sendgrid.helpers.mail.Mail;
 import com.sendgrid.helpers.mail.objects.Content;
 import com.sendgrid.helpers.mail.objects.Email;
+import com.sendgrid.helpers.mail.objects.Personalization;
 import com.sendgrid.Method;
 import com.sendgrid.Request;
 import com.sendgrid.Response;
@@ -17,25 +17,39 @@ import com.sendgrid.Response;
 
 @Service
 public class EmailService {
-    @Autowired private final SendGrid sendGrid;
+    private final SendGrid sendGrid;
     private final String fromEmail;
 
     public EmailService(
-        SendGrid sendGrid,
-        @Value("${twilio.sengrid.from-email}") String fromEmail
+        @Value("${twilio.sendgrid.api-key}") String sendGridApiKey,
+        @Value("${twilio.sendgrid.from-email}") String fromEmail
     ) {
-        this.sendGrid = sendGrid;
+        this.sendGrid = new SendGrid(sendGridApiKey);
         this.fromEmail = fromEmail;
+    
     }
 
     public void sendAccountCreationEmail(User user) {
         Email from = new Email(this.fromEmail);
         String subject = "Account Creation";
         Email to = new Email(user.getEmail());
-        Content content = new Content("text/plain", "this app is running.");
+        Content content = new Content("text/html", "this app is running.");
+        Mail mail = new Mail();
+        // String unsubscribe = user.createUnsubscribeLink();
+        mail.setFrom(from);
+        mail.setSubject(subject);
+        mail.setTemplateId("d-8dae52673a77490da1538ba17b093a09");
 
-        Mail mail = new Mail(from, subject, to, content);
+        Personalization personalization = new Personalization();
+        personalization.setFrom(from);
+        personalization.setSubject(subject);
+        personalization.addTo(to);
+        personalization.addDynamicTemplateData("first_name", user.getFirstName());
+        personalization.addDynamicTemplateData("last_name", user.getLastName());
+        // personalization.addDynamicTemplateData("unsubscribe", unsubscribe);
 
+
+        mail.addPersonalization(personalization);
         sendMail(mail);
     }
 

@@ -6,6 +6,7 @@ import com.recover.project.dto.auth.SignupRequest;
 import com.recover.project.dto.auth.SignupResponse;
 import com.recover.project.model.User;
 import com.recover.project.service.authorization.UserDetailsImpl;
+import com.recover.project.service.email.EmailService;
 import com.recover.project.service.roles.UserService;
 import com.recover.project.utils.auth.JwtUtils;
 
@@ -39,6 +40,7 @@ public class AuthController {
     private final PasswordEncoder encoder;
     private final JwtUtils jwtUtils;
     private final UserService userService;
+    private final EmailService emailService;
    // private static final Logger logger = LoggerFactory.getLogger(AuthController.class);
 
     @PostMapping("/signup")
@@ -57,7 +59,9 @@ public class AuthController {
             .userType(request.usertype())
             .build();
 
-        userService.save(user);
+        if (userService.save(user) != null) {
+            emailService.sendAccountCreationEmail(user);
+        }
 
         return ResponseEntity.ok(new SignupResponse(
             "User registered successfully", 
