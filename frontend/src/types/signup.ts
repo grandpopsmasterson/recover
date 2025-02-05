@@ -4,9 +4,8 @@ export interface FormData {
     firstName: string;
     lastName: string;
     password: string;
-    confirmPassword: string;
-    companyId: string; // number?
-    role: string;
+    //companyId?: string; // number?
+    userType: string;
     general?: string;
 }
 
@@ -18,7 +17,6 @@ export interface SignUpError {
 export interface StepOneProps {
     formData: FormData;
     handleInputChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
-    isInvalid: boolean;
     errors: SignUpError | null;
 }
 
