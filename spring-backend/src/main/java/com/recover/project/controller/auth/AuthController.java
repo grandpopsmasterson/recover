@@ -9,6 +9,7 @@ import com.recover.project.service.authorization.UserDetailsImpl;
 import com.recover.project.service.email.EmailService;
 import com.recover.project.service.roles.UserService;
 import com.recover.project.utils.auth.JwtUtils;
+import com.recover.project.utils.exceptions.ResourceNotFoundException;
 
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
@@ -26,6 +27,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -107,6 +109,20 @@ public class AuthController {
                 .build();
         response.addHeader(HttpHeaders.SET_COOKIE, clearCookie.toString());
         return ResponseEntity.ok("Logged out successfully");
+    }
+
+    @PostMapping("/forgot-password")
+    public ResponseEntity<?> forgotPassword(@RequestBody String to) {
+        User user = userService.findByEmail(to).orElseThrow(() -> new ResourceNotFoundException("User not found with email: " + to));
+        if (user != null) {
+            emailService.sendPasswordRecoveryEmail(user);
+        }
+        return ResponseEntity.ok("Please check your email for a password reset link.");
+    }
+
+    @GetMapping("/reset-password/{tokenId}")
+    public ResponseEntity<?> resetPassword(Long tokenId) {
+        return ResponseEntity.ok("");
     }
 }
 
