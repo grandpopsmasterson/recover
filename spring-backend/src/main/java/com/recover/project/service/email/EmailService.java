@@ -1,7 +1,7 @@
 package com.recover.project.service.email;
 
 import java.io.IOException;
-
+import org.springframework.core.env.Environment;
 import com.recover.project.model.User;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -15,21 +15,19 @@ import com.sendgrid.Request;
 import com.sendgrid.Response;
 
 @Service
+
 public class EmailService {
     private final SendGrid sendGrid;
     private final String fromEmail;
-    private final RecoveryService recoveryService;
     private final String baseURL;
 
     public EmailService (
-        @Value("${twilio.sendgrid.api-key}") String sendGridApiKey,
-        @Value("${twilio.sendgrid.from-email}") String fromEmail,
-        @Value("${frontend.baseURL}") String baseURL,
-        RecoveryService recoveryService
+        @Value("#{environment.SENDGRID_API_KEY}") String sendGridApiKey,
+        @Value("#{environment.SENDGRID_FROM_EMAIL}") String fromEmail,
+        @Value("#{environment.baseURL}") String baseURL
     ) {
         this.sendGrid = new SendGrid(sendGridApiKey);
         this.fromEmail = fromEmail;
-        this.recoveryService = recoveryService;
         this.baseURL = baseURL;
     }
 
