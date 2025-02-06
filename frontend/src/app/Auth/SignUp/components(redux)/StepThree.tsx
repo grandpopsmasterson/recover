@@ -2,10 +2,10 @@
 
 import { useState } from "react";
 import { useDispatch } from "react-redux";
-import { setUserDetails, prevStep } from "@/redux/slices/signupSlice";
+import { setUserDetails, prevStep } from "@/store/slices/auth/signupSlice";
 
 import { Input, Dropdown, DropdownItem, DropdownTrigger, DropdownMenu, Button } from "@heroui/react";
-import Button1 from "@/app/Components/ButtonC";
+import Button1 from "@/components/ui/ButtonC";
 
 export default function StepThree() {
     const dispatch = useDispatch();

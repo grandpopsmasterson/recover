@@ -2,11 +2,11 @@
 
 import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { AppDispatch, RootState } from "@/redux/store";
-import { checkUsername, setFormField, prevStep } from "@/redux/slices/signupSlice";
+import { AppDispatch, RootState } from "@/store/store";
+import { checkUsername, setFormField, prevStep } from "@/store/slices/auth/signupSlice";
 
 import { Input } from "@heroui/react";
-import Button1 from "@/app/Components/ButtonC";
+import Button1 from "@/components/ui/ButtonC";
 
 export default function StepTwo() {
     const dispatch = useDispatch<AppDispatch>();
