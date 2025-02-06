@@ -1,8 +1,8 @@
-import React, { useState } from 'react';
-import { Input, Alert, Dropdown, DropdownTrigger, DropdownMenu, DropdownItem, Button } from "@heroui/react";
+import React from 'react';
+import { Input, Dropdown, DropdownTrigger, DropdownMenu, DropdownItem, Button } from "@heroui/react";
 import type { StepThreeProps } from '../../types/signup';
 
-export default function StepThree({formData, handleInputChange, handleRoleChange, errors, roles}: StepThreeProps) {
+export default function StepThree({formData, handleInputChange, handleRoleChange, errors, roles, handleKeyDown}: StepThreeProps) {
 
     return (
     <div>
@@ -10,7 +10,7 @@ export default function StepThree({formData, handleInputChange, handleRoleChange
             <p>Enter your name</p>
             <div className='flex gap-[1vw]'>
             <Input 
-                className='w-[14vw]'
+                className='w-[50%] mr-4'
                 label='First Name'
                 type='firstName'
                 id='firstName'
@@ -18,12 +18,13 @@ export default function StepThree({formData, handleInputChange, handleRoleChange
                 variant='bordered'
                 value={formData.firstName}
                 onChange={handleInputChange}
+                onKeyDown={handleKeyDown}
                 errorMessage="Please enter your first name"
                 isInvalid={errors === null ? false : errors.field == 'firstName' ? true : false}
             />
             <br/>
             <Input 
-                className='w-[14vw]'
+                className='w-[50%] ml-4'
                 label='Last Name'
                 type='lastName'
                 id='lastName'
@@ -31,6 +32,7 @@ export default function StepThree({formData, handleInputChange, handleRoleChange
                 variant='bordered'
                 value={formData.lastName}
                 onChange={handleInputChange}
+                onKeyDown={handleKeyDown}
                 errorMessage='Please enter your last name'
                 isInvalid={errors === null ? false : errors.field == 'lastName' ? true : false}
             />
@@ -47,6 +49,7 @@ export default function StepThree({formData, handleInputChange, handleRoleChange
                 variant='bordered'
                 // value={formData.companyId}
                 onChange={handleInputChange}
+                onKeyDown={handleKeyDown}
             />
         </div> <br/>
 
@@ -55,7 +58,7 @@ export default function StepThree({formData, handleInputChange, handleRoleChange
             <Dropdown className='bg-[#090f21]'>
                 <DropdownTrigger>
                     <Button color='success' className='rounded-md'> {/**TODO Try again later to integrate the Button1 */}
-                        {formData.role || "Select Role"}
+                        {formData.userType || "Select Role"}
                     </Button>
                 </DropdownTrigger>
                 <DropdownMenu

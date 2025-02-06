@@ -6,10 +6,10 @@ import type { FormData, SignUpError, StepOneProps } from '../../types/signup';
 import apiClient from '@/config/apiClient';
 
 import { Card, CardBody, CardHeader, Progress, Input, Alert, CardFooter } from "@heroui/react";
-import { RecoverLogo } from '@/app/Components/RecoverLogo';
-import Button1 from '@/app/Components/ButtonC';
-import { NavLink } from '@/app/Dashboard/Components/DashboardNavbar';
-import { BackArrow } from '@/app/Components/BackArrow';
+import { BackArrow } from '@/components/ui/BackArrow';
+import { RecoverLogo } from '@/components/ui/RecoverLogo';
+import { NavLink } from '../dashboard/DashboardNavbar';
+import Button1 from '@/components/ui/ButtonC';
 
 //lazy load the other components
 const StepTwo = lazy(() => import('./StepTwo'));
@@ -19,6 +19,7 @@ const StepThree = lazy(() => import('./StepThree'));
 const StepOne: React.FC<StepOneProps> =({
     formData,
     handleInputChange,
+    handleKeyDown,
     errors
 }) => (
     <div>
@@ -34,6 +35,7 @@ const StepOne: React.FC<StepOneProps> =({
             value={formData.email}
             errorMessage='Please enter a valid email. Format: example@recover.com'
             onChange={handleInputChange}
+            onKeyDown={handleKeyDown}
             isInvalid={errors === null ? false : errors.field == 'email' ? true : false}
         />
     </div>
@@ -45,7 +47,7 @@ export default function SignUpCardLazy() {
     const [isLoading, setIsLoading]= useState<boolean>(false); // theres nothing currently to set is loading to true
     const [errors, setErrors] = useState<SignUpError | null>(null);
 
-    const confirmPassword: string= '';
+    const [confirmPassword, setConfirmPassword] = useState<string>('');
 
     const [formData, setFormData] = useState<FormData>({
         email: '',
@@ -54,7 +56,7 @@ export default function SignUpCardLazy() {
         lastName: '',
         password: '',
         //companyId: '',
-        role: 'Viewer',
+        userType: 'Viewer',
     });
 
     const roles: string[] = [
@@ -83,6 +85,7 @@ export default function SignUpCardLazy() {
         const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{8,}$/;
         return passwordRegex.test(password);
     };
+
     //stage validation with switch cases for error40 handling
     const validateStage = (): boolean => {
         switch (stage) {
@@ -94,7 +97,7 @@ export default function SignUpCardLazy() {
                 break;
             case 2:
                 if (!validatePassword(formData.password)) {
-                    setErrors({ message: 'Password must be at least 8 characters with 1 uppercase, 1 lowervase, and 1 number', field: 'password'});
+                    setErrors({ message: 'Password must be at least 8 characters with 1 uppercase, 1 lowercase, and 1 number', field: 'password'});
                     return false;
                 }
                 if (formData.password !== confirmPassword) {
@@ -145,11 +148,26 @@ export default function SignUpCardLazy() {
         e: React.ChangeEvent<HTMLInputElement> | boolean, name?: string
     ): void => {
         if (typeof e === 'boolean' && name) {
-        setFormData(prev => ({ ...prev, [name]: e }));
+            setFormData(prev => ({ ...prev, [name]: e }));
         } else if (e instanceof Object && 'target' in e) {
-        const { name, value, type, checked } = e.target as HTMLInputElement;
-        setFormData(prev => ({ ...prev, [name]: type === 'checkbox' ? checked : value }));
-        } 
+            const { name, value, type, checked } = e.target as HTMLInputElement;
+            setFormData(prev => ({ ...prev, [name]: type === 'checkbox' ? checked : value }));
+            if (name === 'confirmPassword') {
+                setConfirmPassword(value)
+                setErrors(prev => {
+                    if (prev?.field === 'confirmPassword') {
+                        return null;
+                    }
+                    return prev;
+                    });
+                }
+            if (name === 'confirmPassword' && value !== formData.password) {
+                setErrors({
+                    field: 'confirmPassword',
+                    message: 'Passwords do not match'
+                });
+            }
+        }
         setErrors(null);
     };
 
@@ -171,11 +189,23 @@ export default function SignUpCardLazy() {
         setStage(prev => prev - 1);
     };
 
-    const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
-        if (validateStage()) {
-            console.log(formData); // TODO remove this at a later date ---------------------------------------------------------------------------
+    const handleKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
+        if (event.key === "Enter") {
+            if (stage < 3) {
+                handleNext();
+            } else if (stage === 3) {
+                handleSubmit();
+            };
+        };
+    };
+    
 
-            //event.preventDefault();
+    const handleSubmit = async (event?: React.FormEvent<HTMLFormElement>) => {
+
+            if (event) event.preventDefault();
+
+            if (validateStage()) {
+                console.log(formData); // TODO remove this at a later date ---------------------------------------------------------------------------
             
             try {
                 const response = await apiClient.post('/signup', formData);
@@ -199,6 +229,7 @@ export default function SignUpCardLazy() {
                 <StepOne 
                     formData={formData}
                     handleInputChange={handleInputChange}
+                    handleKeyDown={handleKeyDown}
                     errors={errors}
                 />
                 );
@@ -208,7 +239,9 @@ export default function SignUpCardLazy() {
                     <StepTwo 
                     formData={formData}
                     handleInputChange={handleInputChange}
+                    handleKeyDown={handleKeyDown}
                     errors={errors}
+                    confirmPassword={confirmPassword}
                     />
                 </Suspense>
                 );
@@ -219,6 +252,7 @@ export default function SignUpCardLazy() {
                     formData={formData}
                     handleInputChange={handleInputChange}
                     handleRoleChange={handleRoleChange}
+                    handleKeyDown={handleKeyDown}
                     errors={errors}
                     roles={roles}
                     />
@@ -230,18 +264,19 @@ export default function SignUpCardLazy() {
     };
 
     return(
+        <div className='w-[100%] h-[100%]'>
         <Card
             isBlurred
             className='border-8  w-[35vw] h-[40vw]'
             style={{backgroundColor: '#09090b', borderColor: '#090f21'}}
             shadow='md'
         >
-            <CardHeader>
-                <div className='w-[100%]'>
+            <CardHeader className='w-[100%]'>
+                <div className='w-[35vw]'>
                     <div className='flex justify-center items-center'>
                         <RecoverLogo/>
                     </div> <br/>
-                    <div>
+                    <div className='w-[95%]'>
                         <Progress aria-label='Progress bar' size='sm' value={progress[stage]} />
                     </div> <br/>
                     <div className='flex gap-4'>
@@ -266,21 +301,32 @@ export default function SignUpCardLazy() {
                 {renderStep(stage)}
             </CardBody>
             <CardFooter>
-                <div className='mt-auto'>
+                <div className='mt-auto w-[35vw] mb-16'>
                     {stage < 3 ? (
                         <Button1 
                             variant='ghost' 
-                            className='!bg-transparent text-bold !text-green-500 w-[100%] h-[50px]' 
+                            className='!bg-transparent font-bold opacity-100 text-white w-full h-[50px] mb-8' 
                             color='success' 
                             onPress={handleNext}
                             >
                                 Next
                             </Button1>
                     ) : (
-                        <Button1 color='success' isDisabled={isLoading} onPress={handleSubmit}>{isLoading ? 'Signing up...' : 'Sign Up'}</Button1>
+                        <Button1 
+                            color='success' 
+                            isDisabled={isLoading} 
+                            onPress={handleSubmit}
+                            className='!bg-transparent font-bold opacity-100 text-white w-full h-[50px] mb-8'
+                        >
+                            {isLoading ? 'Signing up...' : 'Sign Up'}
+                        </Button1>
                     )}
+                    <div className='flex justify-center pt-4'>
+                        <p>Already have an account? <a className='text-green-500 underline' href='./Login'>Sign in</a></p>
+                    </div>
                 </div>
             </CardFooter>
         </Card>
+        </div>
     )
 }

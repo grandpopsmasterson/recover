@@ -1,11 +1,11 @@
 'use client'
 import React, { useState } from 'react';
 import { Button, Card, CardBody,CardHeader, Dropdown, DropdownTrigger, DropdownMenu, DropdownItem, Progress, Input, Alert, Checkbox } from "@heroui/react";
-import { RecoverLogo } from '@/styles/constants/RecoverLogo';
+import { RecoverLogo } from '@/components/ui/RecoverLogo';
 import Button1 from '@/components/ui/ButtonC';
 import { useRouter } from 'next/navigation';
 import apiClient from '@/config/apiClient';
-import { EyeFilledIcon, EyeSlashFilledIcon } from './ui/eyePasswordIcon';
+import { EyeFilledIcon, EyeSlashFilledIcon } from './../../components/ui/eyePasswordIcon';
 
 
 

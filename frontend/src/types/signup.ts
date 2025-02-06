@@ -18,12 +18,15 @@ export interface StepOneProps {
     formData: FormData;
     handleInputChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
     errors: SignUpError | null;
+    handleKeyDown: (e: React.KeyboardEvent<HTMLInputElement>) => void;
 }
 
 export interface StepTwoProps {
     formData: FormData;
     handleInputChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
     errors: SignUpError | null;
+    handleKeyDown: (e: React.KeyboardEvent<HTMLInputElement>) => void;
+    confirmPassword: string;
 }
 
 export interface StepThreeProps {
@@ -32,4 +35,5 @@ export interface StepThreeProps {
     handleRoleChange: (role: string) => void;
     errors: SignUpError | null;
     roles: string[];
+    handleKeyDown: (e: React.KeyboardEvent<HTMLInputElement>) => void;
 }

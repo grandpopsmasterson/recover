@@ -1,13 +1,10 @@
 'use client'
 import { useRouter } from "next/navigation";
 import { useState } from "react";
-import { Card, CardHeader, CardBody, Input, Alert } from "@heroui/react";
-import { RecoverLogo } from "@/styles/constants/RecoverLogo";
+import { Card, CardHeader, CardBody, Input, CardFooter } from "@heroui/react";
+import { RecoverLogo } from "@/components/ui/RecoverLogo";
 import Button1 from "@/components/ui/ButtonC";
 import apiClient from "@/config/apiClient";
-
-
-
 
 interface LoginData { 
     identifier: string;
@@ -123,6 +120,11 @@ export default function LogInCard() {
                     </Button1>
                 </form>
             </CardBody>
+            <CardFooter className="flex justify-center">
+                <div className='flex justify-center pt-4'>
+                    <p>Don&apos;t have an account? <a className='text-green-500 underline' href='./SignUp'>Sign up</a></p>
+                </div>
+            </CardFooter>
         </Card>
     )
 }

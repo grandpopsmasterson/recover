@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
-import "./globals.css";
-import NavBar from "../features/dashboard/DashboardNavbar";
+import "@/styles/globals.css";
+//import NavBar from "../features/dashboard/DashboardNavbar";
 import { Providers } from "./Providers";
 // import Button from "./components/ButtonC";
 

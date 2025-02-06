@@ -1,16 +1,16 @@
 import React from 'react';
 import { Input } from "@heroui/react";
-import { EyeFilledIcon, EyeSlashFilledIcon } from './eyePasswordIcon';
-import type { StepTwoProps } from './../../../types/signup';
 
-export default function StepTwo({ formData, handleInputChange, errors }: StepTwoProps) {
+import { StepTwoProps } from '@/types/signup';
+import { EyeFilledIcon, EyeSlashFilledIcon } from '@/components/ui/eyePasswordIcon';
+
+
+export default function StepTwo({ formData, handleInputChange, errors, handleKeyDown, confirmPassword }: StepTwoProps) {
     const [isVisible, setIsVisible] = React.useState<boolean>(false);
     const [isVisibleConf, setIsVisibleConf] = React.useState<boolean>(false);
     
     const toggleVisibility = (): void => setIsVisible(!isVisible);
     const toggleVisibilityConf = (): void => setIsVisibleConf(!isVisibleConf);
-
-    const confirmPassword: string = '';
 
     return (
         <div>
@@ -26,6 +26,7 @@ export default function StepTwo({ formData, handleInputChange, errors }: StepTwo
                 value={formData.password}
                 onChange={handleInputChange}
                 errorMessage={errors?.message}
+                onKeyDown={handleKeyDown}
                 isInvalid={errors === null ? false : errors.field == 'password' ? true : false}
                 endContent={
                     <button
@@ -54,6 +55,7 @@ export default function StepTwo({ formData, handleInputChange, errors }: StepTwo
                     variant='bordered'
                     value={confirmPassword}
                     onChange={handleInputChange}
+                    onKeyDown={handleKeyDown}
                     errorMessage={errors?.message}
                     isInvalid={errors === null ? false : errors.field == 'confirmPassword' ? true : false}
                     endContent={
@@ -85,6 +87,7 @@ export default function StepTwo({ formData, handleInputChange, errors }: StepTwo
                     variant='bordered'
                     value={formData.username}
                     onChange={handleInputChange}
+                    onKeyDown={handleKeyDown}
                     errorMessage={errors?.message}
                     isInvalid={errors === null ? false : errors.field == 'username' ? true : false}
                 />
