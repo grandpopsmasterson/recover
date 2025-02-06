@@ -32,7 +32,6 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -81,29 +80,29 @@ public class AuthController {
 
     @PostMapping("/login")
     public ResponseEntity<?> authenticateUser(@Valid @RequestBody LoginRequest request, HttpServletResponse response) {  // Add @Valid
-    try {
-        Authentication authentication = authenticationManager.authenticate(
-            new UsernamePasswordAuthenticationToken(request.usernameOrEmail(), request.password())  // Match your DTO field name
-        );
+        try {
+            Authentication authentication = authenticationManager.authenticate(
+                new UsernamePasswordAuthenticationToken(request.usernameOrEmail(), request.password())  // Match your DTO field name
+            );
 
-        SecurityContextHolder.getContext().setAuthentication(authentication);
-        UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
-        String jwt = jwtUtils.generateJwtToken(authentication);
+            SecurityContextHolder.getContext().setAuthentication(authentication);
+            UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
+            String jwt = jwtUtils.generateJwtToken(authentication);
 
-        ResponseCookie jwtCookie = ResponseCookie.from("jwt", jwt)
-                .httpOnly(true)
-                .secure(true)
-                .path("/")
-                .maxAge(24 * 60 * 60)
-                .sameSite("Strict")
-                .build();
-        response.addHeader(HttpHeaders.SET_COOKIE, jwtCookie.toString());
+            ResponseCookie jwtCookie = ResponseCookie.from("jwt", jwt)
+                    .httpOnly(true)
+                    .secure(true)
+                    .path("/")
+                    .maxAge(24 * 60 * 60)
+                    .sameSite("Strict")
+                    .build();
+            response.addHeader(HttpHeaders.SET_COOKIE, jwtCookie.toString());
 
-        return ResponseEntity.ok(new JwtResponse(jwt, userDetails.getUsername()));
-    } catch (BadCredentialsException e) {  // Catch specific exception
-        return ResponseEntity.status(HttpStatus.SC_UNAUTHORIZED).body("Invalid credentials");
+            return ResponseEntity.ok(new JwtResponse(jwt, userDetails.getUsername()));
+        } catch (BadCredentialsException e) {  // Catch specific exception
+            return ResponseEntity.status(HttpStatus.SC_UNAUTHORIZED).body("Invalid credentials");
+        }
     }
-}
 
     @PostMapping("/logout")
     public ResponseEntity<?> logout(HttpServletResponse response) {
@@ -126,7 +125,7 @@ public class AuthController {
         }
         return ResponseEntity.ok("Please check your email for a password reset link.");
     }
-
+  
     @PostMapping("/api/reset-password")
     public ResponseEntity<?> resetPassword(@RequestBody PasswordResetRequest request) {
         // Validate token

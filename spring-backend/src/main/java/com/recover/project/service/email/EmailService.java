@@ -10,8 +10,6 @@ import com.sendgrid.helpers.mail.Mail;
 // import com.sendgrid.helpers.mail.objects.Content;
 import com.sendgrid.helpers.mail.objects.Email;
 import com.sendgrid.helpers.mail.objects.Personalization;
-
-
 import com.sendgrid.Method;
 import com.sendgrid.Request;
 import com.sendgrid.Response;
@@ -71,7 +69,6 @@ public class EmailService {
         personalization.setFrom(from);
         personalization.setSubject(subject);
         personalization.addTo(to);
-
         personalization.addDynamicTemplateData("reset_link", resetLink);
         personalization.addDynamicTemplateData("first_name", user.getFirstName());
         personalization.addDynamicTemplateData("last_name", user.getLastName());
