@@ -18,14 +18,19 @@ import com.sendgrid.Response;
 public class EmailService {
     private final SendGrid sendGrid;
     private final String fromEmail;
+    private final RecoveryService recoveryService;
+    private final String baseURL;
 
-    public EmailService(
+    public EmailService (
         @Value("${twilio.sendgrid.api-key}") String sendGridApiKey,
-        @Value("${twilio.sendgrid.from-email}") String fromEmail
+        @Value("${twilio.sendgrid.from-email}") String fromEmail,
+        @Value("${frontend.baseURL}") String baseURL,
+        RecoveryService recoveryService
     ) {
         this.sendGrid = new SendGrid(sendGridApiKey);
         this.fromEmail = fromEmail;
-    
+        this.recoveryService = recoveryService;
+        this.baseURL = baseURL;
     }
 
     public void sendAccountCreationEmail(User user) {
@@ -50,12 +55,12 @@ public class EmailService {
         sendMail(mail);
     }
 
-    public void sendPasswordRecoveryEmail(User user) {
+    public void sendPasswordResetEmail(User user, String token) {
         Email from = new Email(this.fromEmail);
         String subject = "Password Reset";
         Email to = new Email(user.getEmail());
         Mail mail = new Mail();
-        RecoveryLink recoveryLink = RecoveryService.generateRecoveryLink(user);
+        String resetLink = this.baseURL + "/reset-password?token=" + token;
         mail.setFrom(from);
         mail.setSubject(subject);
         mail.setTemplateId("d-4b35c6e010654b92ba867cf6d35fd61d");
@@ -64,8 +69,7 @@ public class EmailService {
         personalization.setFrom(from);
         personalization.setSubject(subject);
         personalization.addTo(to);
-
-        personalization.addDynamicTemplateData("reset_link", recoveryLink);
+        personalization.addDynamicTemplateData("reset_link", resetLink);
         personalization.addDynamicTemplateData("first_name", user.getFirstName());
         personalization.addDynamicTemplateData("last_name", user.getLastName());
 

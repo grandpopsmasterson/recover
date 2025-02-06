@@ -30,6 +30,9 @@ public class JwtUtils {
     @Value("${jwtExpirationMs}")
     private int jwtExpirationMs;
 
+    @Value("${jwtResetExpirationMs}")
+    private int jwtResetExpirationMs;
+
     
 
     public String generateJwtToken(Authentication authentication) {
@@ -103,6 +106,74 @@ public class JwtUtils {
 
         return false;
     }
+
+
+    // RESET PASSWORD REFRESH TOKEN
+    public String generatePasswordResetToken(String email) {
+        logger.debug("Generating password reset token for email: {}", email);
+        
+        String jwt = Jwts.builder()
+            .subject(email)
+            .issuedAt(new Date())
+            .expiration(new Date((new Date()).getTime() + jwtResetExpirationMs))
+            .claim("type", "reset")    // Add type claim to distinguish reset tokens
+            .signWith(getSigningKey())
+            .compact();
+            
+        logger.debug("Generated reset token: {}", jwt);
+        return jwt;
+    }
+
+    public boolean validatePasswordResetToken(String token) {
+        try {
+            var claims = Jwts.parser()
+                .verifyWith(getSigningKey())
+                .build()
+                .parseSignedClaims(token)
+                .getPayload();
+
+            // Verify this is a reset token
+            if (!"reset".equals(claims.get("type"))) {
+                logger.error("Token is not a reset token");
+                return false;
+            }
+
+            return true;
+        } catch (SignatureException e) {
+            logger.error("Invalid reset token signature: {}", e.getMessage());
+        } catch (MalformedJwtException e) {
+            logger.error("Invalid reset token: {}", e.getMessage());
+        } catch (ExpiredJwtException e) {
+            logger.error("Reset token is expired: {}", e.getMessage());
+        } catch (UnsupportedJwtException e) {
+            logger.error("Reset token is unsupported: {}", e.getMessage());
+        } catch (IllegalArgumentException e) {
+            logger.error("Reset token claims string is empty: {}", e.getMessage());
+        }
+
+        return false;
+    }
+
+    public String getEmailFromResetToken(String token) {
+        try {
+            var claims = Jwts.parser()
+                .verifyWith(getSigningKey())
+                .build()
+                .parseSignedClaims(token)
+                .getPayload();
+
+            if (!"reset".equals(claims.get("type"))) {
+                logger.error("Token is not a reset token");
+                throw new IllegalArgumentException("Not a valid reset token");
+            }
+
+            return claims.getSubject();
+        } catch (Exception e) {
+            logger.error("Error extracting email from reset token: {}", e.getMessage());
+            throw new IllegalArgumentException("Invalid reset token", e);
+        }
+    }
+
 
 }
 

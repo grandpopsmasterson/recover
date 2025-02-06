@@ -2,13 +2,16 @@ package com.recover.project.controller.auth;
 
 import com.recover.project.dto.auth.JwtResponse;
 import com.recover.project.dto.auth.LoginRequest;
+import com.recover.project.dto.auth.PasswordResetRequest;
 import com.recover.project.dto.auth.SignupRequest;
 import com.recover.project.dto.auth.SignupResponse;
 import com.recover.project.model.User;
+import com.recover.project.service.authorization.PasswordResetService;
 import com.recover.project.service.authorization.UserDetailsImpl;
 import com.recover.project.service.email.EmailService;
 import com.recover.project.service.roles.UserService;
 import com.recover.project.utils.auth.JwtUtils;
+import com.recover.project.utils.exceptions.InvalidTokenException;
 import com.recover.project.utils.exceptions.ResourceNotFoundException;
 
 import jakarta.servlet.http.HttpServletResponse;
@@ -26,6 +29,7 @@ import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -43,6 +47,8 @@ public class AuthController {
     private final JwtUtils jwtUtils;
     private final UserService userService;
     private final EmailService emailService;
+    private final PasswordResetService passwordResetService;
+    private final PasswordEncoder passwordEncoder;
    // private static final Logger logger = LoggerFactory.getLogger(AuthController.class);
 
     @PostMapping("/signup")
@@ -74,29 +80,29 @@ public class AuthController {
 
     @PostMapping("/login")
     public ResponseEntity<?> authenticateUser(@Valid @RequestBody LoginRequest request, HttpServletResponse response) {  // Add @Valid
-    try {
-        Authentication authentication = authenticationManager.authenticate(
-            new UsernamePasswordAuthenticationToken(request.usernameOrEmail(), request.password())  // Match your DTO field name
-        );
+        try {
+            Authentication authentication = authenticationManager.authenticate(
+                new UsernamePasswordAuthenticationToken(request.usernameOrEmail(), request.password())  // Match your DTO field name
+            );
 
-        SecurityContextHolder.getContext().setAuthentication(authentication);
-        UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
-        String jwt = jwtUtils.generateJwtToken(authentication);
+            SecurityContextHolder.getContext().setAuthentication(authentication);
+            UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
+            String jwt = jwtUtils.generateJwtToken(authentication);
 
-        ResponseCookie jwtCookie = ResponseCookie.from("jwt", jwt)
-                .httpOnly(true)
-                .secure(true)
-                .path("/")
-                .maxAge(24 * 60 * 60)
-                .sameSite("Strict")
-                .build();
-        response.addHeader(HttpHeaders.SET_COOKIE, jwtCookie.toString());
+            ResponseCookie jwtCookie = ResponseCookie.from("jwt", jwt)
+                    .httpOnly(true)
+                    .secure(true)
+                    .path("/")
+                    .maxAge(24 * 60 * 60)
+                    .sameSite("Strict")
+                    .build();
+            response.addHeader(HttpHeaders.SET_COOKIE, jwtCookie.toString());
 
-        return ResponseEntity.ok(new JwtResponse(jwt, userDetails.getUsername()));
-    } catch (BadCredentialsException e) {  // Catch specific exception
-        return ResponseEntity.status(HttpStatus.SC_UNAUTHORIZED).body("Invalid credentials");
+            return ResponseEntity.ok(new JwtResponse(jwt, userDetails.getUsername()));
+        } catch (BadCredentialsException e) {  // Catch specific exception
+            return ResponseEntity.status(HttpStatus.SC_UNAUTHORIZED).body("Invalid credentials");
+        }
     }
-}
 
     @PostMapping("/logout")
     public ResponseEntity<?> logout(HttpServletResponse response) {
@@ -112,17 +118,32 @@ public class AuthController {
     }
 
     @PostMapping("/forgot-password")
-    public ResponseEntity<?> forgotPassword(@RequestBody String to) {
-        User user = userService.findByEmail(to).orElseThrow(() -> new ResourceNotFoundException("User not found with email: " + to));
+    public ResponseEntity<?> forgotPassword(@RequestBody String email) {
+        User user = userService.findByEmail(email).orElseThrow(() -> new ResourceNotFoundException("User not found with email: " + email));
         if (user != null) {
-            emailService.sendPasswordRecoveryEmail(user);
+            passwordResetService.initiatePasswordReset(email);
         }
         return ResponseEntity.ok("Please check your email for a password reset link.");
     }
+  
+    @PostMapping("/api/reset-password")
+    public ResponseEntity<?> resetPassword(@RequestBody PasswordResetRequest request) {
+        // Validate token
+        if (!jwtUtils.validatePasswordResetToken(request.token())) {
+            throw new InvalidTokenException("Token is invalid or expired");
+        }
+        // String token, String newPassword
+        // Get email from token
+        String email = jwtUtils.getEmailFromResetToken(request.token());
 
-    @GetMapping("/reset-password/{tokenId}")
-    public ResponseEntity<?> resetPassword(Long tokenId) {
-        return ResponseEntity.ok("");
+
+        User user = userService.findByEmail(email)
+            .orElseThrow(() -> new UsernameNotFoundException("User not found"));
+        
+        user.setPassword(passwordEncoder.encode(request.password()));
+        userService.save(user);
+        
+        return ResponseEntity.ok("Password successfully reset");
     }
 }
 
