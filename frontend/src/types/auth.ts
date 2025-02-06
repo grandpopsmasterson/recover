@@ -22,4 +22,5 @@ export interface UserDetails {
     lastName: string;
     companyId?: string;
     userType: string;
+    token: string;
 }

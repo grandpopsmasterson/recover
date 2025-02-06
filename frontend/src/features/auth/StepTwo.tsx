@@ -1,9 +1,11 @@
 import React from 'react';
-import { Input, Alert } from "@heroui/react";
-import { EyeFilledIcon, EyeSlashFilledIcon } from '../../components/ui/eyePasswordIcon';
-import type { StepTwoProps } from '../../types/signup';
+import { Input } from "@heroui/react";
 
-export default function StepTwo({ formData, handleInputChange, errors }: StepTwoProps) {
+import { StepTwoProps } from '@/types/signup';
+import { EyeFilledIcon, EyeSlashFilledIcon } from '@/components/ui/eyePasswordIcon';
+
+
+export default function StepTwo({ formData, handleInputChange, errors, handleKeyDown, confirmPassword }: StepTwoProps) {
     const [isVisible, setIsVisible] = React.useState<boolean>(false);
     const [isVisibleConf, setIsVisibleConf] = React.useState<boolean>(false);
     
@@ -23,6 +25,9 @@ export default function StepTwo({ formData, handleInputChange, errors }: StepTwo
                 variant='bordered'
                 value={formData.password}
                 onChange={handleInputChange}
+                errorMessage={errors?.message}
+                onKeyDown={handleKeyDown}
+                isInvalid={errors === null ? false : errors.field == 'password' ? true : false}
                 endContent={
                     <button
                     aria-label="toggle password visibility"
@@ -37,8 +42,7 @@ export default function StepTwo({ formData, handleInputChange, errors }: StepTwo
                     )}
                     </button>
                 }
-                />
-                {errors && <Alert color='danger' title={errors.message}/>}
+                /> <br/>
             </div>
             <div>
                 <p>Confirm password</p>
@@ -49,8 +53,11 @@ export default function StepTwo({ formData, handleInputChange, errors }: StepTwo
                     id='confirmPassword'
                     name='confirmPassword'
                     variant='bordered'
-                    value={formData.confirmPassword}
+                    value={confirmPassword}
                     onChange={handleInputChange}
+                    onKeyDown={handleKeyDown}
+                    errorMessage={errors?.message}
+                    isInvalid={errors === null ? false : errors.field == 'confirmPassword' ? true : false}
                     endContent={
                         <button
                             aria-label="toggle password visibility"
@@ -66,12 +73,12 @@ export default function StepTwo({ formData, handleInputChange, errors }: StepTwo
                         </button>
                     }
                 />
-                {errors && (<Alert color='danger' title={errors.message}/>)}
                 <br/>
             </div>
             <div>
                 <p>Create username</p>
                 <Input 
+                    required
                     className='w-[30vw]'
                     label='Username'
                     type='username'
@@ -80,8 +87,10 @@ export default function StepTwo({ formData, handleInputChange, errors }: StepTwo
                     variant='bordered'
                     value={formData.username}
                     onChange={handleInputChange}
+                    onKeyDown={handleKeyDown}
+                    errorMessage={errors?.message}
+                    isInvalid={errors === null ? false : errors.field == 'username' ? true : false}
                 />
-                {errors && (<Alert color='danger' title={errors.message} /> )}
             </div> <br/>
         </div>
     );

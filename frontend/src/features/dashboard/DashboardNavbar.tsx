@@ -8,7 +8,7 @@ import NextLink from 'next/link';
 //interface for the NavLink props
 interface NavLinkProps {
     href: string;
-    isActive: boolean;
+    isActive?: boolean;
     children: React.ReactNode;
 }
 
@@ -29,7 +29,7 @@ export const RecoverLogo = memo(() => { // memo (or React.memo // same thing) is
 RecoverLogo.displayName = "RecoverLogo";
 
 //memoize the nav link
-const NavLink = memo<NavLinkProps>(({ href, isActive, children }) => {
+export const NavLink = memo<NavLinkProps>(({ href, isActive, children }) => {
     
     const router = useRouter();
 
@@ -43,7 +43,7 @@ const NavLink = memo<NavLinkProps>(({ href, isActive, children }) => {
             color="foreground"
             href={href}
             className={`${isActive ? 'border-b-2 border-white' : ''}`}
-            onClick={handleClick} // TODO look into the onPress and how to properly use that here, onClick is depreciated
+            onPress={() => handleClick} // TODO look into the onPress and how to properly use that here, onClick is depreciated
             >
                 {children}
             </Link>

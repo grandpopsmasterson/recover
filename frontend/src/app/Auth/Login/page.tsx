@@ -1,9 +1,17 @@
-import LogInCard from "../Components/LogInCard";
+import LogInCard from "@/features/auth/LogInCard";
+
 
 export default function LogIn() {
     return (
-        <div className="flex flex-col items-center justify-center min-h-screen">
-            <LogInCard/>
+        <div>
+            <div className="flex flex-col items-center justify-center min-h-screen">
+                <LogInCard/>
+            </div>
+            <div>
+                <div className='flex justify-center pt-4'>
+                    <p>Don&apos;t have an account? <a className='text-green-500 underline' href='./SignUp'>Sign up</a></p>
+                </div>
+            </div>
         </div>
     )
 }

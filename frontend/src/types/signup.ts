@@ -4,9 +4,8 @@ export interface FormData {
     firstName: string;
     lastName: string;
     password: string;
-    confirmPassword: string;
-    companyId: string; // number?
-    role: string;
+    //companyId?: string; // number?
+    userType: string;
     general?: string;
 }
 
@@ -18,14 +17,16 @@ export interface SignUpError {
 export interface StepOneProps {
     formData: FormData;
     handleInputChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
-    isInvalid: boolean;
     errors: SignUpError | null;
+    handleKeyDown: (e: React.KeyboardEvent<HTMLInputElement>) => void;
 }
 
 export interface StepTwoProps {
     formData: FormData;
     handleInputChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
     errors: SignUpError | null;
+    handleKeyDown: (e: React.KeyboardEvent<HTMLInputElement>) => void;
+    confirmPassword: string;
 }
 
 export interface StepThreeProps {
@@ -34,4 +35,5 @@ export interface StepThreeProps {
     handleRoleChange: (role: string) => void;
     errors: SignUpError | null;
     roles: string[];
+    handleKeyDown: (e: React.KeyboardEvent<HTMLInputElement>) => void;
 }
