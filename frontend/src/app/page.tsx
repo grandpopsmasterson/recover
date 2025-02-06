@@ -1,6 +1,6 @@
 "use client"
 import {useRouter} from "next/navigation"
-import Button1 from "./Components/ButtonC";
+import Button1 from "../components/ui/ButtonC";
 import React from "react";
 
 // const recoverGreen = "#4ade80";
