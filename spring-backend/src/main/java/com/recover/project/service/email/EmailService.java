@@ -75,6 +75,9 @@ public class EmailService {
         sendMail(mail);
     }
 
+    public String testCall() {
+        return "Test successful";
+    }
 
     private void sendMail(Mail mail) {
         try {
