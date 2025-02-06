@@ -24,11 +24,13 @@ public class EmailController {
         this.emailService = emailService;
     }
 
-    @PostMapping("/account-creation")
+    @PostMapping("/test")
     public ResponseEntity<String> sendAccountCreationEmail(
         @RequestBody String to
     ) {
-        User user = userService.findByEmail(to).orElseThrow(() -> new ResourceNotFoundException("User not found with email: " + to));
+        User user = userService.findByEmail(to).orElseThrow(() ->
+            new ResourceNotFoundException("User not found with email: " + to)
+        );
         if (user != null) {
             emailService.sendAccountCreationEmail(user);
         }
