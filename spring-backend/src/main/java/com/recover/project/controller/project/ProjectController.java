@@ -8,7 +8,7 @@ import com.recover.project.dto.user.ShortUser;
 import com.recover.project.dto.user.AssignedRoleDto;
 import com.recover.project.dto.user.ProjectRoleRequest;
 import com.recover.project.service.roles.RoleService;
-import com.recover.project.service.roles.UserService;
+import com.recover.project.service.authorization.UserService;
 import com.recover.project.service.project.ProjectService;
 
 import jakarta.validation.Valid;

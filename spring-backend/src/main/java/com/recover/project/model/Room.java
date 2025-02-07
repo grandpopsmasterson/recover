@@ -15,24 +15,32 @@ import com.recover.project.model.enums.ClassRating;
 public class Room {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "room_id")
-    private long id;
+    private Long id;
+
     @Column(name = "room_name")
     private String roomName;
+
     @Column(name = "room_area")
     private double roomArea;
+
     @Column(name = "dmg_area")
     private double damagedArea;
+
     @Column(name = "room_length")
     private double length;
+
     @Column(name = "room_width")
     private double width;
+
     @Column(name = "dmg_length")
     private double dmgLength;
+
     @Column(name = "dmg_width")
     private double dmgWidth;
+
     @Column(name = "dmg_percent")
     private double dmgPercent;
+
     @Column(name = "damaged")
     private boolean isDamaged;
 
@@ -44,7 +52,6 @@ public class Room {
     @Column(name = "class_rating")
     private ClassRating classRating;
 
-    // floor is upstream, it has the project id
     @ManyToOne
     @JoinColumn(name = "floor_id")
     private Floor floor; // The project this room belongs to

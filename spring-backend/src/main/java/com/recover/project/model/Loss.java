@@ -14,7 +14,6 @@ import lombok.NoArgsConstructor;
 public class Loss {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "loss_id")
     private Long id;
 
     @ManyToOne

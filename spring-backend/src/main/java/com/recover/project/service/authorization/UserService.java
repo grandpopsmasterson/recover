@@ -1,4 +1,4 @@
-package com.recover.project.service.roles;
+package com.recover.project.service.authorization;
 
 import java.util.List;
 import java.util.Optional;
@@ -11,7 +11,6 @@ import com.recover.project.mapper.UserMapper;
 import com.recover.project.model.User;
 import com.recover.project.repository.UserRepository;
 import com.recover.project.utils.exceptions.ResourceNotFoundException;
-
 import lombok.RequiredArgsConstructor;
 
 @Service
@@ -55,7 +54,5 @@ public class UserService {
 
     public Optional<User> findByUsernameOrEmail(String username, String email) {
         return userRepository.findByUsernameOrEmail(username, email);
-    }
-
-    
+    } 
 }

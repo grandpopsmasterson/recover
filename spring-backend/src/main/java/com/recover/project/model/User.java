@@ -1,8 +1,10 @@
 package com.recover.project.model;
 
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import lombok.ToString;
 
 import java.util.HashSet;
@@ -14,11 +16,12 @@ import com.recover.project.model.enums.UserType;
 @Table(name = "users")
 @Data
 @Builder
+@NoArgsConstructor
+@AllArgsConstructor
 @ToString(exclude = {"roles"})
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "user_id")
     private Long id;
 
     @Column(name = "username")
@@ -45,6 +48,10 @@ public class User {
 
     @Column(name = "profile_image_url")
     private String profileImageUrl;
+
+    @ManyToOne
+    @JoinColumn(name = "company_id")
+    private Company company;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     @Builder.Default

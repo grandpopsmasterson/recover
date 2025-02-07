@@ -5,5 +5,7 @@ public enum UserType {
     TECHNICIAN,
     MANAGER,
     ADJUSTER,
-    CLIENT
+    CLIENT,
+    VIEWER,
+    EDITOR
 }

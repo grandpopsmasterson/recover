@@ -1,14 +1,24 @@
+CREATE TABLE IF NOT EXISTS companies (
+    id BIGSERIAL PRIMARY KEY,
+    company_name VARCHAR(50) NOT NULL,
+    street_address VARCHAR(255),
+    city VARCHAR(100),
+    state VARCHAR(20),                     -- Changed from CHAR to VARCHAR
+    zipcode VARCHAR(20)
+);
+
 CREATE TABLE IF NOT EXISTS users (
     id BIGSERIAL PRIMARY KEY,
     username VARCHAR(20) NOT NULL UNIQUE,  -- Added UNIQUE and NOT NULL
-    email VARCHAR(50) NOT NULL UNIQUE,     -- Increased length and added constraints
-    salt VARCHAR(255) NOT NULL,            -- Added length and NOT NULL
+    email VARCHAR(50) NOT NULL UNIQUE,            -- Added length and NOT NULL
     password VARCHAR(255) NOT NULL,        -- Added length and NOT NULL
     first_name VARCHAR(20),
     last_name VARCHAR(20),
     available BOOLEAN NOT NULL DEFAULT true,
     user_type VARCHAR(20) NOT NULL,        -- Added NOT NULL
-    profile_image_url VARCHAR(255)         -- Increased length for URLs
+    profile_image_url VARCHAR(255),
+    company_id BIGINT, 
+    FOREIGN KEY (company_id) REFERENCES companies(id) ON DELETE CASCADE  
 );
 
 CREATE TABLE IF NOT EXISTS projects (
@@ -81,6 +91,7 @@ CREATE TABLE IF NOT EXISTS project_losses (
 
 
 -- DROP TABLE IF EXISTS project_losses CASCADE;
+-- DROP TABLE IF EXISTS companies CASCADE;
 -- DROP TABLE IF EXISTS roles CASCADE;
 -- DROP TABLE IF EXISTS notifications CASCADE;
 -- DROP TABLE IF EXISTS rooms CASCADE;
