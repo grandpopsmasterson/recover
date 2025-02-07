@@ -4,7 +4,7 @@ import { Button, Card, CardBody,CardHeader, Dropdown, DropdownTrigger, DropdownM
 import { RecoverLogo } from '@/components/ui/RecoverLogo';
 import Button1 from '@/components/ui/ButtonC';
 import { useRouter } from 'next/navigation';
-import apiClient from '@/config/apiClient';
+import apiClient from '@/api/apiClient';
 import { EyeFilledIcon, EyeSlashFilledIcon } from './../../components/ui/eyePasswordIcon';
 
 

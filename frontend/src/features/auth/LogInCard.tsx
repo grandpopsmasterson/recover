@@ -4,16 +4,12 @@ import { useState } from "react";
 import { Card, CardHeader, CardBody, Input, CardFooter } from "@heroui/react";
 import { RecoverLogo } from "@/components/ui/RecoverLogo";
 import Button1 from "@/components/ui/ButtonC";
-import apiClient from "@/config/apiClient";
-
-interface LoginData { 
-    identifier: string;
-    password: string;
-    general?: string;
-}
+import { LoginCredentials } from "@/types/login";
+import { loginApi } from "@/api/loginApi";
 
 interface LoginError {
     message: string;
+    field: string;
 }
 
 export default function LogInCard() {
@@ -21,23 +17,26 @@ export default function LogInCard() {
     const [isLoading, setIsLoading] = useState(false);
     const router = useRouter();
     const [error, setError] = useState<LoginError | null>(null);
-    const [loginData, setLoginData] = useState<LoginData>({
-        identifier:'',
+    const [loginData, setLoginData] = useState<LoginCredentials>({
+        usernameOrEmail:'',
         password: '',
     })
-    //TODO add error handline with HERO alert
+    
     //TODO add error40 handlers (email format, blank fields)
 
-    const handlePress = async (e: React.FormEvent) => {
+    const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
 
         e.preventDefault();
+        if (validateInput()) {
         setError(null);
         setIsLoading(true);
 
         try {
-            //apiClient handles credentials and baseUrl, and extracts data. Since data is returned directly we dont need to check response.status
-            const response = await apiClient.post('/auth/login', loginData);
-            router.push('/dashboard')
+            const response = await loginApi.login({
+                usernameOrEmail: loginData.usernameOrEmail,
+                password: loginData.password
+            });
+            router.push('/Dashboard')
             console.log(response);
 
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -47,21 +46,35 @@ export default function LogInCard() {
             
             switch (error.response?.status) {
                 case 401:
-                    setError({ message: 'Invalid email, username or password'});
+                    setError({ message: 'Invalid email, username or password', field: 'server'});
                     break;
                 case 403:
-                    setError({ message: 'Account is locked or disabled'});
+                    setError({ message: 'Account is locked or disabled', field: 'server'});
                     break;
                 case 429:
-                    setError({ message: 'Too many login attempts, please try again later.'});
+                    setError({ message: 'Too many login attempts, please try again later.', field: 'server'});
                     break;
                 default:
-                    setError({ message: errorMessage });
+                    setError({ message: errorMessage, field: 'server' });
             }
         } finally {
             setIsLoading(false);
         }
+        }
     }
+
+    const validateInput = (): boolean => {
+        if (loginData.usernameOrEmail.length < 5) {
+            setError({ message: 'Enter a valid email or username', field: 'usernameOrEmail'});
+            return false;
+        }
+        if (loginData.password.length < 8) {
+            setError({ message: 'Enter a valid password', field: 'password'});
+            return false;
+        }
+        return true;
+    }
+
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
             const { name, value } = e.target;
             setLoginData(prev => ({ ...prev, [name]: value}));
@@ -69,10 +82,11 @@ export default function LogInCard() {
         };
 
     return (
+        <form onSubmit={handleSubmit}>
         <Card
         isBlurred
-        className='border-8  w-[35vw] h-[40vw]'
-        style={{backgroundColor: '#09090b', borderColor: '#090f21'}}
+        className='border-10  w-[35vw] h-[40vw]'
+        style={{backgroundColor: '#09090b', border: '10px solid #090f21'}}
         shadow='md'
         >
             <CardHeader>
@@ -84,17 +98,18 @@ export default function LogInCard() {
                 </div>
             </CardHeader>
             <CardBody>
-                <form onSubmit={handlePress}>
                     <div>
                         <Input
                             variant="bordered"
                             className='w-[30vw]' 
                             label='Email or Username' 
-                            type='identifier'
-                            id='identifier'
-                            name='identifier'
-                            value={loginData.identifier}
+                            type='usernameOrEmail'
+                            id='usernameOrEmail'
+                            name='usernameOrEmail'
+                            value={loginData.usernameOrEmail}
                             onChange={handleInputChange}
+                            errorMessage='Enter a valid email or username'
+                            isInvalid={error === null ? false : error.field == 'usernameOrEmail' ? true : false}
                         />
                     </div> 
                     <br/>
@@ -108,17 +123,18 @@ export default function LogInCard() {
                             name='password'
                             value={loginData.password}
                             onChange={handleInputChange}
+                            errorMessage='Enter a valid password'
+                            isInvalid={error === null ? false : error.field == 'password' ? true : false}
                         />
                     </div> <br/>
                     <Button1 
                         variant="ghost" 
                         color="success" 
                         className="!bg-transparent font-bold !text-green-500" 
-                        onPress={handlePress}
+                        type="submit"
                         >
                         {isLoading ? 'Logging in...' : 'Log In'}
                     </Button1>
-                </form>
             </CardBody>
             <CardFooter className="flex justify-center">
                 <div className='flex justify-center pt-4'>
@@ -126,5 +142,6 @@ export default function LogInCard() {
                 </div>
             </CardFooter>
         </Card>
+        </form>
     )
 }

@@ -2,7 +2,7 @@ import React from 'react';
 import { Input, Dropdown, DropdownTrigger, DropdownMenu, DropdownItem, Button } from "@heroui/react";
 import type { StepThreeProps } from '../../types/signup';
 
-export default function StepThree({formData, handleInputChange, handleRoleChange, errors, roles, handleKeyDown}: StepThreeProps) {
+export default function StepThree({formData, handleInputChange, handleRoleChange, errors, userType, handleKeyDown}: StepThreeProps) {
 
     return (
     <div>
@@ -58,20 +58,20 @@ export default function StepThree({formData, handleInputChange, handleRoleChange
             <Dropdown className='bg-[#090f21]'>
                 <DropdownTrigger>
                     <Button color='success' className='rounded-md'> {/**TODO Try again later to integrate the Button1 */}
-                        {formData.userType || "Select Role"}
+                        {formData.userType || "Viewer"}
                     </Button>
                 </DropdownTrigger>
                 <DropdownMenu
-                itemClasses={{
-                    base: [
-                        'bg-[#09090b]',
-                        'data-[hover=true]:bg-green-500'
-                    ]
+                    style={{background: '#09090b', border: '5px solid #090f21', borderRadius: '5px'}}
+                    itemClasses={{
+                        base: [
+                            '!bg-[#09090b]',
+                            '!data-[hover=true]:bg-green-500'
+                        ]
                 }}
-                aria-label='Role Selection'
                 onAction={(key) => handleRoleChange(key.toString())}
                 >
-                    {roles.map((role: string) => (
+                    {userType.map((role: string) => (
                         <DropdownItem
                             key={role}
                         >

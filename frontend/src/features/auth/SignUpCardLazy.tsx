@@ -2,14 +2,16 @@
 
 import React, { useState, lazy, Suspense } from 'react';
 import { useRouter } from 'next/navigation';
-import type { FormData, SignUpError, StepOneProps } from '../../types/signup';
-import apiClient from '@/config/apiClient';
+import type { SignupRequest, SignUpError, StepOneProps } from '../../types/signup';
+import { authClient } from '@/api/apiClient';
 
 import { Card, CardBody, CardHeader, Progress, Input, Alert, CardFooter } from "@heroui/react";
 import { BackArrow } from '@/components/ui/BackArrow';
 import { RecoverLogo } from '@/components/ui/RecoverLogo';
 import { NavLink } from '../dashboard/DashboardNavbar';
 import Button1 from '@/components/ui/ButtonC';
+import { WrapperNoHREF } from '@/components/ui/WrapperNoHREF';
+import authApi from '@/api/signupApi';
 
 //lazy load the other components
 const StepTwo = lazy(() => import('./StepTwo'));
@@ -49,23 +51,24 @@ export default function SignUpCardLazy() {
 
     const [confirmPassword, setConfirmPassword] = useState<string>('');
 
-    const [formData, setFormData] = useState<FormData>({
+    const [formData, setFormData] = useState<SignupRequest>({
         email: '',
         username: '',
         firstName: '',
         lastName: '',
         password: '',
-        //companyId: '',
+        companyId: '',
         userType: 'Viewer',
     });
 
-    const roles: string[] = [
-        'Viewer',
-        'Secretary',
+    const userType: string[] = [
         'Technician',
-        'Project Manager',
+        'Manager',
+        'Client',
         'Adjuster',
-        'Client'
+        'Secretary',
+        'Viewer',
+        'Editor'
     ];
 
     // Progress bar values
@@ -171,11 +174,16 @@ export default function SignUpCardLazy() {
         setErrors(null);
     };
 
-    const handleRoleChange = (role: string): void => {
+    const makeUpper = (value: string) => {
+        return value.toUpperCase();
+    }
+
+    const handleRoleChange = (userType: string): void => {
         setFormData(prev => ({
             ...prev,
-            role: role
-        }));
+            userType: makeUpper(userType)
+            
+        })); console.log(formData.userType)
         setErrors(null);
     }
     
@@ -200,17 +208,17 @@ export default function SignUpCardLazy() {
     };
     
 
-    const handleSubmit = async (event?: React.FormEvent<HTMLFormElement>) => {
+    const handleSubmit = async (event?: React.FormEvent) => { // event.preventDefault is not a function and never works???
 
-            if (event) event.preventDefault();
+        if (event){ event.preventDefault(); }
 
             if (validateStage()) {
                 console.log(formData); // TODO remove this at a later date ---------------------------------------------------------------------------
             
             try {
-                const response = await apiClient.post('/signup', formData);
-
+                const response = await authApi.signup(formData);
                 console.log('Success: ', response);
+                router.push('./Login');
             } catch (error) {
                 console.log('Submission error: ', error)
                 return 
@@ -254,7 +262,7 @@ export default function SignUpCardLazy() {
                     handleRoleChange={handleRoleChange}
                     handleKeyDown={handleKeyDown}
                     errors={errors}
-                    roles={roles}
+                    userType={userType}
                     />
                 </Suspense>
                 );
@@ -265,10 +273,12 @@ export default function SignUpCardLazy() {
 
     return(
         <div className='w-[100%] h-[100%]'>
+            <form onSubmit={handleSubmit}>
         <Card
+            
             isBlurred
-            className='border-8  w-[35vw] h-[40vw]'
-            style={{backgroundColor: '#09090b', borderColor: '#090f21'}}
+            className='border-10  w-[35vw] h-[40vw]'
+            style={{backgroundColor: '#09090b', border: '10px solid #090f21'}}
             shadow='md'
         >
             <CardHeader className='w-[100%]'>
@@ -288,7 +298,9 @@ export default function SignUpCardLazy() {
                             </NavLink>
                         )}
                         {stage > 1 && ( 
-                            <Button1 onPress={handleBack}>Back</Button1>
+                            <WrapperNoHREF onPress={handleBack}>
+                                <BackArrow />
+                                </WrapperNoHREF>
                         )}
                     <p className='w-[10vw]'>Step {stage} of 3</p>
                     {errors === null ? '' : errors.field == 'server' ? (
@@ -313,9 +325,10 @@ export default function SignUpCardLazy() {
                             </Button1>
                     ) : (
                         <Button1 
-                            color='success' 
+                            color='success'
+                            type='submit'
+                            variant='ghost' 
                             isDisabled={isLoading} 
-                            onPress={handleSubmit}
                             className='!bg-transparent font-bold opacity-100 text-white w-full h-[50px] mb-8'
                         >
                             {isLoading ? 'Signing up...' : 'Sign Up'}
@@ -327,6 +340,7 @@ export default function SignUpCardLazy() {
                 </div>
             </CardFooter>
         </Card>
+        </form>
         </div>
     )
 }
