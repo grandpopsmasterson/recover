@@ -1,12 +1,17 @@
-export interface FormData {
+export interface SignupRequest {
     email: string;
     username: string;
     firstName: string;
     lastName: string;
     password: string;
-    //companyId?: string; // number?
+    companyId?: string; // number?
     userType: string;
-    general?: string;
+}
+
+export interface SignupResponse { 
+    message: string; 
+    username: string; 
+    email: string;
 }
 
 export interface SignUpError {
@@ -15,14 +20,14 @@ export interface SignUpError {
 }
 
 export interface StepOneProps {
-    formData: FormData;
+    formData: SignupRequest;
     handleInputChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
     errors: SignUpError | null;
     handleKeyDown: (e: React.KeyboardEvent<HTMLInputElement>) => void;
 }
 
 export interface StepTwoProps {
-    formData: FormData;
+    formData: SignupRequest;
     handleInputChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
     errors: SignUpError | null;
     handleKeyDown: (e: React.KeyboardEvent<HTMLInputElement>) => void;
@@ -30,10 +35,10 @@ export interface StepTwoProps {
 }
 
 export interface StepThreeProps {
-    formData: FormData;
+    formData: SignupRequest;
     handleInputChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
     handleRoleChange: (role: string) => void;
     errors: SignUpError | null;
-    roles: string[];
+    userType: string[];
     handleKeyDown: (e: React.KeyboardEvent<HTMLInputElement>) => void;
 }

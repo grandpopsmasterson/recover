@@ -1,4 +1,4 @@
-import apiClient from './apiClient';
+import apiClient from '../api/apiClient';
 
 // Function to create a project with multipart/form-data
 export const createProject = async (formData: FormData, customHeaders: Record<string, string> = {}) => {
