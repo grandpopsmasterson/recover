@@ -12,6 +12,7 @@ import { NavLink } from '../dashboard/DashboardNavbar';
 import Button1 from '@/components/ui/ButtonC';
 import { WrapperNoHREF } from '@/components/ui/WrapperNoHREF';
 import authApi from '@/api/signupApi';
+import { validateEmail, validatePassword } from '@/api/utils/validation';
 
 //lazy load the other components
 const StepTwo = lazy(() => import('./StepTwo'));
@@ -78,17 +79,6 @@ export default function SignUpCardLazy() {
         3: 100,
     };
 
-    const validateEmail = (value: string): boolean => {
-        const emailRegex = /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i;
-        return emailRegex.test(value);
-    };
-
-    //password validation
-    const validatePassword = (password: string): boolean => {
-        const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{8,}$/;
-        return passwordRegex.test(password);
-    };
-
     //stage validation with switch cases for error40 handling
     const validateStage = (): boolean => {
         switch (stage) {
@@ -124,9 +114,9 @@ export default function SignUpCardLazy() {
                 break;
             default:
                 return false;
-    };
-    return true;
-}
+        };
+        return true;
+    }
     //prefetch other steps
     const prefetchOtherSteps = () => {
         const prefetchStep = async () => {
