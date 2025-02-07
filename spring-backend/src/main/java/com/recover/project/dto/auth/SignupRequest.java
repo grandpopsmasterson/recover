@@ -1,7 +1,5 @@
 package com.recover.project.dto.auth;
 
-import com.recover.project.model.enums.UserType;
-
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
@@ -20,5 +18,14 @@ public record SignupRequest (
     String password,
 
     @NotBlank(message = "User type cannot be blank")
-    UserType usertype
+    String userType,
+
+    @NotBlank
+    String firstName,
+
+    @NotBlank
+    String lastName,
+
+    Long companyId
+
 ) {}

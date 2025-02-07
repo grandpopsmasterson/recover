@@ -8,8 +8,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.recover.project.model.User;
-import com.recover.project.service.roles.UserService;
 import com.recover.project.utils.exceptions.ResourceNotFoundException;
+import com.recover.project.service.authorization.UserService;
 import com.recover.project.service.email.EmailService;
 
 @RestController

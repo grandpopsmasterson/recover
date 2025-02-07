@@ -3,6 +3,7 @@ package com.recover.project.config;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
@@ -23,6 +24,7 @@ import org.springframework.web.servlet.handler.HandlerMappingIntrospector;
 
 import com.recover.project.utils.auth.AuthEntryPointJwt;
 import com.recover.project.utils.auth.AuthTokenFilter;
+import com.recover.project.utils.exceptions.CustomAccessDeniedHandler;
 
 import io.github.resilience4j.ratelimiter.RateLimiter;
 import io.github.resilience4j.ratelimiter.RateLimiterConfig;
@@ -40,7 +42,13 @@ public class SecurityConfiguration {
    private final AuthEntryPointJwt unauthorizedHandler;
    private final String[] allowedOrigins;
 
-   private static final String[] WHITE_LIST_URL = {"/error", "/login", "/h2-console/**", "/signup", "/refresh-token"};
+   private static final String[] WHITE_LIST_URLS = {
+        "/error",
+        "/Auth/Login",   
+        "/api/Auth/SignUp",
+        "/h2-console/**",
+        "/api/auth/refresh-token"
+    };
 
    public SecurityConfiguration(
            UserDetailsService userDetailsService,
@@ -84,40 +92,50 @@ public class SecurityConfiguration {
    }
 
    @Bean
-   public CorsConfigurationSource corsConfigurationSource() {
-       CorsConfiguration configuration = new CorsConfiguration();
-       configuration.setAllowedOrigins(Arrays.asList(allowedOrigins));
-       configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
-       configuration.setAllowedHeaders(List.of("*"));
-       configuration.setAllowCredentials(true);
-       configuration.setMaxAge(3600L);
+    public CorsConfigurationSource corsConfigurationSource() {
+        CorsConfiguration configuration = new CorsConfiguration();
+        configuration.setAllowedOrigins(Arrays.asList(allowedOrigins));
+        configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"));
+        configuration.setAllowedHeaders(Arrays.asList(
+            "Authorization",
+            "Content-Type",
+            "Accept",
+            "Origin",
+            "X-Requested-With"
+        ));
+        configuration.setExposedHeaders(Arrays.asList(
+            "Authorization",
+            "Content-Type"
+        ));
+        configuration.setAllowCredentials(true);
+        configuration.setMaxAge(3600L);
 
-       UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-       source.registerCorsConfiguration("/**", configuration);
-       return source;
-   }
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        source.registerCorsConfiguration("/**", configuration);
+        return source;
+    }
 
    @Bean
    public SecurityFilterChain securityFilterChain(HttpSecurity http, HandlerMappingIntrospector introspector) throws Exception {
        return http
-           .csrf(AbstractHttpConfigurer::disable)
-           .cors(cors -> cors.configurationSource(corsConfigurationSource()))
-           .headers(headers -> headers
-               .frameOptions(frame -> frame.sameOrigin())
-               .contentSecurityPolicy(csp -> 
-                   csp.policyDirectives("default-src 'self'; frame-ancestors 'self';")))
-           .authorizeHttpRequests(req -> req
-               .requestMatchers(WHITE_LIST_URL).permitAll()
-               .anyRequest().authenticated())
-           .exceptionHandling(ex -> ex
-               .authenticationEntryPoint(unauthorizedHandler)
-               .accessDeniedHandler(new CustomAccessDeniedHandler()))
-           .sessionManagement(session -> 
-               session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-           .authenticationProvider(authenticationProvider())
-           .userDetailsService(userDetailsService)
-           .addFilterBefore(authenticationJwtTokenFilter(), 
-               UsernamePasswordAuthenticationFilter.class)
-           .build();
+            .csrf(AbstractHttpConfigurer::disable)
+            .cors(cors -> cors.configurationSource(corsConfigurationSource()))
+            .headers(headers -> headers
+                .frameOptions(frame -> frame.sameOrigin())
+                .contentSecurityPolicy(csp -> 
+                    csp.policyDirectives("default-src 'self'; frame-ancestors 'self';")))
+            .authorizeHttpRequests(req -> req
+                // .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
+                .requestMatchers(WHITE_LIST_URLS).permitAll()
+                .anyRequest().authenticated())
+            .exceptionHandling(ex -> ex
+                .authenticationEntryPoint(unauthorizedHandler)
+                .accessDeniedHandler(new CustomAccessDeniedHandler()))
+            .sessionManagement(session -> 
+                session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+            .authenticationProvider(authenticationProvider())
+            .addFilterBefore(authenticationJwtTokenFilter(), 
+                UsernamePasswordAuthenticationFilter.class)
+            .build();
    }
 }

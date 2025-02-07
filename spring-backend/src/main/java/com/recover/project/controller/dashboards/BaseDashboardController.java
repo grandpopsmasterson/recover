@@ -9,8 +9,8 @@ import com.recover.project.utils.constants.Constants;
 import com.recover.project.dto.project.ShortProjectDto;
 import com.recover.project.model.enums.ProjectRole;
 import com.recover.project.service.authorization.AuthenticationService;
+import com.recover.project.service.authorization.UserService;
 import com.recover.project.service.project.ProjectService;
-import com.recover.project.service.roles.UserService;
 import com.recover.project.utils.exceptions.UnauthorizedException;
 
 import lombok.RequiredArgsConstructor;

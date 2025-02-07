@@ -11,25 +11,16 @@ import com.recover.project.service.email.EmailService;
 import com.recover.project.utils.auth.JwtUtils;
 import com.recover.project.utils.exceptions.ResourceNotFoundException;
 
+import lombok.RequiredArgsConstructor;
+
 @Service
+@RequiredArgsConstructor
 public class PasswordResetService {
     private final UserRepository userRepository;
     private final EmailService emailService;
     private final PasswordEncoder passwordEncoder;
     private final JwtUtils jwtUtils;
     private final Logger logger = LoggerFactory.getLogger(PasswordResetService.class);
-
-    public PasswordResetService(
-            UserRepository userRepository,
-            EmailService emailService,
-            PasswordEncoder passwordEncoder,
-            JwtUtils jwtUtils
-    ) {
-        this.userRepository = userRepository;
-        this.emailService = emailService;
-        this.passwordEncoder = passwordEncoder;
-        this.jwtUtils = jwtUtils;
-    }
 
     public void initiatePasswordReset(String email) {
         logger.debug("Initiating password reset for email: {}", email);
