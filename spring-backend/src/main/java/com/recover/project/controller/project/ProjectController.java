@@ -8,6 +8,7 @@ import com.recover.project.dto.user.ShortUser;
 import com.recover.project.dto.user.AssignedRoleDto;
 import com.recover.project.dto.user.ProjectRoleRequest;
 import com.recover.project.service.roles.RoleService;
+import com.recover.project.service.authorization.AuthenticationService;
 import com.recover.project.service.authorization.UserService;
 import com.recover.project.service.project.ProjectService;
 
@@ -25,14 +26,16 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor
 public class ProjectController {
     private final ProjectService projectService;
+    private final AuthenticationService authService;
     private final UserService userService;
     private final RoleService roleService;
 
     @PostMapping
-    @PreAuthorize("hasRole('PROJECT_MANAGER')")
+    //@PreAuthorize("hasRole('PROJECT_MANAGER')")
     public ResponseEntity<ShortProjectDto> createProject(
             @Valid @RequestBody CreateProject request) {
-        return ResponseEntity.ok(projectService.createProject(request));
+        Long userId = authService.getCurrentUserId();
+        return ResponseEntity.ok(projectService.createProject(request, userId));
     }
 
     // @GetMapping

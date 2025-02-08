@@ -12,10 +12,10 @@ import { WrapperNoHREF } from "@/components/ui/WrapperNoHREF";
 import Button1 from "@/components/ui/ButtonC";
 
 // Lazy loading the other components
-const StepTwo = lazy(() => import('./StepTwo'));
-const StepThree = lazy(() => import('./StepThree'));
-const StepFour = lazy(() => import('./StepFour'));
-const StepFive = lazy(() => import('./StepFive'));
+// const StepTwo = lazy(() => import('./StepTwo'));
+// const StepThree = lazy(() => import('./StepThree'));
+// const StepFour = lazy(() => import('./StepFour'));
+// const StepFive = lazy(() => import('./StepFive'));
 
 // Eager loading of the first step
 const StepOne: React.FC<StepOneProps> =({
@@ -175,23 +175,23 @@ export default function MainCard() {
     }
 
     //prefetch the other steps
-    const prefetchOtherSteps = () => {
-        const prefetchStep = async () => {
-            await Promise.all([
-                import('./StepTwo'),
-                import('./StepThree'),
-                import('./StepFour'),
-                import('./StepFive')
-            ]);
-        };
-        if ('requestIdleCallback' in window) {
-            window.requestIdleCallback(() => prefetchStep());
-        } else {
-            setTimeout(prefetchStep, 1000);
-        }
-    };
+    // const prefetchOtherSteps = () => {
+    //     const prefetchStep = async () => {
+    //         await Promise.all([
+    //             import('./StepTwo'),
+    //             import('./StepThree'),
+    //             import('./StepFour'),
+    //             import('./StepFive')
+    //         ]);
+    //     };
+    //     if ('requestIdleCallback' in window) {
+    //         window.requestIdleCallback(() => prefetchStep());
+    //     } else {
+    //         setTimeout(prefetchStep, 1000);
+    //     }
+    // };
 
-    useEffect(() => { prefetchOtherSteps(); })
+    //useEffect(() => { prefetchOtherSteps(); })
 
     const handleInputChange = (
         e: React.ChangeEvent<HTMLInputElement> | boolean, name?: string

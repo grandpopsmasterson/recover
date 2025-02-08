@@ -1,4 +1,4 @@
-package com.recover.project.utils.auth;
+package com.recover.project.config;
 
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwts;
@@ -74,12 +74,18 @@ public class JwtUtils {
 
     }
     public String getTokenFromCookie(HttpServletRequest request) {
+        logger.info("Attempting to get token from cookies");
         if (request.getCookies() != null) {
             for (Cookie cookie : request.getCookies()) {
+                logger.info("Cookie found: name={}", cookie.getName());
                 if ("jwt".equals(cookie.getName())) {
+                    logger.info("JWT token found in cookie");
                     return cookie.getValue();
                 }
             }
+            logger.warn("No JWT cookie found");
+        } else {
+            logger.warn("No cookies present in request");
         }
         return null;
     }
@@ -173,8 +179,6 @@ public class JwtUtils {
             throw new IllegalArgumentException("Invalid reset token", e);
         }
     }
-
-
 }
 
 

@@ -10,6 +10,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import com.recover.project.dto.project.CreateProject;
 import com.recover.project.dto.project.LongProjectDto;
 import com.recover.project.dto.project.ShortProjectDto;
+import com.recover.project.dto.user.ProjectRoleRequest;
 import com.recover.project.mapper.ProjectMapper;
 import com.recover.project.model.Project;
 import com.recover.project.model.Role;
@@ -26,7 +27,11 @@ import com.recover.project.utils.exceptions.ResourceNotFoundException;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
@@ -44,17 +49,27 @@ public class ProjectService {
 
 
     @Transactional
-    public ShortProjectDto createProject(CreateProject request) {
-        Project project = projectMapper.toEntity(request); // first map project to entity, ignoring roles
-        project.setStage(ProjectStage.INITIAL);
-        Project savedProject = projectRepository.save(project);
- 
-        if (request.getAssignedUsers() != null) { // once you have project saved, get the id
-            roleService.assignRoles(request.getAssignedUsers().stream()
-                .collect(Collectors.toSet()));
+    public ShortProjectDto createProject(CreateProject request, Long userId) {
+        Project project = projectRepository.save(projectMapper.toEntity(request));
+        
+        Set<ProjectRoleRequest> assignedUsers = request.getAssignedUsers();
+    
+        if (assignedUsers == null || assignedUsers.isEmpty()) {
+            // Use builder to create a new ProjectRoleRequest
+            ProjectRoleRequest managerRole = ProjectRoleRequest.builder()
+                .userId(userId)
+                .projectId(project.getId())
+                .projectRole(ProjectRole.MANAGER)
+                .build();
+            
+            assignedUsers = new HashSet<>(Collections.singletonList(managerRole));
         }
 
-        return projectMapper.toShortDto(savedProject);
+        roleService.assignRolesWithProject(
+            project.getId(), 
+            assignedUsers
+        );
+        return projectMapper.toShortDto(project);
     }
     // still to do:
     

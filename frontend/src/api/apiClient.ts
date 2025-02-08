@@ -5,7 +5,7 @@ export const authClient = axios.create({
     baseURL: process.env.NEXT_PUBLIC_API_BASE_URL, // Set this in your .env file
     headers: {
         'Content-Type': 'application/json',
-    },
+    }, // for signup,login, no credential cookie
 });
 
 export const apiClient = axios.create({
@@ -13,7 +13,7 @@ export const apiClient = axios.create({
     headers: {
         'Content-Type': 'application/json',
     },
-    withCredentials: true
+    withCredentials: true //for all
 });
 
 const requestInterceptor = (config:  any) => {

@@ -27,6 +27,16 @@ public class RoleService {
             .map(this::assignSingleRole)
             .collect(Collectors.toSet());
     }
+
+    public Set<AssignedRoleDto> assignRolesWithProject(Long projectId, Set<ProjectRoleRequest> requests) {
+        return requests.stream()
+            .map(request -> {
+                // Set the project ID for each request before processing
+                request.setProjectId(projectId);
+                return assignSingleRole(request);
+            })
+            .collect(Collectors.toSet());
+    }
  
     // do not call this one by itself, call the one above
     private AssignedRoleDto assignSingleRole(ProjectRoleRequest request) {  //first check if the role exists
