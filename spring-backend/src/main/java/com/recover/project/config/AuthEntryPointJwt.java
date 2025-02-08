@@ -1,4 +1,4 @@
-package com.recover.project.utils.auth;
+package com.recover.project.config;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;

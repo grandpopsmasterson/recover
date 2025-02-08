@@ -12,6 +12,7 @@ import { WrapperNoHREF } from "@/components/ui/WrapperNoHREF";
 import Button1 from "@/components/ui/ButtonC";
 
 // Lazy loading the other components
+
 const StepTwo = lazy(() => import('./steps/StepTwo'));
 const StepThree = lazy(() => import('./steps/StepThree'));
 const StepFour = lazy(() => import('./steps/StepFour'));
@@ -239,7 +240,7 @@ const [currentContent, setCurrentContent] = useState<React.ReactNode | null>(nul
         }
     };
 
-    useEffect(() => { prefetchOtherSteps(); })
+    //useEffect(() => { prefetchOtherSteps(); })
 
     const handleInputChange = (
         e: React.ChangeEvent<HTMLInputElement> | boolean, name?: string

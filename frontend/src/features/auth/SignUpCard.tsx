@@ -11,7 +11,9 @@ import { NavLink } from '../dashboard/DashboardNavbar';
 import Button1 from '@/components/ui/ButtonC';
 import { WrapperNoHREF } from '@/components/ui/WrapperNoHREF';
 import { validateEmail, validatePassword } from '@/api/utils/validation';
-import signupApi from '@/api/signupApi';
+import { signupApi } from '@/api/authApi';
+
+
 
 //lazy load the other components
 const StepTwo = lazy(() => import('./StepTwo'));

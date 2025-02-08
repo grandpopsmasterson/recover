@@ -5,10 +5,10 @@ import org.slf4j.LoggerFactory;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import com.recover.project.config.JwtUtils;
 import com.recover.project.model.User;
 import com.recover.project.repository.UserRepository;
 import com.recover.project.service.email.EmailService;
-import com.recover.project.utils.auth.JwtUtils;
 import com.recover.project.utils.exceptions.ResourceNotFoundException;
 
 import lombok.RequiredArgsConstructor;

@@ -1,5 +1,6 @@
 package com.recover.project.controller.auth;
 
+import com.recover.project.config.JwtUtils;
 import com.recover.project.dto.auth.JwtResponse;
 import com.recover.project.dto.auth.LoginRequest;
 import com.recover.project.dto.auth.PasswordResetRequest;
@@ -11,7 +12,6 @@ import com.recover.project.service.authorization.PasswordResetService;
 import com.recover.project.service.authorization.UserDetailsImpl;
 import com.recover.project.service.authorization.UserService;
 import com.recover.project.service.email.EmailService;
-import com.recover.project.utils.auth.JwtUtils;
 import com.recover.project.utils.exceptions.InvalidTokenException;
 import com.recover.project.utils.exceptions.ResourceNotFoundException;
 
@@ -42,6 +42,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
+@RequestMapping("/auth")
 @RequiredArgsConstructor
 public class AuthController {
 
@@ -55,7 +56,7 @@ public class AuthController {
     private final RateLimiter authRateLimiter;
     private final UserMapper userMapper;
 
-   @PostMapping("/api/Auth/SignUp")
+   @PostMapping("/signup")
    public ResponseEntity<?> registerUser(@Valid @RequestBody SignupRequest request) {
        try {
            authRateLimiter.acquirePermission();
@@ -105,7 +106,7 @@ public class AuthController {
        }
    }
 
-    @PostMapping("/Auth/Login")
+    @PostMapping("/login")
     public ResponseEntity<?> authenticateUser(@RequestBody LoginRequest request, HttpServletResponse response) {
         try {
             Authentication authentication = authenticationManager.authenticate(

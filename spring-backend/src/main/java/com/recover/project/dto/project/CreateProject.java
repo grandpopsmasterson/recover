@@ -1,15 +1,12 @@
 package com.recover.project.dto.project;
 
 import java.time.LocalDate;
-import java.util.List;
+import java.util.Set;
 
 import com.google.auto.value.AutoValue.Builder;
 import com.recover.project.dto.user.ProjectRoleRequest;
-import com.recover.project.model.enums.ProjectStage;
-import com.recover.project.model.enums.ProjectType;
 
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 
@@ -24,6 +21,21 @@ public class CreateProject {
 
    @NotNull(message = "Loss date is required") 
    private LocalDate lossDate;
+
+   @NotNull
+   private LocalDate receivedDate;
+
+   private LocalDate policyStart;
+
+   private LocalDate policyExpiration;
+
+   private String claimNumber;
+
+   private String yearBuilt;
+
+   private String catReference;
+
+   private String carrier;
 
    @NotNull(message = "Client name is required") 
    private String clientName;
@@ -42,13 +54,14 @@ public class CreateProject {
 
    private String zipcode;
 
-   private ProjectStage stage;
+   private String stage;
 
-   private ProjectType projectType;
+   private String projectType;
 
-   private String carrier;
+   private String lossType;
 
-   @NotEmpty(message = "At least one owner is required")
-   private List<ProjectRoleRequest> assignedUsers;
+   private String scope;
+
+   private Set<ProjectRoleRequest> assignedUsers;
    
 }

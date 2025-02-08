@@ -4,7 +4,7 @@ import java.util.Map;
 
 import com.recover.project.model.enums.UserType;
 
-public class StringMapper {
+public class UserTypeMap {
     public static final Map<String, UserType> USER_MAP = Map.of(
         "ADJUSTER", UserType.ADJUSTER,
         "CLIENT", UserType.CLIENT,
