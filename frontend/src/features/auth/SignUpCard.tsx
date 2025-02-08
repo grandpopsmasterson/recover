@@ -3,7 +3,6 @@
 import React, { useState, lazy, Suspense } from 'react';
 import { useRouter } from 'next/navigation';
 import type { SignupRequest, SignUpError, StepOneProps } from '../../types/signup';
-import { authClient } from '@/api/apiClient';
 
 import { Card, CardBody, CardHeader, Progress, Input, Alert, CardFooter } from "@heroui/react";
 import { BackArrow } from '@/components/ui/BackArrow';
@@ -11,8 +10,8 @@ import { RecoverLogo } from '@/components/ui/RecoverLogo';
 import { NavLink } from '../dashboard/DashboardNavbar';
 import Button1 from '@/components/ui/ButtonC';
 import { WrapperNoHREF } from '@/components/ui/WrapperNoHREF';
-import authApi from '@/api/signupApi';
 import { validateEmail, validatePassword } from '@/api/utils/validation';
+import signupApi from '@/api/signupApi';
 
 //lazy load the other components
 const StepTwo = lazy(() => import('./StepTwo'));
@@ -206,7 +205,7 @@ export default function SignUpCard() {
                 console.log(formData); // TODO remove this at a later date ---------------------------------------------------------------------------
             
             try {
-                const response = await authApi.signup(formData);
+                const response = await signupApi.signup(formData);
                 console.log('Success: ', response);
                 router.push('./Login');
             } catch (error) {
@@ -277,7 +276,7 @@ export default function SignUpCard() {
                         <RecoverLogo/>
                     </div> <br/>
                     <div className='w-[95%]'>
-                        <Progress aria-label='Progress bar' size='sm' value={progress[stage]} />
+                        <Progress aria-label='Progress bar' color='success' size='sm' value={progress[stage]} />
                     </div> <br/>
                     <div className='flex gap-4'>
                     {stage === 1 && (

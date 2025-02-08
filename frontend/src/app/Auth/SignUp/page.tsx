@@ -1,7 +1,7 @@
 //import SignupForm from "./components(redux)/SignupForm";
 //import SignUpCard from "../Components/SignUpCard";
 
-import SignUpCardLazy from "@/features/auth/SignUpCardLazy";
+import SignUpCardLazy from "@/features/auth/SignUpCard";
 
 
 export default function SignUpPage() {

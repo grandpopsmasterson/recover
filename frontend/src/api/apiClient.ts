@@ -18,7 +18,7 @@ export const apiClient = axios.create({
 
 const requestInterceptor = (config:  any) => {
     console.log('Request: ', config.method?.toUpperCase(), config.url);
-    console.log('Full url: ', config.baseURL + config.url)
+    console.log('Full url: ', config.baseURL + config.url )
     return config
 };
 
