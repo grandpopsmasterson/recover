@@ -13,6 +13,8 @@ import { WrapperNoHREF } from '@/components/ui/WrapperNoHREF';
 import { validateEmail, validatePassword } from '@/api/utils/validation';
 import { signupApi } from '@/api/authApi';
 
+
+
 //lazy load the other components
 const StepTwo = lazy(() => import('./StepTwo'));
 const StepThree = lazy(() => import('./StepThree'));
@@ -276,7 +278,7 @@ export default function SignUpCard() {
                         <RecoverLogo/>
                     </div> <br/>
                     <div className='w-[95%]'>
-                        <Progress aria-label='Progress bar' size='sm' value={progress[stage]} />
+                        <Progress aria-label='Progress bar' color='success' size='sm' value={progress[stage]} />
                     </div> <br/>
                     <div className='flex gap-4'>
                     {stage === 1 && (

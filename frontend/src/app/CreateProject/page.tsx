@@ -1,5 +1,4 @@
-import Button1 from "@/components/ui/ButtonC"
-import MainCard from "@/features/createProject/mainCard"
+import MainCard from "@/features/createProject/MainCard";
 
 export default function CreateProject() {
 

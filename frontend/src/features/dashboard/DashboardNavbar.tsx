@@ -11,6 +11,7 @@ interface NavLinkProps {
     href: string;
     isActive?: boolean;
     children: React.ReactNode;
+    className?: string;
 }
 
 
