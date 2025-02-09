@@ -1,3 +1,4 @@
+
 export interface ProjectRoleRequest {
   userId: bigint;
   projectId?: bigint;
@@ -5,15 +6,25 @@ export interface ProjectRoleRequest {
 }
 
 export interface ShortProject {
-  id: string;
-  name: string;
-  description?: string;
-  stage: string;
+  streetAddress: string;
+  clientName: string;
+  assignedRoles: AssignedRoles[];
+  projectStage: string;
 }
 
-export interface Project extends ShortProject {
-  // Additional detailed project fields
-  createdAt: string;
-  updatedAt?: string;
-  // Add more fields as needed
+export interface AssignedRoles {
+  id: bigint;
+  shortName: string;
+  profileImageUrl: string;
+  projectRole: string;
+  isAvailable: boolean;
 }
+
+export interface Project {
+    id: string;
+    name: string;
+    description: string;
+    status: 'active' | 'archived';
+    createdAt: string;
+  }
+
