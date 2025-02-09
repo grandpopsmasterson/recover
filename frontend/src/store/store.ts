@@ -19,7 +19,7 @@ import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import { UserDetails } from '@/types/auth';
 import { combineReducers } from '@reduxjs/toolkit';
-import { projectApi } from '@/api/projects-api';
+import { projectsApi } from '@/api/projectsApi';
 
 interface AuthState {
   user: UserDetails | null;
