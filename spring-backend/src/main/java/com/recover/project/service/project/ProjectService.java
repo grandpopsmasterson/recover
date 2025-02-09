@@ -6,7 +6,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.security.core.context.SecurityContextHolder;
-
 import com.recover.project.dto.project.CreateProject;
 import com.recover.project.dto.project.LongProjectDto;
 import com.recover.project.dto.project.ShortProjectDto;
@@ -14,18 +13,15 @@ import com.recover.project.mapper.ProjectMapper;
 import com.recover.project.model.Project;
 import com.recover.project.model.Role;
 import com.recover.project.model.enums.ProjectRole;
-import com.recover.project.model.enums.ProjectStage;
 import com.recover.project.repository.ProjectRepository;
 import com.recover.project.repository.RoleRepository;
+import com.recover.project.service.authorization.AuthenticationService;
 //import com.recover.project.service.notifications.NotificationService;
-import com.recover.project.service.roles.RoleService;
 import com.recover.project.service.search.ProjectCriteria;
 import com.recover.project.service.search.ProjectSpecification;
 import com.recover.project.utils.exceptions.ResourceNotFoundException;
-
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
-
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -35,8 +31,7 @@ public class ProjectService {
 
     private final ProjectRepository projectRepository;
     private final RoleRepository roleRepository;
-    private final RoleService roleService;
-
+    private final AuthenticationService authService;
     //private final NotificationService notificationService;
     private final ApplicationEventPublisher eventPublisher;
     private final ProjectMapper projectMapper;
@@ -45,16 +40,18 @@ public class ProjectService {
 
     @Transactional
     public ShortProjectDto createProject(CreateProject request) {
-        Project project = projectMapper.toEntity(request); // first map project to entity, ignoring roles
-        project.setStage(ProjectStage.INITIAL);
-        Project savedProject = projectRepository.save(project);
- 
-        if (request.getAssignedUsers() != null) { // once you have project saved, get the id
-            roleService.assignRoles(request.getAssignedUsers().stream()
-                .collect(Collectors.toSet()));
+        Project project = projectRepository.save(projectMapper.toEntity(request));
+        
+        if (request.getAssignedUsers() == null || request.getAssignedUsers().isEmpty()) {
+            Role defaultRole = Role.builder()
+                .project(project)
+                .user(authService.getCurrentUser())  // Get the creating user
+                .projectRole(ProjectRole.MANAGER)    // Or whatever default role
+                .build();
+            roleRepository.save(defaultRole);
         }
-
-        return projectMapper.toShortDto(savedProject);
+        
+        return projectMapper.toShortDto(project);
     }
     // still to do:
     

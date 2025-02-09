@@ -1,15 +1,17 @@
 'use client'
+
 import { Navbar, NavbarBrand, NavbarContent, NavbarItem, Link, DropdownItem, DropdownTrigger, Dropdown, DropdownMenu } from "@heroui/react"
-//import styles from "./../styles/Navbar.module.css";
 import React, {useState, useEffect, useCallback, memo} from "react";
 import { usePathname, useRouter } from 'next/navigation';
 import NextLink from 'next/link';
+import { logoutApi } from "@/api/authApi";
 
 //interface for the NavLink props
 interface NavLinkProps {
     href: string;
     isActive?: boolean;
     children: React.ReactNode;
+    className?: string;
 }
 
 
@@ -52,7 +54,21 @@ export const NavLink = memo<NavLinkProps>(({ href, isActive, children }) => {
 NavLink.displayName = 'NavLink'
 
 //memoize the user dropdown
-const UserDropdown = memo(() => (
+const UserDropdown = memo(() => {
+    const router = useRouter();
+
+    const handleLogout = async () => {
+        try {
+            await logoutApi.logout();
+            // Clear any local storage or auth state if needed
+            router.push('/');
+        } catch (error) {
+            console.error('Logout failed', error);
+            // Optionally show an error toast or notification
+        }
+    };
+
+    return (
     <Dropdown placement="bottom-end">
         <DropdownTrigger>
             <svg fill="none" height="36" viewBox="0 0 32 32" width="36">
@@ -77,14 +93,16 @@ const UserDropdown = memo(() => (
                     My Settings
                 </NavLink>
             </DropdownItem>
-            <DropdownItem key="signOut" color="danger">
-                <NavLink href="/" isActive={false}>
-                    Sign Out
-                </NavLink>
+            <DropdownItem 
+                key="signOut" 
+                color="danger"
+                onPress={handleLogout}
+            >
+                Sign Out
             </DropdownItem>
         </DropdownMenu>
     </Dropdown>
-));
+)});
 UserDropdown.displayName = 'UserDropdown';
 
 export default function DashboardNavBar() {

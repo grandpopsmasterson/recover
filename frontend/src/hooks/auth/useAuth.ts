@@ -1,20 +1,16 @@
-import { useSelector, useDispatch } from 'react-redux';
-import { useRouter } from 'next/navigation';
+import { useEffect, useState } from 'react';
+import { useRouter } from 'next/router';
 
 export const useAuth = () => {
-  const dispatch = useDispatch();
-  const router = useRouter();
-  const { user, isLoading } = useSelector((state) => state.auth);
+    const [isAuthenticated, setIsAuthenticated] = useState(false);
+    const [isLoading, setIsLoading] = useState(true);
+    const router = useRouter();
 
-  const logout = () => {
-    dispatch(logoutUser());
-    router.push('/auth/login');
-  };
+    useEffect(() => {
+        const token = localStorage.getItem('token');
+        setIsAuthenticated(!!token);
+        setIsLoading(false);
+    }, []);
 
-  return {
-    user,
-    isLoading,
-    isAuthenticated: !!user,
-    logout
-  };
+    return { isAuthenticated, isLoading };
 };

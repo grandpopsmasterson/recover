@@ -24,7 +24,7 @@ public class BaseDashboardController {
     private final UserService userService;
     private final AuthenticationService authenticationService;
 
-    @GetMapping("/dashboard")
+    @GetMapping("/Dashboard")
     public ResponseEntity<?> getProjectById() {
         try {
             Long userId = authenticationService.getCurrentUserId();

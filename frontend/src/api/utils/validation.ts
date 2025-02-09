@@ -1,11 +1,11 @@
 export const validateEmail = (email: string): boolean => {
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,15}$/i;
     return emailRegex.test(email);
 };
 
 export const validatePassword = (password: string): boolean => {
     // At least 8 characters, 1 uppercase, 1 lowercase, 1 number
-    const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{8,}$/;
+    const passwordRegex = /^(?=.*[A-Z])(?=.*\d).{8,50}$/;
     return passwordRegex.test(password);
 };
 
@@ -14,3 +14,9 @@ export const validateUsername = (username: string): boolean => {
     const usernameRegex = /^[a-zA-Z0-9_-]{3,20}$/;
     return usernameRegex.test(username);
 };
+
+export const validatePhonenumber = (phonenumber: string): boolean => {
+    // 10 digits, no +1 at start, any format
+    const phoneRegex = /^(?:\(\d{3}\)|\d{3})[-.\s]?\d{3}[-.\s]?\d{4}$/;
+    return phoneRegex.test(phonenumber);
+}

@@ -4,7 +4,8 @@ public enum ProjectStage {
     INITIAL,
     INSPECTION,
     ESTIMATE,
-    REMEDIATION,
+    MITIGATION,
     RESTORATION,
+    ACCOUNTS_RECEIVABLE,
     COMPLETED
 }

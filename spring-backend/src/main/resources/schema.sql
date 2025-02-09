@@ -26,16 +26,24 @@ CREATE TABLE IF NOT EXISTS projects (
     project_name VARCHAR(50) NOT NULL,     -- Increased length
     client_name VARCHAR(30),
     client_email VARCHAR(50),              -- Increased length for emails
-    client_phone VARCHAR(20),              -- Changed to VARCHAR for phone numbers
-    start_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    client_phone VARCHAR(20),
+    claim_number VARCHAR(20),              -- Changed to VARCHAR for phone numbers
+    start_date TIMESTAMP,
     loss_date TIMESTAMP,
+    received_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    cat_reference VARCHAR(20),
+    policy_start TIMESTAMP,
+    policy_expiration TIMESTAMP,
+    year_built VARCHAR(4),
     street_address VARCHAR(255),
     city VARCHAR(100),
     state VARCHAR(20),                     -- Changed from CHAR to VARCHAR
     zipcode VARCHAR(20),                   -- Changed from CHAR to VARCHAR
     carrier VARCHAR(50),                   -- Increased length
     project_stage VARCHAR(20),
-    project_type VARCHAR(20)               -- Removed trailing comma
+    project_type VARCHAR(20),
+    loss_type VARCHAR(20),
+    scope VARCHAR(20)              -- Removed trailing comma
 );
 
 CREATE TABLE IF NOT EXISTS floors (

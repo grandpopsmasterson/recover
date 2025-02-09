@@ -9,7 +9,7 @@ import com.recover.project.dto.user.LongUser;
 import com.recover.project.dto.user.ShortUser;
 import com.recover.project.model.User;
 import com.recover.project.model.enums.UserType;
-import com.recover.project.utils.constants.StringMapper;
+import com.recover.project.utils.constants.UserTypeMap;
 
 @Mapper(componentModel = "spring")
 public interface UserMapper {
@@ -37,7 +37,7 @@ public interface UserMapper {
                (user.getLastName() != null ? user.getLastName() : "");
     }
     default UserType mapUserType(String userType) {
-        return StringMapper.USER_MAP.get(userType);
+        return UserTypeMap.USER_MAP.get(userType);
     }
 
     default String getProfileImageUrl(User user) {

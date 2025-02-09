@@ -5,7 +5,7 @@ import { Card, CardHeader, CardBody, Input, CardFooter } from "@heroui/react";
 import { RecoverLogo } from "@/components/ui/RecoverLogo";
 import Button1 from "@/components/ui/ButtonC";
 import { LoginCredentials } from "@/types/login";
-import { loginApi } from "@/api/loginApi";
+import { loginApi } from "@/api/authApi";
 
 interface LoginError {
     message: string;
@@ -36,7 +36,14 @@ export default function LogInCard() {
                 usernameOrEmail: loginData.usernameOrEmail,
                 password: loginData.password
             });
-            router.push('/Dashboard')
+            const { token, username } = response.data;
+                localStorage.setItem('token', `Bearer ${token}`);
+                localStorage.setItem('user', JSON.stringify({ username }));
+
+                // Clear sensitive data
+                setLoginData({ usernameOrEmail: '', password: '' });
+                
+            router.push('/dashboard')
             console.log(response);
 
         // eslint-disable-next-line @typescript-eslint/no-explicit-any

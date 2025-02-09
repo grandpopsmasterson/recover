@@ -9,9 +9,10 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.recover.project.model.enums.LossType;
 import com.recover.project.model.enums.ProjectStage;
 import com.recover.project.model.enums.ProjectType;
+import com.recover.project.model.enums.Scope;
 
 
 @Entity
@@ -37,11 +38,29 @@ public class Project {
     @Column(name = "client_phone")
     private String clientPhone;
 
+    @Column(name = "claim_number")
+    private String claimNumber;
+
     @Column(name = "start_date")
     private LocalDate startDate;
 
     @Column(name = "loss_date")
     private LocalDate lossDate;
+
+    @Column(name = "received_date")
+    private LocalDate receivedDate;
+
+    @Column(name = "cat_reference")
+    private String catReference;
+
+    @Column(name = "policy_start")
+    private LocalDate policyStart;
+
+    @Column(name = "policy_expiration")
+    private LocalDate policyExpiration;
+
+    @Column(name = "year_built")
+    private String yearBuilt;
 
     @Column(name = "street_address")
     private String streetAddress;
@@ -55,22 +74,30 @@ public class Project {
     @Column(name = "zipcode")
     private String zipcode;
 
-    @Enumerated(EnumType.STRING)
-    private ProjectStage stage;
-
-    @Enumerated(EnumType.STRING)
-    private ProjectType projectType;
-
     @Column(name = "carrier")
     private String carrier;
 
+    @Column(name = "stage")
+    @Enumerated(EnumType.STRING)
+    private ProjectStage stage;
+
+    @Column(name = "project_type")
+    @Enumerated(EnumType.STRING)
+    private ProjectType projectType;
+
+    @Column(name = "loss_type")
+    @Enumerated(EnumType.STRING)
+    private LossType lossType;
+
+    @Column(name = "scope")
+    @Enumerated(EnumType.STRING)
+    private Scope scope;
+
     @OneToMany(mappedBy = "project", cascade = CascadeType.ALL, orphanRemoval = true)
-    @JsonIgnore
     @Builder.Default
     private List<Floor> floors = new ArrayList<>();
 
     @OneToMany(mappedBy = "project", cascade = CascadeType.ALL, orphanRemoval = true)
-    @JsonIgnore
     @Builder.Default
     private List<Role> roles = new ArrayList<>();
 
