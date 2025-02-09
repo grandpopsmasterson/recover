@@ -1,3 +1,10 @@
+
+export interface ProjectRoleRequest {
+  userId: bigint;
+  projectId?: bigint;
+  projectRole: string;
+}
+
 export interface ShortProject {
   streetAddress: string;
   clientName: string;
@@ -20,3 +27,4 @@ export interface Project {
     status: 'active' | 'archived';
     createdAt: string;
   }
+
