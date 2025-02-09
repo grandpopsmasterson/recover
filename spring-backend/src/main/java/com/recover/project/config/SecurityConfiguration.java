@@ -87,15 +87,13 @@ public class SecurityConfiguration {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOrigins(Arrays.asList(allowedOrigins));
+        configuration.setAllowedOrigins(Arrays.asList(allowedOrigins)); // changed from (allowedOrigins)
         configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"));
         configuration.setAllowedHeaders(List.of(
             "Authorization", "Content-Type", "Accept", 
             "Origin", "X-Requested-With"
         ));
-        configuration.setExposedHeaders(List.of(
-            "Authorization", "Content-Type"
-        ));
+        configuration.setExposedHeaders(Arrays.asList("Set-Cookie", "Authorization", "Content-Type"));
         configuration.setAllowCredentials(true);
         configuration.setMaxAge(3600L);
 

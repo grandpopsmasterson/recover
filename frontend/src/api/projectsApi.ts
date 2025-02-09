@@ -2,27 +2,17 @@ import { apiClient } from './apiClient';
 import { CreateProject } from '@/types/createProject';
 import { ShortProject, Project } from '@/types/project';
 
-const projectsApi = {
-  /**
-   * Create a new project
-   * @param request CreateProjectRequest data
-   * @returns Created project details
-   */
+export const projectsApi = {
+
   async createProject(request: CreateProject): Promise<ShortProject> {
     try {
-      return await apiClient.post('/projects', request);
+      return await apiClient.post('/projects/create-project', request);
     } catch (error) {
       console.error('Failed to create project:', error);
       throw error;
     }
   },
 
-  /**
-   * Update an existing project
-   * @param projectId ID of the project to update
-   * @param request Project update data
-   * @returns Updated project details
-   */
   async updateProject(projectId: string, request: CreateProject): Promise<ShortProject> {
     try {
       return await apiClient.put(`/projects/${projectId}`, request);
@@ -32,10 +22,6 @@ const projectsApi = {
     }
   },
 
-  /**
-   * Fetch all projects
-   * @returns List of projects
-   */
   async getAllProjects(): Promise<ShortProject[]> {
     try {
       return await apiClient.get('/projects');
@@ -45,11 +31,6 @@ const projectsApi = {
     }
   },
 
-  /**
-   * Fetch a specific project by ID
-   * @param projectId ID of the project to fetch
-   * @returns Detailed project information
-   */
   async getProject(projectId: string): Promise<Project> {
     try {
       return await apiClient.get(`/projects/${projectId}`);
@@ -59,5 +40,3 @@ const projectsApi = {
     }
   }
 };
-
-export default projectsApi;

@@ -52,7 +52,7 @@ public class AuthTokenFilter extends OncePerRequestFilter {
                 return;
             }
 
-            String jwt = jwtUtils.getTokenFromCookie(request);
+            String jwt = jwtUtils.getTokenFromRequest(request);
             
             if (jwt == null) {
                 sendUnauthorizedResponse(response, "No token provided");

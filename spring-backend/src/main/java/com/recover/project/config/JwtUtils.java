@@ -12,6 +12,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Component;
+import org.springframework.util.StringUtils;
 
 import com.recover.project.service.authorization.UserDetailsImpl;
 
@@ -33,17 +34,15 @@ public class JwtUtils {
     @Value("${jwtResetExpirationMs}")
     private int jwtResetExpirationMs;
 
-    
-
     public String generateJwtToken(Authentication authentication) {
-
         UserDetailsImpl userPrincipal = (UserDetailsImpl) authentication.getPrincipal();
         if (userPrincipal == null || userPrincipal.getUsername() == null) {
             logger.error("UserPrincipal or username is null!");
+            throw new IllegalArgumentException("User details cannot be null");
         }
 
         String jwt = Jwts.builder()
-            .subject((userPrincipal.getUsername()))
+            .subject(userPrincipal.getUsername())
             .issuedAt(new Date())
             .expiration(new Date((new Date()).getTime() + jwtExpirationMs))
             .signWith(getSigningKey())
@@ -55,14 +54,12 @@ public class JwtUtils {
     
     private SecretKey cachedKey = null;
 
-    // Use the secret key from properties
     public SecretKey getSigningKey() {
         if (cachedKey == null) {
             cachedKey = new SecretKeySpec(jwtSecret.getBytes(), "HmacSHA256");
         }
         return cachedKey;
     }
-    
 
     public String getUserNameFromJwtToken(String token) {
         return Jwts.parser()
@@ -71,22 +68,15 @@ public class JwtUtils {
             .parseSignedClaims(token)
             .getPayload()
             .getSubject();
-
     }
-    public String getTokenFromCookie(HttpServletRequest request) {
-        logger.info("Attempting to get token from cookies");
-        if (request.getCookies() != null) {
-            for (Cookie cookie : request.getCookies()) {
-                logger.info("Cookie found: name={}", cookie.getName());
-                if ("jwt".equals(cookie.getName())) {
-                    logger.info("JWT token found in cookie");
-                    return cookie.getValue();
-                }
-            }
-            logger.warn("No JWT cookie found");
-        } else {
-            logger.warn("No cookies present in request");
+
+    // Updated to extract token from Authorization header
+    public String getTokenFromRequest(HttpServletRequest request) {
+        String bearerToken = request.getHeader("Authorization");
+        if (StringUtils.hasText(bearerToken) && bearerToken.startsWith("Bearer ")) {
+            return bearerToken.substring(7);
         }
+        logger.warn("No Bearer token found in request");
         return null;
     }
 
@@ -109,12 +99,10 @@ public class JwtUtils {
         } catch (IllegalArgumentException e) {
             logger.error("JWT claims string is empty: {}", e.getMessage());
         }
-
         return false;
     }
 
-
-    // RESET PASSWORD REFRESH TOKEN
+    // Reset password functionality remains the same
     public String generatePasswordResetToken(String email) {
         logger.debug("Generating password reset token for email: {}", email);
         
@@ -122,7 +110,7 @@ public class JwtUtils {
             .subject(email)
             .issuedAt(new Date())
             .expiration(new Date((new Date()).getTime() + jwtResetExpirationMs))
-            .claim("type", "reset")    // Add type claim to distinguish reset tokens
+            .claim("type", "reset")
             .signWith(getSigningKey())
             .compact();
             
@@ -138,26 +126,11 @@ public class JwtUtils {
                 .parseSignedClaims(token)
                 .getPayload();
 
-            // Verify this is a reset token
-            if (!"reset".equals(claims.get("type"))) {
-                logger.error("Token is not a reset token");
-                return false;
-            }
-
-            return true;
-        } catch (SignatureException e) {
-            logger.error("Invalid reset token signature: {}", e.getMessage());
-        } catch (MalformedJwtException e) {
-            logger.error("Invalid reset token: {}", e.getMessage());
-        } catch (ExpiredJwtException e) {
-            logger.error("Reset token is expired: {}", e.getMessage());
-        } catch (UnsupportedJwtException e) {
-            logger.error("Reset token is unsupported: {}", e.getMessage());
-        } catch (IllegalArgumentException e) {
-            logger.error("Reset token claims string is empty: {}", e.getMessage());
+            return "reset".equals(claims.get("type"));
+        } catch (Exception e) {
+            logger.error("Error validating reset token: {}", e.getMessage());
+            return false;
         }
-
-        return false;
     }
 
     public String getEmailFromResetToken(String token) {
@@ -169,7 +142,6 @@ public class JwtUtils {
                 .getPayload();
 
             if (!"reset".equals(claims.get("type"))) {
-                logger.error("Token is not a reset token");
                 throw new IllegalArgumentException("Not a valid reset token");
             }
 

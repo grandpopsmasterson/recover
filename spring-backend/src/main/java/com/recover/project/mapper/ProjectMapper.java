@@ -10,11 +10,13 @@ import com.recover.project.dto.project.LongProjectDto;
 import com.recover.project.dto.project.ShortProjectDto;
 import com.recover.project.model.Project;
 import com.recover.project.model.enums.LossType;
+import com.recover.project.model.enums.ProjectStage;
 import com.recover.project.model.enums.ProjectType;
 import com.recover.project.model.enums.Scope;
 import com.recover.project.utils.constants.ProjTypeMap;
 import com.recover.project.utils.constants.LossTypeMap;
 import com.recover.project.utils.constants.ScopeMap;
+import com.recover.project.utils.constants.StageMap;
 
 @Mapper(componentModel = "spring", uses = {RoleMapper.class, FloorplanMapper.class})
 public interface ProjectMapper {
@@ -27,7 +29,9 @@ public interface ProjectMapper {
         @Mapping(target = "lossType",
                 expression = "java(mapLossType(request.getLossType()))"),
         @Mapping(target = "scope",
-                expression = "java(mapScope(request.getScope()))")
+                expression = "java(mapScope(request.getScope()))"),
+        @Mapping(target = "stage",
+                expression = "java(mapProjectStage(request.getStage()))")        
     })
     Project toEntity(CreateProject request); // going into the database -->
 
@@ -42,6 +46,9 @@ public interface ProjectMapper {
 
     List<ShortProjectDto> toShortDtoList(List<Project> projects);
 
+    default ProjectStage mapProjectStage(Integer projectStage) {
+        return StageMap.STAGE_MAP.get(projectStage);
+    }
 
     default ProjectType mapProjectType(String projectType) {
         return ProjTypeMap.ProjType_MAP.get(projectType);

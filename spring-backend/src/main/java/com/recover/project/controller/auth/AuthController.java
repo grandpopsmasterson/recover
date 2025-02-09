@@ -26,6 +26,7 @@ import java.util.concurrent.CompletableFuture;
 import org.apache.http.HttpStatus;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
@@ -45,7 +46,6 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/auth")
 @RequiredArgsConstructor
 public class AuthController {
-
     private static final Logger logger = LoggerFactory.getLogger(AuthController.class);
     private final AuthenticationManager authenticationManager;
     private final JwtUtils jwtUtils;
@@ -56,115 +56,99 @@ public class AuthController {
     private final RateLimiter authRateLimiter;
     private final UserMapper userMapper;
 
-   @PostMapping("/signup")
-   public ResponseEntity<?> registerUser(@Valid @RequestBody SignupRequest request) {
-       try {
-           authRateLimiter.acquirePermission();
-       } catch (RequestNotPermitted e) {
-           return ResponseEntity
-               .status(HttpStatus.SC_TOO_MANY_REQUESTS)
-               .body("Too many signup attempts. Please try again later.");
-       } 
-       try {
-           if (userService.existsByUsername(request.username())) {
-               return ResponseEntity
-                   .status(HttpStatus.SC_CONFLICT)
-                   .body("Username already taken");
-           }
-           if (userService.existsByEmail(request.email())) {
-               return ResponseEntity
-                   .status(HttpStatus.SC_CONFLICT)
-                   .body("Email already in use");
-           }
-           User user = userMapper.toEntity(request);
-           user.setPassword(passwordEncoder.encode(request.password()));
-           final User savedUser = userService.save(user);   
-           if (savedUser != null) {
-               // Use savedUser in async operation
-               CompletableFuture.runAsync(() -> {
-                   try {
-                       emailService.sendAccountCreationEmail(savedUser);
-                   } catch (Exception e) {
-                       logger.error("Failed to send welcome email to user: {}", savedUser.getEmail(), e);
-                   }
-               });
-               return ResponseEntity.ok(new SignupResponse(
-                   "User registered successfully",
-                   savedUser.getUsername(),
-                   savedUser.getEmail()
-               ));
-           } else {
-               return ResponseEntity
-                   .status(HttpStatus.SC_INTERNAL_SERVER_ERROR)
-                   .body("Failed to create user");
-           }
-       } catch (Exception e) {
-           logger.error("Error during user registration", e);
-           return ResponseEntity
-               .status(HttpStatus.SC_INTERNAL_SERVER_ERROR)
-               .body("An error occurred during registration");
-       }
-   }
+    @PostMapping("/signup")
+    public ResponseEntity<?> registerUser(@Valid @RequestBody SignupRequest request) {
+        try {
+            authRateLimiter.acquirePermission();
+        } catch (RequestNotPermitted e) {
+            return ResponseEntity
+                .status(HttpStatus.SC_TOO_MANY_REQUESTS)
+                .body("Too many signup attempts. Please try again later.");
+        } 
+        try {
+            if (userService.existsByUsername(request.username())) {
+                return ResponseEntity
+                    .status(HttpStatus.SC_CONFLICT)
+                    .body("Username already taken");
+            }
+            if (userService.existsByEmail(request.email())) {
+                return ResponseEntity
+                    .status(HttpStatus.SC_CONFLICT)
+                    .body("Email already in use");
+            }
+            User user = userMapper.toEntity(request);
+            user.setPassword(passwordEncoder.encode(request.password()));
+            final User savedUser = userService.save(user);   
+            
+            if (savedUser != null) {
+                CompletableFuture.runAsync(() -> {
+                    try {
+                        emailService.sendAccountCreationEmail(savedUser);
+                    } catch (Exception e) {
+                        logger.error("Failed to send welcome email to user: {}", savedUser.getEmail(), e);
+                    }
+                });
+                return ResponseEntity.ok(new SignupResponse(
+                    "User registered successfully",
+                    savedUser.getUsername(),
+                    savedUser.getEmail()
+                ));
+            } else {
+                return ResponseEntity
+                    .status(HttpStatus.SC_INTERNAL_SERVER_ERROR)
+                    .body("Failed to create user");
+            }
+        } catch (Exception e) {
+            logger.error("Error during user registration", e);
+            return ResponseEntity
+                .status(HttpStatus.SC_INTERNAL_SERVER_ERROR)
+                .body("An error occurred during registration");
+        }
+    }
 
     @PostMapping("/login")
-    public ResponseEntity<?> authenticateUser(@RequestBody LoginRequest request, HttpServletResponse response) {
+    public ResponseEntity<?> authenticateUser(@RequestBody LoginRequest request) {
         try {
             Authentication authentication = authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(request.usernameOrEmail(), request.password())  // Match your DTO field name
+                new UsernamePasswordAuthenticationToken(request.usernameOrEmail(), request.password())
             );
 
             SecurityContextHolder.getContext().setAuthentication(authentication);
             UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
             String jwt = jwtUtils.generateJwtToken(authentication);
 
-            ResponseCookie jwtCookie = ResponseCookie.from("jwt", jwt)
-                    .httpOnly(true)
-                    .secure(true)
-                    .path("/")
-                    .maxAge(24 * 60 * 60)
-                    .sameSite("Strict")
-                    .build();
-            response.addHeader(HttpHeaders.SET_COOKIE, jwtCookie.toString());
-
-            return ResponseEntity.ok(new JwtResponse(jwt, userDetails.getUsername()));
-        } catch (BadCredentialsException e) {  // Catch specific exception
-            return ResponseEntity.status(HttpStatus.SC_UNAUTHORIZED).body("Invalid credentials");
+            return ResponseEntity.ok(new JwtResponse(
+                jwt, 
+                userDetails.getUsername() // If you have roles
+            ));
+        } catch (BadCredentialsException e) {
+            return ResponseEntity.status(HttpStatus.SC_UNAUTHORIZED)
+                .body("Invalid credentials");
         }
     }
 
     @PostMapping("/logout")
-    public ResponseEntity<?> logout(HttpServletResponse response) {
-        ResponseCookie clearCookie = ResponseCookie.from("jwt", "")
-                .httpOnly(true)
-                .secure(true)
-                .path("/")
-                .maxAge(0) // Expire immediately
-                .sameSite("Strict")
-                .build();
-        response.addHeader(HttpHeaders.SET_COOKIE, clearCookie.toString());
+    public ResponseEntity<?> logout() {
+        SecurityContextHolder.clearContext();
         return ResponseEntity.ok("Logged out successfully");
     }
 
     @PostMapping("/forgot-password")
     public ResponseEntity<?> forgotPassword(@RequestBody String email) {
-        User user = userService.findByEmail(email).orElseThrow(() -> new ResourceNotFoundException("User not found with email: " + email));
-        if (user != null) {
-            passwordResetService.initiatePasswordReset(email);
-        }
+        User user = userService.findByEmail(email)
+            .orElseThrow(() -> new ResourceNotFoundException("User not found with email: " + email));
+        
+        passwordResetService.initiatePasswordReset(email);
         return ResponseEntity.ok("Please check your email for a password reset link.");
     }
   
     @PostMapping("/api/reset-password")
     public ResponseEntity<?> resetPassword(@RequestBody PasswordResetRequest request) {
-        // Validate token
         if (!jwtUtils.validatePasswordResetToken(request.token())) {
             throw new InvalidTokenException("Token is invalid or expired");
         }
-        // String token, String newPassword
-        // Get email from token
+
         String email = jwtUtils.getEmailFromResetToken(request.token());
-
-
         User user = userService.findByEmail(email)
             .orElseThrow(() -> new UsernameNotFoundException("User not found"));
         

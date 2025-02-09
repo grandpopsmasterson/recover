@@ -10,6 +10,7 @@ import { NavLink } from "../dashboard/DashboardNavbar";
 import { BackArrow } from "@/components/ui/BackArrow";
 import { WrapperNoHREF } from "@/components/ui/WrapperNoHREF";
 import Button1 from "@/components/ui/ButtonC";
+import { projectsApi } from "@/api/projectsApi";
 
 // Lazy loading the other components
 
@@ -302,7 +303,7 @@ const [currentContent, setCurrentContent] = useState<React.ReactNode | null>(nul
     };
 
     const handleHome = (): void => {
-        router.push('./Dashboard');
+        router.push('./dashboard');
     };
 
     const handleKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
@@ -324,7 +325,16 @@ const [currentContent, setCurrentContent] = useState<React.ReactNode | null>(nul
             const {firstName, lastName, ...submissionData} = formData as any;
             console.log(submissionData) // TODO CREATE CREATE PROJECT API AND INSERT LOGIC HERE
             //router.push('./Dashboard') //? maybe to send to step 2- work auths?? or to project page?? straight back to dash????
-        };
+            try {
+                            const response = await projectsApi.createProject(formData);
+                            console.log('Success: ', response);
+                            setIsLoading(false)
+                        } catch (error) {
+                            console.log('Submission error: ', error)
+                            setIsLoading(false)
+                            return 
+                        }
+        }; 
     };
 
     const renderStep = (stage: number) => {

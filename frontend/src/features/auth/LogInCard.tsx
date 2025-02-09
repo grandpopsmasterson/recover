@@ -36,6 +36,13 @@ export default function LogInCard() {
                 usernameOrEmail: loginData.usernameOrEmail,
                 password: loginData.password
             });
+            const { token, username } = response.data;
+                localStorage.setItem('token', `Bearer ${token}`);
+                localStorage.setItem('user', JSON.stringify({ username }));
+
+                // Clear sensitive data
+                setLoginData({ usernameOrEmail: '', password: '' });
+                
             router.push('/dashboard')
             console.log(response);
 

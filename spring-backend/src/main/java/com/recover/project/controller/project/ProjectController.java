@@ -8,7 +8,6 @@ import com.recover.project.dto.user.ShortUser;
 import com.recover.project.dto.user.AssignedRoleDto;
 import com.recover.project.dto.user.ProjectRoleRequest;
 import com.recover.project.service.roles.RoleService;
-import com.recover.project.service.authorization.AuthenticationService;
 import com.recover.project.service.authorization.UserService;
 import com.recover.project.service.project.ProjectService;
 
@@ -22,20 +21,18 @@ import org.springframework.web.bind.annotation.*;
 
 
 @RestController
-@RequestMapping("/api/projects")
+@RequestMapping("/projects")
 @RequiredArgsConstructor
 public class ProjectController {
     private final ProjectService projectService;
-    private final AuthenticationService authService;
     private final UserService userService;
     private final RoleService roleService;
 
-    @PostMapping
-    //@PreAuthorize("hasRole('PROJECT_MANAGER')")
+    @PostMapping("/create-project")
+    //@PreAuthorize("hasRole('MANAGER')")
     public ResponseEntity<ShortProjectDto> createProject(
             @Valid @RequestBody CreateProject request) {
-        Long userId = authService.getCurrentUserId();
-        return ResponseEntity.ok(projectService.createProject(request, userId));
+        return ResponseEntity.ok(projectService.createProject(request));
     }
 
     // @GetMapping
@@ -45,9 +42,9 @@ public class ProjectController {
     //     return ResponseEntity.ok(projectService.searchProjects(criteria, pageable));
     // }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<LongProjectDto> getProject(@PathVariable Long id) {
-        return ResponseEntity.ok(projectService.getLongProjectById(id));
+    @GetMapping("/{projectId}")
+    public ResponseEntity<LongProjectDto> getProject(@PathVariable Long projectId) {
+        return ResponseEntity.ok(projectService.getLongProjectById(projectId));
     }
 
     @GetMapping("/available-technicians")
@@ -69,7 +66,7 @@ public class ProjectController {
     // }
 
 
-    @DeleteMapping("/projects/{projectId}") // Delete a project
+    @DeleteMapping("/{projectId}") // Delete a project
     public void deleteProject(@PathVariable Long projectId) {
         projectService.deleteProjectById(projectId);
     }

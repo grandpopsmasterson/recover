@@ -1,41 +1,26 @@
-import { UserDetails } from '@/types/auth';
-import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
-
-
-interface AuthState {
-    user: UserDetails | null;
-    isLoading: boolean;
-    error: string | null;
-}
-
-const initialState: AuthState = {
-    user: null,
-    isLoading: false,
-    error: null,
-};
-
-export const logout = createAsyncThunk(
-    'auth/logout',
-    async (_, { dispatch }) => {
-        localStorage.removeItem('token');
-        // Additional cleanup
-    }
-);
+import { createSlice } from "@reduxjs/toolkit";
 
 const authSlice = createSlice({
     name: 'auth',
-    initialState,
+    initialState: {
+      user: null,
+      isAuthenticated: false,
+      token: null
+    },
     reducers: {
-        setUser: (state, action) => {
-        state.user = action.payload;
-        },
-    },
-    extraReducers: (builder) => {
-        builder.addCase(logout.fulfilled, (state) => {
+      login: (state, action) => {
+        state.user = action.payload.user;
+        state.isAuthenticated = true;
+        state.token = action.payload.token;
+      },
+      logout: (state) => {
         state.user = null;
-        });
-    },
-});
+        state.isAuthenticated = false;
+        state.token = null;
+      }
+    }
+  });
 
-export const { setUser } = authSlice.actions;
-export default authSlice.reducer;
+  export const { login, logout } = authSlice.actions;
+  
+  export default authSlice.reducer; 

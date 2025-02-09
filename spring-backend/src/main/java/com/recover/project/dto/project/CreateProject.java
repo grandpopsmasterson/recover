@@ -13,16 +13,14 @@ import lombok.Data;
 @Data
 @Builder
 public class CreateProject {
-   @NotBlank(message = "Project name is required")
+   // @NotBlank(message = "Project name is required")
    private String projectName;
    
-   @NotNull(message = "Start date is required")
    private LocalDate startDate;
 
    @NotNull(message = "Loss date is required") 
    private LocalDate lossDate;
 
-   @NotNull
    private LocalDate receivedDate;
 
    private LocalDate policyStart;
@@ -54,7 +52,7 @@ public class CreateProject {
 
    private String zipcode;
 
-   private String stage;
+   private Integer stage;
 
    private String projectType;
 
