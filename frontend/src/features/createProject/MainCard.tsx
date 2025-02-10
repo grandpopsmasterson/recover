@@ -328,7 +328,9 @@ const [currentContent, setCurrentContent] = useState<React.ReactNode | null>(nul
             try {
                             const response = await projectsApi.createProject(formData);
                             console.log('Success: ', response);
+                            router.push("/dashboard")
                             setIsLoading(false)
+
                         } catch (error) {
                             console.log('Submission error: ', error)
                             setIsLoading(false)
