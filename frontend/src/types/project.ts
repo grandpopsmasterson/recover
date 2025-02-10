@@ -6,6 +6,7 @@ export interface ProjectRoleRequest {
 }
 
 export interface ShortProject {
+  id: bigint;
   streetAddress: string;
   clientName: string;
   assignedRoles: {
@@ -19,6 +20,31 @@ export interface ShortProject {
   city?: string;  // Optional since not in backend
   state?: string; // Optional since not in backend
   houseImage?: string; // Optional
+}
+
+export interface LongProject {
+  id: number;
+  projectName: string | null;
+  clientName: string;
+  clientEmail: string;
+  clientPhone: string;
+  startDate?: Date | null;
+  lossDate?: Date | null;
+  streetAddress: string;
+  city: string;
+  state: string;
+  zipcode: string;
+  stage: 'INITIAL' | 'IN_PROGRESS' | 'COMPLETED';
+  projectType: 'RESIDENTIAL' | 'COMMERCIAL';
+  carrier: string;
+  assignedRoles: {
+      id: number;
+      shortName: string;
+      profileImageUrl: string | null;
+      projectRole: string;
+      isAvailable: boolean;
+  }[];
+  houseImage?: string;
 }
 
 export interface AssignedRoles {
