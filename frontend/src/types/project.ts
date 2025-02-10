@@ -6,14 +6,19 @@ export interface ProjectRoleRequest {
 }
 
 export interface ShortProject {
-  id: bigint;
   streetAddress: string;
-  city: string;
-  state: string;
   clientName: string;
-  assignedRoles: AssignedRoles[];
-  projectStage: string;
-  houseImage: string; 
+  assignedRoles: {
+      id: number;
+      shortName: string;
+      profileImageUrl: string;
+      projectRole: string;
+      isAvailable: boolean;
+  }[];
+  stage: string;  // Changed from projectStage
+  city?: string;  // Optional since not in backend
+  state?: string; // Optional since not in backend
+  houseImage?: string; // Optional
 }
 
 export interface AssignedRoles {
