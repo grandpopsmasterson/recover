@@ -24,7 +24,8 @@ export const projectsApi = {
 
   async getAllProjects(): Promise<ShortProject[]> {
     try {
-      return await apiClient.get('/dashboard');
+      const response = await apiClient.get('/dashboard');
+      return response.data; // Extract the data from the axios response
     } catch (error) {
       console.error('Failed to fetch projects:', error);
       throw error;
@@ -33,7 +34,8 @@ export const projectsApi = {
 
   async getProject(projectId: string): Promise<Project> {
     try {
-      return await apiClient.get(`/projects/${projectId}`);
+      const response = await apiClient.get(`/projects/${projectId}`);
+      return response.data; // Extract the data from the axios response
     } catch (error) {
       console.error('Failed to fetch project details:', error);
       throw error;

@@ -2,10 +2,10 @@
 import { useState, useEffect } from 'react'
 import { projectsApi } from '@/api/projectsApi'
 import { useRouter } from "next/navigation"
-import ProjectCard from '@/features/project/ProjectCard'
 import { ShortProject } from '@/types/project'
 import Button1 from "@/components/ui/ButtonC"
 import DashboardNavBar from "../../features/dashboard/DashboardNavbar"
+import DashboardCard from '@/features/project/ProjectCard'
 
 export default function DashboardPage() {
     const [projects, setProjects] = useState<ShortProject[]>([]);
@@ -15,15 +15,17 @@ export default function DashboardPage() {
 
     useEffect(() => {
         const fetchProjects = async () => {
-          try {
-            setIsLoading(true);
-            const projectData = await projectsApi.getAllProjects();
-            setProjects(projectData.slice(0, 4)); // Take first 4 projects
-            setIsLoading(false);
-          } catch (err) {
-            setError('Failed to fetch projects');
-            setIsLoading(false);
-          }
+            try {
+                setIsLoading(true);
+                const projectData = await projectsApi.getAllProjects();
+                console.log('Fetched project data:', projectData); // Debug log
+                setProjects(projectData.slice(0, 4));
+                setIsLoading(false);
+            } catch (err) {
+                console.error('Error fetching projects:', err); // Debug log
+                setError('Failed to fetch projects');
+                setIsLoading(false);
+            }
         };
         fetchProjects();
     }, []);
@@ -51,8 +53,8 @@ export default function DashboardPage() {
             </div>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
                 {projects.map((project) => (
-                <ProjectCard 
-                    key={project.id}
+                <DashboardCard
+                    key={project.streetAddress}
                     {...project}
                 />
                 ))}
