@@ -68,7 +68,9 @@ export default function LongProjectCard({
                    </div>
                </CardHeader>
 
-               <CardBody className="bg-[#09090B] w-[95%] rounded-md p-6">
+               <CardBody 
+                    className="bg-[#09090B] w-[300px] rounded-md p-6"
+                    style={{ width: '300px' }}>
                    {/* Client Info Section */}
                    <div className="mb-6">
                        <h2 className="text-green-500 text-lg font-semibold mb-2">Client Information</h2>
