@@ -1,10 +1,8 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "@/styles/globals.css";
-//import NavBar from "../features/dashboard/DashboardNavbar";
 import { Providers } from "./Providers";
-// import Button from "./components/ButtonC";
-
+import Footer from "@/components/ui/footer";
 // const recoverGreen = "#4ade80";
 
 const geistSans = Geist({
@@ -41,6 +39,7 @@ export default function RootLayout({
         {children}
         </main>
         </Providers>
+        <Footer />
       </body>
     </html>
   );
