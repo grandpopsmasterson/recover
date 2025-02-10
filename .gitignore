@@ -31,6 +31,8 @@ spring-backend/!.mvn/wrapper/maven-wrapper.jar
 
 # Backend env files
 spring-backend/.env
+spring-backend/.env.local
+spring-backend/.env.development
 spring-backend/src/main/resources/application-local.yml
 spring-backend/src/main/resources/application-local.properties
 

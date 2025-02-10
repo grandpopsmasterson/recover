@@ -73,7 +73,7 @@ const UserDropdown = memo(() => (
                 </NavLink>
             </DropdownItem>
             <DropdownItem key="settings">
-                <NavLink href="/Settings" isActive={false}>
+                <NavLink href="/settings" isActive={false}>
                     My Settings
                 </NavLink>
             </DropdownItem>
