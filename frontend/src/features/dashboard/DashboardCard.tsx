@@ -1,11 +1,10 @@
-"use client"
+'use client'
 import Button1 from "@/components/ui/ButtonC";
 import {useRouter} from "next/navigation"
 
 import { Card, CardHeader, CardBody, CardFooter, Image, Dropdown, DropdownTrigger, AvatarGroup, Avatar, DropdownMenu, DropdownItem, User} from '@heroui/react'
 import { ShortProject } from "@/types/project";
 import { DownArrow } from "@/components/ui/DownArrow";
-import { ProtectedRoute } from "@/config/ProtectedRoute";
 //import './../../images/house1.png';
 // const recoverGreen = "#4ade80";
 

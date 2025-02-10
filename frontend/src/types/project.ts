@@ -6,10 +6,14 @@ export interface ProjectRoleRequest {
 }
 
 export interface ShortProject {
+  id: bigint;
   streetAddress: string;
+  city: string;
+  state: string;
   clientName: string;
   assignedRoles: AssignedRoles[];
   projectStage: string;
+  houseImage: string; 
 }
 
 export interface AssignedRoles {

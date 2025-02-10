@@ -12,6 +12,7 @@ import com.recover.project.model.enums.ProjectRole;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 
 public interface ProjectRepository extends JpaRepository<Project, Long>, JpaSpecificationExecutor<Project> {
@@ -29,6 +30,15 @@ public interface ProjectRepository extends JpaRepository<Project, Long>, JpaSpec
     AND r.projectRole = :projectRole
     """)
     List<Project> findProjectsByUserIdAndRole(@Param("userId") Long userId, @Param("projectRole") ProjectRole projectRole);
+
+    @Query("""
+    SELECT DISTINCT p
+    FROM Project p
+    JOIN FETCH p.roles r
+    JOIN FETCH r.user u
+    WHERE u.id = :userId
+    """)
+    Set<Project> findAllProjectsByUserId(Long userId);
 
     //Search projects by keyword
     List<Project> findByProjectNameContaining(String keyword);

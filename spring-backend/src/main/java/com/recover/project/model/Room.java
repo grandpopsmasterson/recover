@@ -1,8 +1,11 @@
 package com.recover.project.model;
 
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -12,6 +15,8 @@ import com.recover.project.model.enums.ClassRating;
 @Table(name = "rooms")
 @Data
 @Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class Room {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

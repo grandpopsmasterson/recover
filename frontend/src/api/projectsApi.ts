@@ -24,7 +24,7 @@ export const projectsApi = {
 
   async getAllProjects(): Promise<ShortProject[]> {
     try {
-      return await apiClient.get('/projects');
+      return await apiClient.get('/dashboard');
     } catch (error) {
       console.error('Failed to fetch projects:', error);
       throw error;
