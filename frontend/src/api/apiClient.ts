@@ -14,6 +14,7 @@ export const authClient = axios.create({
         'Content-Type': 'application/json',
         'Accept': 'application/json',
     },
+    withCredentials: true, // Add this to ensure cookies are sent
 });
 
 // Create API client for authenticated requests
@@ -22,88 +23,107 @@ export const apiClient = axios.create({
     headers: {
         'Content-Type': 'application/json',
         'Accept': 'application/json',
-    }
+    },
+    withCredentials: true, // Add this to ensure cookies are sent
 });
 
-// Request interceptor
-const requestInterceptor = (config: InternalAxiosRequestConfig) => {
-    if (process.env.NODE_ENV === 'development') {
-        console.log('Request:', {
-            method: config.method?.toUpperCase(),
-            url: config.url,
-            headers: config.headers
+// Error handling interceptor
+const errorInterceptor = (error: AxiosError) => {
+    console.error('Axios Error:', {
+        message: error.message,
+        code: error.code,
+        status: error.response?.status,
+        data: error.response?.data,
+        headers: error.config?.headers,
+        url: error.config?.url,
+    });
+
+    // Detailed network error logging
+    if (error.code === 'ERR_NETWORK') {
+        console.error('Network Error Details:', {
+            baseURL: error.config?.baseURL,
+            url: error.config?.url,
+            method: error.config?.method,
+            connectTimeout: error.config?.timeout,
         });
     }
 
+    // Specific error handling for different error types
+    if (error.response) {
+        // The request was made and the server responded with a status code
+        // that falls out of the range of 2xx
+        switch (error.response.status) {
+            case 400:
+                console.error('Bad Request:', error.response.data);
+                break;
+            case 401:
+                // Handle unauthorized access (e.g., redirect to login)
+                console.error('Unauthorized Access');
+                break;
+            case 403:
+                console.error('Forbidden Access');
+                break;
+            case 404:
+                console.error('Resource Not Found');
+                break;
+            case 500:
+                console.error('Internal Server Error');
+                break;
+        }
+    } else if (error.request) {
+        // The request was made but no response was received
+        console.error('No response received:', error.request);
+    } else {
+        // Something happened in setting up the request that triggered an Error
+        console.error('Error setting up request:', error.message);
+    }
+
+    return Promise.reject(error);
+};
+
+// Request interceptor
+const requestInterceptor = (config: InternalAxiosRequestConfig) => {
+    // Add additional diagnostics
+    console.log('Full Request Config:', {
+        baseURL: config.baseURL,
+        url: config.url,
+        method: config.method?.toUpperCase(),
+        headers: config.headers,
+        params: config.params,
+    });
+
     const token = localStorage.getItem('token');
     if (token) {
-        config.headers.Authorization = token; // token already includes 'Bearer '
+        config.headers.Authorization = token;
     }
+
+    // Ensure absolute URL is used
+    if (config.baseURL && config.url) {
+        config.url = new URL(config.url, config.baseURL).toString();
+    }
+
     return config;
 };
 
 // Response interceptor
 const responseInterceptor = (response: AxiosResponse) => {
-    if (process.env.NODE_ENV === 'development') {
-        console.log('Response:', {
-            status: response.status,
-            url: response.config.url,
-            data: response.data
-        });
-    }
+    console.log('Full Response:', {
+        status: response.status,
+        statusText: response.statusText,
+        url: response.config.url,
+        headers: response.headers,
+        data: response.data
+    });
     return response;
 };
 
-// // Error interceptor
-// const errorInterceptor = (error: AxiosError<ApiError>) => {
-//     if (error.response?.status === 401) {
-//         // Only remove token and redirect if we're not already on the login page
-//         if (!window.location.pathname.includes('/login')) {
-//             localStorage.removeItem('token');
-//             localStorage.removeItem('user');
-//             window.location.href = '/login';
-//         }
-//     }
+// Add interceptors
+authClient.interceptors.request.use(requestInterceptor);
+authClient.interceptors.response.use(responseInterceptor, errorInterceptor);
 
-//     if (process.env.NODE_ENV === 'development') {
-//         console.error('API Error:', {
-//             status: error.response?.status,
-//             message: error.response?.data?.message,
-//             url: error.config?.url
-//         });
-//     }
+apiClient.interceptors.request.use(requestInterceptor);
+apiClient.interceptors.response.use(responseInterceptor, errorInterceptor);
 
-//     return Promise.reject(error);
-// };
-
-// Apply interceptors to both clients
-[authClient, apiClient].forEach(client => {
-    client.interceptors.request.use(requestInterceptor);
-    client.interceptors.response.use(responseInterceptor);
-});
-
-
-
-
-
-
-
-
-
-
-
-
-
-// Example usage with error handling:
-/*
-try {
-    const data = await apiClient.post('/your-endpoint', payload);
-} catch (error) {
-    const apiError = error as ApiErrorType;
-    // Handle error based on status code or message
-    if (apiError.status === 400) {
-        // Handle validation errors
-        console.log(apiError.errors);
-    }
-}
-*/
+// Global axios configuration
+axios.defaults.timeout = 10000; // 10 second timeout
+axios.defaults.timeoutErrorMessage = 'Request timed out';

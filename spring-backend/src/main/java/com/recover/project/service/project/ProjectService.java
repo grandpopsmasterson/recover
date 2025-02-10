@@ -1,5 +1,7 @@
 package com.recover.project.service.project;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -22,7 +24,10 @@ import com.recover.project.service.search.ProjectSpecification;
 import com.recover.project.utils.exceptions.ResourceNotFoundException;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+
+import java.util.Collections;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
@@ -35,13 +40,12 @@ public class ProjectService {
     //private final NotificationService notificationService;
     private final ApplicationEventPublisher eventPublisher;
     private final ProjectMapper projectMapper;
-
+    private final Logger logger = LoggerFactory.getLogger(ProjectService.class);
 
 
     @Transactional
     public ShortProjectDto createProject(CreateProject request) {
         Project project = projectRepository.save(projectMapper.toEntity(request));
-        
         if (request.getAssignedUsers() == null || request.getAssignedUsers().isEmpty()) {
             Role defaultRole = Role.builder()
                 .project(project)
@@ -60,6 +64,26 @@ public class ProjectService {
     // event listeners 
 
     // more inspection additions to the project (adding forms, receipts, photos)
+
+    public Set<ShortProjectDto> getAllProjects(Long userId) {
+        try {
+            logger.info("Fetching projects for userId: {}", userId);
+            
+            Set<ShortProjectDto> projects = projectRepository.findAllProjectsByUserId(userId)
+                .stream()
+                .map(projectMapper::toShortDto)
+                .collect(Collectors.toSet());
+            
+            logger.info("Number of projects found: {}", projects.size());
+            
+            return projects;
+        } catch (Exception e) {
+            logger.error("Error fetching projects for userId: {}", userId, e);
+            
+            // Either rethrow or return an empty set based on your error handling strategy
+            return Collections.emptySet();
+        }
+    }
 
    public Page<ShortProjectDto> searchProjects(String query, Pageable pageable) {
        ProjectCriteria criteria = ProjectCriteria.builder()

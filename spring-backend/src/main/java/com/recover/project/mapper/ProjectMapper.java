@@ -1,6 +1,8 @@
 package com.recover.project.mapper;
 
 import java.util.List;
+import java.util.Set;
+
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.Mappings;
@@ -44,7 +46,7 @@ public interface ProjectMapper {
     @Mapping(source = "roles", target = "assignedRoles")  // assigned roles is a dto that was packaged and passed in from RoleMapper
     ShortProjectDto toShortDto(Project project);
 
-    List<ShortProjectDto> toShortDtoList(List<Project> projects);
+    Set<ShortProjectDto> toShortDtoList(Set<Project> projects);
 
     default ProjectStage mapProjectStage(Integer projectStage) {
         return StageMap.STAGE_MAP.get(projectStage);

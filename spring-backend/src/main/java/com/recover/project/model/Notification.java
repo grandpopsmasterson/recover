@@ -1,8 +1,11 @@
 package com.recover.project.model;
 
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
+
 import java.time.LocalDateTime;
 
 import com.recover.project.model.enums.NotificationType;
@@ -11,6 +14,8 @@ import com.recover.project.model.enums.NotificationType;
 @Table(name = "notifications")
 @Data
 @Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class Notification {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

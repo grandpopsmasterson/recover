@@ -33,8 +33,6 @@ import java.util.List;
 @EnableWebSecurity
 @EnableMethodSecurity
 public class SecurityConfiguration {
-    private final UserDetailsService userDetailsService;
-    private final AuthEntryPointJwt unauthorizedHandler;
     private final String[] allowedOrigins;
     private final String[] publicEndpoints;
     private final AuthTokenFilter authTokenFilter;
@@ -46,8 +44,6 @@ public class SecurityConfiguration {
         @Value("${security.public.endpoints}") String[] publicEndpoints,
         AuthTokenFilter authTokenFilter
     ) {
-        this.userDetailsService = userDetailsService;
-        this.unauthorizedHandler = unauthorizedHandler;
         this.allowedOrigins = allowedOrigins;
         this.publicEndpoints = publicEndpoints;
         this.authTokenFilter = authTokenFilter;
@@ -67,33 +63,42 @@ public class SecurityConfiguration {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         return http
-            .csrf(AbstractHttpConfigurer::disable)
             .cors(cors -> cors.configurationSource(corsConfigurationSource()))
-            .headers(headers -> headers
-                .frameOptions(FrameOptionsConfig::sameOrigin)
-                .contentSecurityPolicy(csp -> 
-                    csp.policyDirectives("default-src 'self'; frame-ancestors 'self';")))
+            .csrf(AbstractHttpConfigurer::disable)
+            .sessionManagement(session -> 
+                session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+            .exceptionHandling(ex -> ex
+                .authenticationEntryPoint(new AuthEntryPointJwt())
+                .accessDeniedHandler(new CustomAccessDeniedHandler()))
             .authorizeHttpRequests(req -> req
                 .requestMatchers(publicEndpoints).permitAll()
                 .anyRequest().authenticated())
-            .exceptionHandling(ex -> ex
-                .authenticationEntryPoint(unauthorizedHandler)
-                .accessDeniedHandler(new CustomAccessDeniedHandler()))
-            .sessionManagement(session -> 
-                session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+            
             .addFilterBefore(authTokenFilter, UsernamePasswordAuthenticationFilter.class)
             .build();
     }
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOrigins(Arrays.asList(allowedOrigins)); // changed from (allowedOrigins)
-        configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"));
-        configuration.setAllowedHeaders(List.of(
-            "Authorization", "Content-Type", "Accept", 
-            "Origin", "X-Requested-With"
+        configuration.setAllowedOrigins(Arrays.asList(allowedOrigins));
+        configuration.setAllowedMethods(List.of(
+            "GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"
         ));
-        configuration.setExposedHeaders(Arrays.asList("Set-Cookie", "Authorization", "Content-Type"));
+        configuration.setAllowedHeaders(List.of(
+            "Authorization", 
+            "Content-Type", 
+            "Accept", 
+            "Origin", 
+            "X-Requested-With",
+            "Access-Control-Allow-Origin",
+            "Access-Control-Allow-Credentials"
+        ));
+        configuration.setExposedHeaders(List.of(
+            "Authorization",
+            "Content-Type",
+            "Access-Control-Allow-Origin",
+            "Access-Control-Allow-Credentials"
+        ));
         configuration.setAllowCredentials(true);
         configuration.setMaxAge(3600L);
 
@@ -101,6 +106,7 @@ public class SecurityConfiguration {
         source.registerCorsConfiguration("/**", configuration);
         return source;
     }
+
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder(12);

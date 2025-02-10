@@ -16,6 +16,7 @@ import com.recover.project.utils.exceptions.UnauthorizedException;
 import lombok.RequiredArgsConstructor;
 
 import java.util.List;
+import java.util.Set;
 
 @RestController
 @RequiredArgsConstructor
@@ -24,13 +25,13 @@ public class BaseDashboardController {
     private final UserService userService;
     private final AuthenticationService authenticationService;
 
-    @GetMapping("/Dashboard")
-    public ResponseEntity<?> getProjectById() {
+    @GetMapping("/dashboard")
+    public ResponseEntity<?> getAllProjects() {
         try {
             Long userId = authenticationService.getCurrentUserId();
-            ProjectRole currentUserRole = Constants.ROLE_MAP.get(userService.findById(userId).getUserType());
+            //ProjectRole currentUserRole = Constants.ROLE_MAP.get(userService.findById(userId).getUserType());
 
-            List<ShortProjectDto> projects = projectService.getProjectsListByRole(userId, currentUserRole);
+            Set<ShortProjectDto> projects = projectService.getAllProjects(userId);
             if (projects.isEmpty()) {
                 return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Projects not found or not authorized");
             }
@@ -41,4 +42,22 @@ public class BaseDashboardController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("An error occurred while processing the request");
         }
     }
+
+    // @GetMapping("/Dashboard")
+    // public ResponseEntity<?> getProjectById() {
+    //     try {
+    //         Long userId = authenticationService.getCurrentUserId();
+    //         ProjectRole currentUserRole = Constants.ROLE_MAP.get(userService.findById(userId).getUserType());
+
+    //         List<ShortProjectDto> projects = projectService.getProjectsListByRole(userId, currentUserRole);
+    //         if (projects.isEmpty()) {
+    //             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Projects not found or not authorized");
+    //         }
+    //         return ResponseEntity.ok(projects);
+    //     } catch (UnauthorizedException e) {
+    //         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("User not authenticated");
+    //     } catch (Exception e) {
+    //         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("An error occurred while processing the request");
+    //     }
+    // }
 }
