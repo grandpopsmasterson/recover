@@ -1,23 +1,24 @@
 'use client';
 import { ProtectedRoute } from "@/config/ProtectedRoute";
 import DashboardNavBar from "@/features/dashboard/DashboardNavbar";
-import { Avatar, ListboxItem, Listbox } from "@heroui/react";
-import { useRouter, usePathname } from "next/navigation";
+import { Avatar, Divider, Tabs, Tab } from "@heroui/react";
+import { usePathname, useRouter } from "next/navigation";
 export default function SettingsLayout({
     children
 }: {
     children: React.ReactNode;
 }) {
     const pathName = usePathname();
-    const router = useRouter();
+
+    const activeTab = pathName.split('/').pop()
     
     return (
         <ProtectedRoute>
-            <div className="flex h-screen">
-                <div className="flex-1">
-                    <DashboardNavBar />
-                    <div className="settings--content">
-                        <div className="profile--sidebar">
+            <div className="flex flex-col">
+                <DashboardNavBar />
+                <div className="settings--layout h-max w-full py-6 px-10">
+                    <div className="flex flex-row">
+                        <div className="profile--sidebar flex flex-col justify-start content-center items-center basis-md py-15 px-10">
                             <Avatar
                                 isBordered
                                 size="lg"
@@ -26,18 +27,30 @@ export default function SettingsLayout({
                                 name="User"
                             />
                             <h3>User Name</h3>
+                            <div className="w-full my-2">
+                                <Divider orientation="horizontal" className="border-solid"/>
+                            </div>
 
-                            <Listbox aria-label="Actions" onAction={(key) => router.push(`/settings/${key}`)}>
-                                <ListboxItem key="">Account</ListboxItem>
-                                <ListboxItem key="notifications">Notifications</ListboxItem>
-                                <ListboxItem key="billing">Billing and Payments</ListboxItem>
-                                <ListboxItem key="security" className="text-danger">Security</ListboxItem>
-                            </Listbox>
+                            <Tabs
+                                isVertical={true}
+                                size="md"
+                                variant="underlined"
+                                selectedKey={activeTab}>
+                                <Tab key="settings" title="Settings" href="/settings" />
+                                <Tab key="billing" title="Billing and Payments" href="/settings/billing" />
+                                <Tab key="notifications" title="Notifications" href="/settings/notifications"/>
+                                <Tab key="security" title="Security" href="/settings/security"/>
+                            </Tabs>
                         </div>
+
+                        <div className="mx-2 flex">
+                            <Divider orientation="vertical"/>
+                        </div>
+
+                        <main className="settings--main basis-lg">
+                            {children}
+                        </main>
                     </div>
-                    <main className="p-6">
-                        {children}
-                    </main>
                 </div>
             </div>
         </ProtectedRoute>

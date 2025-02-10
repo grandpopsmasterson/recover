@@ -1,4 +1,4 @@
-import DashboardNavBar from "../components/DashboardNavbar"
+import DashboardNavBar from "@/features/dashboard/DashboardNavbar";
 
 export default function AllProjects() {
     return (

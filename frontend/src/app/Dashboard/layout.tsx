@@ -11,9 +11,7 @@ export default function DashboardLayout({
         <ProtectedRoute>
             <div className="flex h-screen">
                 <div className="flex-1">
-                    <header className="flex justify-between p-4 border-b">
-                    </header>
-                    <main className="p-6">
+                    <main>
                         {children}
                     </main>
                 </div>
