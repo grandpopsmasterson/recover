@@ -10,6 +10,7 @@ import { DownArrow } from "@/components/ui/DownArrow";
 
 
 export default function DashboardCard({
+    id,
     streetAddress,
     clientName,
     assignedRoles,
@@ -23,6 +24,10 @@ export default function DashboardCard({
     const defaultImage = '/house1.png';
     const defaultUser = '/user-svgrepo-com.png'
     console.log('Card props:', { streetAddress, clientName, assignedRoles, stage, city, state }); // Debug log
+
+    const handleViewProject = () => {
+        router.push(`/projects/${id}`);  // Navigate to project detail page
+    };
 
     return (
         <div className="w-full">
@@ -42,7 +47,11 @@ export default function DashboardCard({
                     <p className="text-xs text-green-500">{clientName}</p> <br/><br/><br/><br/>
                     <CardFooter className=" w-[90%] p-0 rounded-b-sm">
                         <div className="overflow-hidden">
-                            <Button1 color='success' className="!bg-green-500 font-semibold h-6 w-10 rounded-sm rounded-b-sm">View</Button1>
+                            <Button1 
+                                color='success' 
+                                className="!bg-green-500 font-semibold h-6 w-10 rounded-sm rounded-b-sm"
+                                onPress={handleViewProject}
+                                >View</Button1>
                         </div>
                         <div className="flex rounded-md">
                         <Dropdown>

@@ -1,6 +1,6 @@
 import { apiClient } from './apiClient';
 import { CreateProject } from '@/types/createProject';
-import { ShortProject, Project } from '@/types/project';
+import { ShortProject, Project, LongProject } from '@/types/project';
 
 export const projectsApi = {
 
@@ -32,7 +32,7 @@ export const projectsApi = {
     }
   },
 
-  async getProject(projectId: string): Promise<Project> {
+  async getProject(projectId: string): Promise<LongProject> {
     try {
       const response = await apiClient.get(`/projects/${projectId}`);
       return response.data; // Extract the data from the axios response
