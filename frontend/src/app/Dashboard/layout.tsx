@@ -1,6 +1,7 @@
 'use client';
 
 import { ProtectedRoute } from '@/config/ProtectedRoute';
+import DashboardNavBar from '@/features/dashboard/DashboardNavbar';
 
 export default function DashboardLayout({
     children
@@ -9,10 +10,9 @@ export default function DashboardLayout({
 }) {
     return (
         <ProtectedRoute>
-            <div className="flex h-screen">
+            <div className="flex min-h-screen">
                 <div className="flex-1">
-                    <header className="flex justify-between p-4 border-b">
-                    </header>
+                    <DashboardNavBar />
                     <main className="p-6">
                         {children}
                     </main>

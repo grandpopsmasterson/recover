@@ -14,6 +14,10 @@ interface NavLinkProps {
     className?: string;
 }
 
+// interface DashboardNavBarProps {
+//     currentPath: string;
+// }
+
 
 //memoize the logo
 export const RecoverLogo = memo(() => { // memo (or React.memo // same thing) is for ensuring that components that dont change dont need to rerender, useMemo() is for expensive computations that should only rerender if the value changes
@@ -129,22 +133,22 @@ export default function DashboardNavBar() {
 
                 <NavbarContent className="hidden sm:flex gap-4" justify="center">
                 <NavbarItem >
-                        <NavLink href="/Dashboard" isActive={isActive('/Dashboard')}>
+                        <NavLink href="/dashboard" isActive={isActive('/Dashboard')}>
                             Dashboard 
                         </NavLink>
                     </NavbarItem>
                     <NavbarItem >
-                        <NavLink href="/Dashboard/AllProjects" isActive={isActive('/Dashboard/AllProjects')}>
+                        <NavLink href="/dashboard/AllProjects" isActive={isActive('/Dashboard/AllProjects')}>
                             Projects 
                         </NavLink>
                     </NavbarItem>
                     <NavbarItem >
-                        <NavLink href="/Dashboard/AllEstimates" isActive={isActive('/Dashboard/AllEstimates')}>
+                        <NavLink href="/dashboard/AllEstimates" isActive={isActive('/Dashboard/AllEstimates')}>
                             Estimates 
                         </NavLink>
                     </NavbarItem>
                     <NavbarItem >
-                        <NavLink href="/Dashboard/Network" isActive={isActive('/Dashboard/Network')}>    
+                        <NavLink href="/dashboard/Network" isActive={isActive('/Dashboard/Network')}>    
                             Network 
                         </NavLink>
                 </NavbarItem>
@@ -157,3 +161,32 @@ export default function DashboardNavBar() {
     </div>
     )
 }
+
+
+
+// const DashboardNavBar: FC<DashboardNavBarProps> = ({ currentPath }) => {
+//     return (
+//         <nav className="flex justify-between p-4 border-b">
+//             {currentPath === '/dashboard/altitude' && (
+//                 // Altitude-specific nav content
+//                 <div>
+//                     <h1>Altitude Dashboard</h1>
+//                     {/* Altitude-specific buttons/links */}
+//                 </div>
+//             )}
+            
+//             {currentPath === '/dashboard/projects' && (
+//                 // Projects-specific nav content
+//                 <div>
+//                     <h1>Projects Dashboard</h1>
+//                     {/* Projects-specific buttons/links */}
+//                 </div>
+//             )}
+            
+//             {/* Common nav elements that appear on all pages */}
+//             <div>
+//                 {/* Common buttons, user menu, etc. */}
+//             </div>
+//         </nav>
+//     );
+// };

@@ -9,7 +9,7 @@ export default function LogIn() {
             </div>
             <div>
                 <div className='flex justify-center pt-4'>
-                    <p>Don&apos;t have an account? <a className='text-green-500 underline' href='./SignUp'>Sign up</a></p>
+                    <p>Don&apos;t have an account? <a className='text-green-500 underline' href='./signup'>Sign up</a></p>
                 </div>
             </div>
         </div>

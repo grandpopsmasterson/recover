@@ -63,3 +63,12 @@ export interface Project {
     createdAt: string;
   }
 
+export interface ProjectBucket {
+  id: bigint;
+  stage: string;
+  total: number;
+  redTotal: number | 0;
+  yellowTotal: number | 0;
+  greenTotal?: number;
+  revenue: number | 25000;
+}
