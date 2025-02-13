@@ -9,13 +9,7 @@ export interface ShortProject {
   id: bigint;
   streetAddress: string;
   clientName: string;
-  assignedRoles: {
-      id: number;
-      shortName: string;
-      profileImageUrl: string;
-      projectRole: string;
-      isAvailable: boolean;
-  }[];
+  assignedRoles: AssignedRoles[];
   stage: string;  // Changed from projectStage
   city?: string;  // Optional since not in backend
   state?: string; // Optional since not in backend

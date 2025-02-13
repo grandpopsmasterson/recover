@@ -1,5 +1,6 @@
 "use client"
 import Button1 from "@/components/ui/ButtonC";
+import Timeline from "@/features/sidebars/Timeline";
 //import {useRouter} from "next/navigation"
 
 import { Card, CardHeader, CardBody, CardFooter, Image, Dropdown, DropdownTrigger, DropdownMenu, DropdownItem, AvatarGroup, Avatar, User} from '@heroui/react'
@@ -23,83 +24,89 @@ export default function devtest() {
   }
 
   return (
-    <div className="h-screen w-full flex justify-center items-center">
-    <div>
-      <Card className="bg-[#090F21] flex flex-col justify-center items-center">
-        <CardHeader>
-          <Image alt='house picture' className="rounded-md" src="./house1.png" width={225} />
-        </CardHeader>
-        <CardBody className="flex flex-col bg-[#09090B] h-full w-[90%] mb-2 rounded-md">
-          <span className="absolute top-2 right-2 pt-1 text-xs text-gray-400">PENDING SALE</span>
-          <p className="text-xs">123 Normal Lane</p>
-          <p className="text-xs">Scottsdale, AZ</p>
-          <p className="text-xs text-green-500">Lee, Nathan</p> <br/>
-        <CardFooter className=" w-full p-0 rounded-b-sm flex justify-between">
-          <div className="overflow-hidden">
-          <Button1 color='success' className="!bg-green-500 font-semibold h-6 rounded-sm rounded-b-sm">View</Button1>
-          </div>
-          <div className="flex rounded-md">
-          <Dropdown>
-          <DropdownTrigger>
-          <div className="flex items-center gap-1 pr-1">
-              <AvatarGroup className=" flex items-center scale-75 -mr-3" size="sm" max={3} radius="full" isBordered color="success"
-              >
-                <Avatar src="https://i.pravatar.cc/150?u=a042581f4e29026024d" />
-                <Avatar src="https://i.pravatar.cc/150?u=a04258a2462d826712d" />
-                <Avatar src="https://i.pravatar.cc/150?u=a042581f4e29026704d" />
-                <Avatar src="https://i.pravatar.cc/150?u=a04258114e29026302d" />
-                <Avatar src="https://i.pravatar.cc/150?u=a04258114e29026702d" />
-                <Avatar src="https://i.pravatar.cc/150?u=a04258114e29026708c" />
-              </AvatarGroup>
-              <div className="-mr-2">
-              <DownArrow />
-              </div>
-              </div>
-            </DropdownTrigger>
-            <DropdownMenu aria-label="Static Actions" style={{background: '#09090b', border: '5px solid #090f21', borderRadius: '5px'}}>
-              <DropdownItem key="user1">
-                <User
-                  avatarProps={{
-                    src: "https://i.pravatar.cc/150?u=a042581f4e29026024d",
-                  }}
-                  description="Project Manager"
-                  name="Martin Manager"
-                />
-              </DropdownItem>
-              <DropdownItem key="user2">
-                <User
-                  avatarProps={{
-                    src: "https://i.pravatar.cc/150?u=a04258a2462d826712d",
-                  }}
-                  description="Lead Technician"
-                  name="Tommy Technician"
-                />
-              </DropdownItem>
-              <DropdownItem key="user3">
-                <User
-                  avatarProps={{
-                    src: "https://i.pravatar.cc/150?u=a042581f4e29026704d",
-                  }}
-                  description="Technician"
-                  name="Timmy Technician"
-                />
-              </DropdownItem>
-              <DropdownItem key="user4">
-                <User
-                  avatarProps={{
-                    src: "https://i.pravatar.cc/150?u=a04258114e29026708c",
-                  }}
-                  description="Client"
-                  name="Cynthia Client"
-                />
-              </DropdownItem>
-            </DropdownMenu>
-          </Dropdown>
-          </div>
-        </CardFooter>
-        </CardBody>
-      </Card>
+    <div className="h-screen w-full flex items-center">
+      <div className='flex-1'>
+        <Timeline />
+      </div>
     </div>
-    </div>
+
+    // <div className="h-screen w-full flex justify-center items-center">
+    // <div>
+    //   <Card className="bg-[#090F21] flex flex-col justify-center items-center">
+    //     <CardHeader>
+    //       <Image alt='house picture' className="rounded-md" src="./house1.png" width={225} />
+    //     </CardHeader>
+    //     <CardBody className="flex flex-col bg-[#09090B] h-full w-[90%] mb-2 rounded-md">
+    //       <span className="absolute top-2 right-2 pt-1 text-xs text-gray-400">PENDING SALE</span>
+    //       <p className="text-xs">123 Normal Lane</p>
+    //       <p className="text-xs">Scottsdale, AZ</p>
+    //       <p className="text-xs text-green-500">Lee, Nathan</p> <br/>
+    //     <CardFooter className=" w-full p-0 rounded-b-sm flex justify-between">
+    //       <div className="overflow-hidden">
+    //       <Button1 color='success' className="!bg-green-500 font-semibold h-6 rounded-sm rounded-b-sm">View</Button1>
+    //       </div>
+    //       <div className="flex rounded-md">
+    //       <Dropdown>
+    //       <DropdownTrigger>
+    //       <div className="flex items-center gap-1 pr-1">
+    //           <AvatarGroup className=" flex items-center scale-75 -mr-3" size="sm" max={3} radius="full" isBordered color="success"
+    //           >
+    //             <Avatar src="https://i.pravatar.cc/150?u=a042581f4e29026024d" />
+    //             <Avatar src="https://i.pravatar.cc/150?u=a04258a2462d826712d" />
+    //             <Avatar src="https://i.pravatar.cc/150?u=a042581f4e29026704d" />
+    //             <Avatar src="https://i.pravatar.cc/150?u=a04258114e29026302d" />
+    //             <Avatar src="https://i.pravatar.cc/150?u=a04258114e29026702d" />
+    //             <Avatar src="https://i.pravatar.cc/150?u=a04258114e29026708c" />
+    //           </AvatarGroup>
+    //           <div className="-mr-8">
+    //           <DownArrow />
+    //           </div>
+    //           </div>
+    //         </DropdownTrigger>
+    //         <DropdownMenu aria-label="Static Actions" style={{background: '#09090b', border: '5px solid #090f21', borderRadius: '5px'}}>
+    //           <DropdownItem key="user1">
+    //             <User
+    //               avatarProps={{
+    //                 src: "https://i.pravatar.cc/150?u=a042581f4e29026024d",
+    //               }}
+    //               description="Project Manager"
+    //               name="Martin Manager"
+    //             />
+    //           </DropdownItem>
+    //           <DropdownItem key="user2">
+    //             <User
+    //               avatarProps={{
+    //                 src: "https://i.pravatar.cc/150?u=a04258a2462d826712d",
+    //               }}
+    //               description="Lead Technician"
+    //               name="Tommy Technician"
+    //             />
+    //           </DropdownItem>
+    //           <DropdownItem key="user3">
+    //             <User
+    //               avatarProps={{
+    //                 src: "https://i.pravatar.cc/150?u=a042581f4e29026704d",
+    //               }}
+    //               description="Technician"
+    //               name="Timmy Technician"
+    //             />
+    //           </DropdownItem>
+    //           <DropdownItem key="user4">
+    //             <User
+    //               avatarProps={{
+    //                 src: "https://i.pravatar.cc/150?u=a04258114e29026708c",
+    //               }}
+    //               description="Client"
+    //               name="Cynthia Client"
+    //             />
+    //           </DropdownItem>
+    //         </DropdownMenu>
+    //       </Dropdown>
+    //       </div>
+    //     </CardFooter>
+    //     </CardBody>
+    //   </Card>
+    // </div>
+    // </div>
   );
 }
