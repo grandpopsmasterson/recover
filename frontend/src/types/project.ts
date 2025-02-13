@@ -34,7 +34,7 @@ export interface LongProject {
   city: string;
   state: string;
   zipcode: string;
-  stage: 'INITIAL' | 'IN_PROGRESS' | 'COMPLETED';
+  stage: string;
   projectType: 'RESIDENTIAL' | 'COMMERCIAL';
   carrier: string;
   assignedRoles: {

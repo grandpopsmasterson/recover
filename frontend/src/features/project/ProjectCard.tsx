@@ -9,7 +9,7 @@ import { DownArrow } from "@/components/ui/DownArrow";
 
 
 
-export default function DashboardCard({
+export default function ProjectCard({
     id,
     streetAddress,
     clientName,
@@ -22,8 +22,8 @@ export default function DashboardCard({
 
     const router = useRouter();
     const defaultImage = '/house1.png';
-    const defaultUser = '/user-svgrepo-com.png'
-    console.log('Card props:', { streetAddress, clientName, assignedRoles, stage, city, state }); // Debug log
+    const defaultUser = './user-svgrepo-com.png'
+    //console.log('Card props:', { streetAddress, clientName, assignedRoles, stage, city, state }); // Debug log
 
     const handleViewProject = () => {
         router.push(`/projects/${id}`);  // Navigate to project detail page
@@ -43,9 +43,9 @@ export default function DashboardCard({
                 <CardBody className="flex flex-col bg-[#09090B] h-full w-[90%] mb-2 rounded-md">
                 <span className="absolute top-2 right-2 pt-1 text-xs text-gray-400">{stage}</span>
                     <p className="text-xs">{streetAddress}</p>
-                    {/* <p className="text-xs">{`${city}, ${state}`}</p> */}
-                    <p className="text-xs text-green-500">{clientName}</p> <br/><br/><br/><br/>
-                    <CardFooter className=" w-[90%] p-0 rounded-b-sm">
+                    <p className="text-xs">{`${city}, ${state}`}</p>
+                    <p className="text-xs text-green-500">{clientName}</p> <br/><br/>
+                    <CardFooter className=" w-full p-0 rounded-b-sm flex justify-between">
                         <div className="overflow-hidden">
                             <Button1 
                                 color='success' 
@@ -57,10 +57,10 @@ export default function DashboardCard({
                         <Dropdown>
                         <DropdownTrigger>
                         <div className="flex items-center gap-1 pr-1">
-                            <AvatarGroup className=" flex items-center scale-75 -mr-3" size="sm" max={3} radius="full" isBordered color="success"
+                            <AvatarGroup className=" flex items-center scale-75" size="sm" max={3} radius="full" isBordered color="success"
                             >
                                 {assignedRoles.map((user) => (
-                                    <Avatar key={user.id.toString()} src={user.profileImageUrl || defaultUser} />
+                                    <Avatar key={user.id.toString()} src={defaultUser || user.profileImageUrl} />
                                 ))}
                             </AvatarGroup>
                             <div className="-mr-2">
@@ -73,7 +73,7 @@ export default function DashboardCard({
                                     <DropdownItem key={user.id.toString()}>
                                         <User 
                                             avatarProps={{
-                                                src: user.profileImageUrl || defaultUser,
+                                                src: defaultUser || user.profileImageUrl,
                                             }}
                                             description={user.projectRole}
                                             name={user.shortName}

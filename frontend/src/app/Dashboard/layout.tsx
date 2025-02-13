@@ -10,7 +10,7 @@ export default function DashboardLayout({
 }) {
     return (
         <ProtectedRoute>
-            <div className="flex min-h-screen">
+            <div className="flex min-h-screen mx-auto">
                 <div className="flex-1">
                     <DashboardNavBar />
                     <main className="p-6">

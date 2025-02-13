@@ -139,7 +139,7 @@ export default function HomeNavBar() {
           </div>
           <div className="px-2 pt-2 pb-3 space-y-1">
             <Link
-              href="/login"
+              href="/auth/login"
               className="block w-full px-3 py-2 text-center border rounded-md"
             >
               Login
