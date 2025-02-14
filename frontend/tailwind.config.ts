@@ -1,5 +1,4 @@
 import {heroui} from '@heroui/theme';
-import type { Config } from "tailwindcss";
 
 export default {
   content: [
@@ -17,4 +16,4 @@ export default {
     },
   },
   plugins: [heroui()],
-} satisfies Config;
+}
