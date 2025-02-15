@@ -72,3 +72,5 @@ export interface ProjectBucket {
   greenTotal?: number;
   revenue: number | 25000;
 }
+
+export type DetailsProps = Pick<LongProject, 'lossDate' | 'startDate'>;
