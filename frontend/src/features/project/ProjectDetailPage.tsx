@@ -7,7 +7,8 @@ import { LongProject } from '@/types/project';
 // import ActivityBar from '@/features/sidebars/ActivityBar';
 import DashboardNavBar from '@/features/dashboard/DashboardNavbar';
 import { ProjectBar } from './ProjectBar';
-import LongProjectPage from './LongProjectCard';
+import LongProjectPage from './LongProjectPage';
+import ActivityBox from './ActivityBox';
 
 
 export default function ProjectDetailPage() {
@@ -57,18 +58,23 @@ export default function ProjectDetailPage() {
     }
 
     return (
-        <div className='min-h-screen' style={{color: '#020617'}}>
+        <div>
             <div style={{height: '4rem'}}>
                 <DashboardNavBar />
             </div>
             <div>
                 <ProjectBar {...project} />
             </div>
-        <div className="h-screen w-full flex items-center">
-            {/* <Timeline /> */}
-            <LongProjectPage {...project} />
-            {/* <ActivityBar /> */}
-        </div>
+            <div className='pt-8 flex w-full gap-2'>
+                    {/* <Timeline /> */}
+                <div style={{ flex: '5 1 0' }}>
+                    <LongProjectPage {...project} />
+                </div>
+                <div style={{ flex: '1 1 0' }} className='mr-20'>
+                    <ActivityBox />
+                </div>
+            </div>
+                
         </div>
     );
 }
