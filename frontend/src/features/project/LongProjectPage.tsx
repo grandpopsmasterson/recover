@@ -1,9 +1,10 @@
 'use client'
 // import Button1 from "@/components/ui/ButtonC";
 // import {useRouter} from "next/navigation";
-import { Dropdown, DropdownTrigger, AvatarGroup, Avatar, DropdownMenu, DropdownItem, User} from '@heroui/react';
+import { Dropdown, DropdownTrigger, AvatarGroup, Avatar, DropdownMenu, DropdownItem, User, Tabs, Tab, divider} from '@heroui/react';
 import { LongProject } from "@/types/project";
 import { DownArrow } from "@/components/ui/DownArrow";
+import Details from './projectContent/Details';
 
 export default function LongProjectPage({
     //id,
@@ -26,41 +27,58 @@ export default function LongProjectPage({
     // const defaultImage = '/house1.png';
     const defaultUser = '/user-svgrepo-com.png';
 
-    const formatDate = (dateValue?: Date | string | null) => {
-        if (!dateValue) return 'Not set';
-        try {
-            const date = typeof dateValue === 'string' ? new Date(dateValue) : dateValue;
-            return date.toLocaleDateString();
-        } catch (error) {
-            return `'Invalid date', ${error}`;
+    const tabs: {id: string, label: string}[] = [
+        {id: 'Flags', label: 'Flags'},
+        {id: 'Timeline', label: 'Timeline'},
+        {id: 'Details', label: 'Details'},
+        {id: 'Progress', label: 'Progress'},
+        {id: 'Contact', label: 'Contact'},
+        {id: 'Estimate', label: 'Estimate'},
+        {id: 'Materials', label: 'Materials'},
+        {id: 'Comments', label: 'Comments'}
+    ];
+
+    const content = (id: string) => {
+        switch (id) {
+            case "Flags":
+                return ( <div>Flags content</div> )
+            case 'Timeline':
+                return ( <div>Timeline Content</div> )
+            case 'Details':
+                return ( <Details startDate={startDate} lossDate={lossDate} /> ) // TODO LAZY LOADING FOR ALL OF THESE
+            case 'Progress':
+                return ( <div>Progress Content</div> )
+            case 'Contact':
+                return ( <div>Contact Content</div> )
+            case 'Estimate':
+                return ( <div>Estimate Content</div> )
+            case 'Materials':
+                return ( <div>Materials Content</div> )
+            case 'Comments':
+                return ( <div>Comments Content</div> )
+            
         }
-    };
+    }
+
+    
 
     return (
-        <div className="w-full" style={{marginLeft: '3vw', marginRight: '3vw'}}>
+        <div className="mx-12" >
             
-                <div className="bg-[#09090B] rounded-md mb-4"
-                        >
-
-
-                    {/* Dates Section */}
-                    <div className="mb-6">
-                        <h2 className="text-green-500 text-lg font-semibold mb-2">Important Dates</h2>
-                        <div className="grid grid-cols-2 gap-4">
-                            <div>
-                                <p className="text-xs text-gray-400">Start Date</p>
-                                <p className="text-sm">{formatDate(startDate)}</p>
-                            </div>
-                            <div>
-                                <p className="text-xs text-gray-400">Loss Date</p>
-                                <p className="text-sm">{formatDate(lossDate)}</p>
-                            </div>
-                        </div>
-                    </div>
+                <div className="bg-[#09090B] rounded-md mb-4 pt-4" >
+                <div className='flex flex-col'>
+                    <Tabs items={tabs} className='justify-center' color='secondary'>
+                        {(item) => (
+                            <Tab key={item.id} title={item.label}>
+                                {content(item.id)}
+                            </Tab>
+                        )}
+                    </Tabs>
+                </div>
 
                     {/* Team Section */}
                     <div>
-                        <h2 className="text-green-500 text-lg font-semibold mb-2">Project Team</h2>
+                        <h2 className="text-purple-500 text-lg font-semibold mb-2">Project Team</h2>
                         <div className="flex justify-between items-center">
                             <AvatarGroup 
                                 className="flex items-center" 
@@ -68,7 +86,7 @@ export default function LongProjectPage({
                                 max={4} 
                                 radius="full" 
                                 isBordered 
-                                color="success"
+                                color="secondary"
                             >
                                 {assignedRoles.map((user) => (
                                     <Avatar 

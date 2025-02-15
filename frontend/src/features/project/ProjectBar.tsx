@@ -1,7 +1,6 @@
 import { LongProject } from '@/types/project'
 import React from 'react'
 import { Image } from '@heroui/react'
-import Button1 from '@/components/ui/ButtonC';
 
 export const ProjectBar = ({clientName, clientEmail, clientPhone, houseImage, zipcode, streetAddress, city, state, stage, projectType }: LongProject) => {
 
@@ -40,11 +39,11 @@ export const ProjectBar = ({clientName, clientEmail, clientPhone, houseImage, zi
 
                         <div className="col-span-1 row-span-1">
                             {stageProcess()}
-                            <p className="text-green-500 font-semibold mt-2">{projectType}</p>
+                            <p className="text-purple-500 font-semibold mt-2">{projectType}</p>
                         </div>
 
                         <div className="!col-start-4 col-span-1 row-start-1 flex justify-center items-center">
-                            <Button1 className="!bg-green-500 font-semibold w-3/4 h-full text-2xl">Continue progress</Button1>
+                            <button className="bg-purple-500  font-semibold w-3/4 h-full text-2xl px-2 rounded-xl hover:bg-purple-700 ease-in-out transition-all duration-200">Continue progress</button>
                         </div>
 
                         <div className='col-start-2 row-start-2' >
@@ -56,7 +55,6 @@ export const ProjectBar = ({clientName, clientEmail, clientPhone, houseImage, zi
                         <div className='col-span-1 row-start-3' />
                         <div className='col-span-1 row-start-3' />
 
-                       
                     </div>
     )
 }
