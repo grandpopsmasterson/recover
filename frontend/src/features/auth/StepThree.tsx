@@ -8,14 +8,18 @@ export default function StepThree({formData, handleInputChange, handleRoleChange
     <div>
         <div >
             <p>Enter your name</p>
-            <div className='flex gap-[1vw]'>
+            <div className='flex gap-1'>
             <Input 
-                className='w-[50%] mr-4'
+                className='w-1/2'
+                classNames={{
+                    label: '!text-white'
+                }}
                 label='First Name'
                 type='firstName'
                 id='firstName'
                 name='firstName'
                 variant='bordered'
+                color='secondary'
                 value={formData.firstName}
                 onChange={handleInputChange}
                 onKeyDown={handleKeyDown}
@@ -24,12 +28,16 @@ export default function StepThree({formData, handleInputChange, handleRoleChange
             />
             <br/>
             <Input 
-                className='w-[50%] ml-4'
+                className='w-1/2'
+                classNames={{
+                    label: '!text-white'
+                }}
                 label='Last Name'
                 type='lastName'
                 id='lastName'
                 name='lastName'
                 variant='bordered'
+                color='secondary'
                 value={formData.lastName}
                 onChange={handleInputChange}
                 onKeyDown={handleKeyDown}
@@ -41,12 +49,16 @@ export default function StepThree({formData, handleInputChange, handleRoleChange
         <div>
             <p>Enter company details</p>
             <Input 
-                className='w-[30vw]'
+                className='w-full'
+                classNames={{
+                    label: '!text-white'
+                }}
                 label='Company ID'
                 type='companyId'
                 id='companyId'
                 name='companyId'
                 variant='bordered'
+                color='secondary'
                 // value={formData.companyId}
                 onChange={handleInputChange}
                 onKeyDown={handleKeyDown}
@@ -57,7 +69,7 @@ export default function StepThree({formData, handleInputChange, handleRoleChange
             <p>Select your role</p>
             <Dropdown className='bg-[#090f21]'>
                 <DropdownTrigger>
-                    <Button color='success' className='rounded-md'> {/**TODO Try again later to integrate the Button1 */}
+                    <Button color='secondary' variant='bordered' className='rounded-md w-1/2 border-white text-white hover:bg-purple-500'> 
                         {formData.userType || "Viewer"}
                     </Button>
                 </DropdownTrigger>

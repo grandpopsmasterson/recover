@@ -25,7 +25,7 @@ export default function LongProjectPage({
     }: LongProject) {
 
     // const defaultImage = '/house1.png';
-    const defaultUser = '/user-svgrepo-com.png';
+    const defaultUser = './user-svgrepo-com.png';
 
     const tabs: {id: string, label: string}[] = [
         {id: 'Flags', label: 'Flags'},
@@ -41,7 +41,7 @@ export default function LongProjectPage({
     const content = (id: string) => {
         switch (id) {
             case "Flags":
-                return ( <div>Flags content</div> )
+                return ( <div className='flex justify-center items-center '>Flags content</div> )
             case 'Timeline':
                 return ( <div>Timeline Content</div> )
             case 'Details':
@@ -63,18 +63,18 @@ export default function LongProjectPage({
     
 
     return (
-        <div className="mx-12" >
+        <div className="mx-12 bg-[#09090B] rounded-md mb-4 pt-1 border-2 border-purple-500" style={{height: '50vh'}} >
             
-                <div className="bg-[#09090B] rounded-md mb-4 pt-4" >
-                <div className='flex flex-col'>
-                    <Tabs items={tabs} className='justify-center' color='secondary'>
-                        {(item) => (
-                            <Tab key={item.id} title={item.label}>
-                                {content(item.id)}
-                            </Tab>
-                        )}
-                    </Tabs>
-                </div>
+                <div className="bg-[#09090B] rounded-md mb-4 pt-4 " >
+                    <div className='flex flex-col'>
+                        <Tabs items={tabs} className='justify-center' color='secondary'>
+                            {(item) => (
+                                <Tab key={item.id} title={item.label}>
+                                    {content(item.id)}
+                                </Tab>
+                            )}
+                        </Tabs>
+                    </div>
 
                     {/* Team Section */}
                     <div>
@@ -91,7 +91,7 @@ export default function LongProjectPage({
                                 {assignedRoles.map((user) => (
                                     <Avatar 
                                         key={user.id.toString()} 
-                                        src={user.profileImageUrl || defaultUser} 
+                                        src={defaultUser || user.profileImageUrl} 
                                     />
                                 ))}
                             </AvatarGroup>
@@ -126,8 +126,8 @@ export default function LongProjectPage({
                             </Dropdown>
                         </div>
                     </div>
-                    </div>
                 </div>
+            </div>
             
         
     );

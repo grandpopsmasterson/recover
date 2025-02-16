@@ -1,7 +1,7 @@
 package com.recover.project.model.enums;
 
 public enum ProjectStage {
-    INITIAL,
+    PENDING_SALE,
     INSPECTION,
     ESTIMATE,
     MITIGATION,

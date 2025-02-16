@@ -6,7 +6,7 @@ import com.recover.project.model.enums.ProjectStage;
 
 public class StageMap {
     public static final Map<Integer, ProjectStage> STAGE_MAP = Map.of(
-        1, ProjectStage.INITIAL,
+        1, ProjectStage.PENDING_SALE,
         2, ProjectStage.INSPECTION,
         3, ProjectStage.ESTIMATE,
         4, ProjectStage.MITIGATION,

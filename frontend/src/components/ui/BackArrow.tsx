@@ -12,8 +12,8 @@ export const BackArrow: React.FC<IconProps> = ({
     size = 30,
     width,
     height,
-    strokeWidth = '2' ,
-    fill = 'green',
+    strokeWidth = '.5' ,
+    fill = 'white',
     ...props
 }) => {
     return (

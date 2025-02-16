@@ -92,7 +92,7 @@ export default function LogInCard() {
         <form onSubmit={handleSubmit}>
         <Card
         isBlurred
-        className='border-10  w-[35vw] h-[40vw]'
+        className='border-10 h-[clamp(27rem,40vh+10rem,40rem)] w-[clamp(20rem,25vw+5rem,45rem)]'
         style={{backgroundColor: '#09090b', border: '10px solid #090f21'}}
         shadow='md'
         >
@@ -108,7 +108,7 @@ export default function LogInCard() {
                     <div>
                         <Input
                             variant="bordered"
-                            className='w-[30vw]' 
+                            className='w-full' 
                             label='Email or Username' 
                             type='usernameOrEmail'
                             id='usernameOrEmail'
@@ -123,7 +123,7 @@ export default function LogInCard() {
                     <div>
                         <Input 
                             variant="bordered"
-                            className='w-[30vw]' 
+                            className='w-full' 
                             label='Password' 
                             type='password'
                             id='password'
