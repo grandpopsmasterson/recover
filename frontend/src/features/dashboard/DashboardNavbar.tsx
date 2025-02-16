@@ -78,7 +78,7 @@ const UserDropdown = memo(() => {
             <svg fill="none" height="36" viewBox="0 0 32 32" width="36">
                 <path
                     d="M4 6H20M4 12H20M4 18H20" 
-                    stroke="#4ade80" 
+                    stroke="#7828c8" 
                     strokeWidth="2" 
                     strokeLinecap="round" 
                     strokeLinejoin="round"
@@ -118,7 +118,7 @@ export default function DashboardNavBar() {
     const isActive = useCallback((path:string) => pathname === path, [pathname]);
 
     return (
-        <div className="fixed top-0 left-0 w-full">
+        <div className="fixed top-0 left-0 w-full bg-recovernavy">
             <Navbar>
                 <NavbarBrand>                
                     <NextLink href="/#" passHref>

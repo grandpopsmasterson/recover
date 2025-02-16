@@ -58,19 +58,19 @@ export default function ProjectDetailPage() {
     }
 
     return (
-        <div>
+        <div className='flex flex-col min-h-screen'>
             <div style={{height: '4rem'}}>
                 <DashboardNavBar />
             </div>
             <div>
                 <ProjectBar {...project} />
             </div>
-            <div className='pt-8 flex w-full gap-2'>
+            <div className='p-8 flex w-full gap-2 border-2 border-white-500 min-h-[clamp(20rem,20vw+10rem,45rem)]'>
                     {/* <Timeline /> */}
                 <div style={{ flex: '5 1 0' }}>
                     <LongProjectPage {...project} />
                 </div>
-                <div style={{ flex: '1 1 0' }} className='mr-20'>
+                <div style={{ flex: '1 1 0', height: '50vh' }} className='mr-20'>
                     <ActivityBox />
                 </div>
             </div>

@@ -1,6 +1,9 @@
-'use client';
-import { useRouter } from "next/navigation";
-import { useEffect } from "react"; // Import useEffect
+'use client'
+
+import { useRouter } from "next/navigation"
+//import Button1 from "@/components/ui/ButtonC"
+import ProjectBuckets from "@/features/dashboard/ProjectBuckets";
+import { Button } from "@heroui/button";
 
 export default function DashboardPage() {
     const router = useRouter();
@@ -19,7 +22,20 @@ export default function DashboardPage() {
     }
 
     return (
-        <div></div>
+        <div>
+            <div className="container mx-auto px-4 py-8">
+            <div className="flex items-end mb-4 mt-4">
+                <Button 
+                onPress={() => router.push('./createProject')} 
+                color="secondary"
+                className="ml-auto"
+                >
+                Create Project
+                </Button>
+            </div>
+                <ProjectBuckets />
+            </div>
+        </div>
     );
 }
 

@@ -4,7 +4,7 @@ import React, { useState, lazy, Suspense } from 'react';
 import { useRouter } from 'next/navigation';
 import type { SignupRequest, SignUpError, StepOneProps } from '../../types/signup';
 
-import { Card, CardBody, CardHeader, Progress, Input, Alert, CardFooter } from "@heroui/react";
+import { Card, CardBody, CardHeader, Progress, Input, Alert, CardFooter, Button } from "@heroui/react";
 import { BackArrow } from '@/components/ui/BackArrow';
 import { RecoverLogo } from '@/components/ui/RecoverLogo';
 import { NavLink } from '../dashboard/DashboardNavbar';
@@ -29,12 +29,13 @@ const StepOne: React.FC<StepOneProps> =({
     <div>
         <p>Enter your email</p><br/>
         <Input 
-            className='w-[100%] h-[50px] '
+            className='w-full h-[50px]'
             radius='sm' 
             label='Email' 
             type='email'
             id='email'
             name='email'
+            color='secondary'
             variant='bordered'
             value={formData.email}
             errorMessage='Please enter a valid email. Format: example@recover.com'
@@ -81,7 +82,7 @@ export default function SignUpCard() {
     };
 
     //stage validation with switch cases for error40 handling
-    const validateStage = (): boolean => {
+    const validateStage = (stage: number): boolean => {
         switch (stage) {
             case 1:
                 if (!validateEmail(formData.email)) {
@@ -179,7 +180,7 @@ export default function SignUpCard() {
     }
     
     const handleNext = (): void => {
-        if (validateStage()) {
+        if (validateStage(stage)) {
             setStage(prev => prev + 1);
         }
     };
@@ -203,7 +204,7 @@ export default function SignUpCard() {
 
         if (event){ event.preventDefault(); }
 
-            if (validateStage()) {
+            if (validateStage(stage)) {
                 console.log(formData); // TODO remove this at a later date ---------------------------------------------------------------------------
             
             try {
@@ -263,22 +264,21 @@ export default function SignUpCard() {
     };
 
     return(
-        <div className='w-[100%] h-[100%]'>
-            <form onSubmit={handleSubmit}>
+        
+    <form onSubmit={handleSubmit} className='h-[clamp(30rem,40vh+10rem,50rem)] w-[clamp(25rem,25vw+5rem,45rem)]'>
         <Card
-            
             isBlurred
-            className='border-10  w-[35vw] h-[40vw]'
-            style={{backgroundColor: '#09090b', border: '10px solid #090f21'}}
+            className='border-[10px] bg-recovernavy border-slate-500 min-h-[30rem] rounded-xl h-auto bg-clip-padding overflow-hidden'
             shadow='md'
         >
-            <CardHeader className='w-[100%]'>
-                <div className='w-[35vw]'>
+
+            <CardHeader className='w-[100%] '>
+                <div className='w-full'>
                     <div className='flex justify-center items-center'>
                         <RecoverLogo/>
                     </div> <br/>
                     <div className='w-[95%]'>
-                        <Progress aria-label='Progress bar' color='success' size='sm' value={progress[stage]} />
+                        <Progress aria-label='Progress bar' color='secondary' size='sm' value={progress[stage]} />
                     </div> <br/>
                     <div className='flex gap-4'>
                     {stage === 1 && (
@@ -300,38 +300,37 @@ export default function SignUpCard() {
                     </div>
                 </div>
             </CardHeader>
-            <CardBody>
+            <CardBody className='flex flex-col'>
                 {renderStep(stage)}
             </CardBody>
             <CardFooter>
-                <div className='mt-auto w-[35vw] mb-16'>
+                <div className='mt-auto w-full'>
                     {stage < 3 ? (
                         <Button1 
                             variant='ghost' 
-                            className='!bg-transparent font-bold opacity-100 text-white w-full h-[50px] mb-8' 
-                            color='success' 
+                            className='!bg-transparent font-bold opacity-100 !text-white w-full h-[50px] mb-8' 
+                            color='secondary' 
                             onPress={handleNext}
                             >
                                 Next
                             </Button1>
                     ) : (
-                        <Button1 
-                            color='success'
+                        <Button 
+                            color='secondary'
                             type='submit'
-                            variant='ghost' 
+                            variant='bordered' 
                             isDisabled={isLoading} 
-                            className='!bg-transparent font-bold opacity-100 text-white w-full h-[50px] mb-8'
+                            className='font-bold opacity-100 !text-white w-full h-[50px] mb-8 border-white hover:bg-purple-500'
                         >
                             {isLoading ? 'Signing up...' : 'Sign Up'}
-                        </Button1>
+                        </Button>
                     )}
-                    <div className='flex justify-center pt-4'>
-                        <p>Already have an account? <a className='text-green-500 underline' href='./Login'>Sign in</a></p>
+                    <div className='flex justify-center'>
+                        <p>Already have an account? <a className='text-purple-500 underline' href='./Login'>Sign in</a></p>
                     </div>
                 </div>
             </CardFooter>
         </Card>
-        </form>
-        </div>
+    </form>
     )
 }
