@@ -2,7 +2,6 @@
 import { useState, useEffect } from 'react'
 import { projectsApi } from '@/api/projectsApi'
 import { useRouter } from "next/navigation"
-import DashboardNavBar from "../../../features/dashboard/DashboardNavbar"
 import AltitudeListCard from '@/features/dashboard/AltitudeListCard'
 import { ProjectBucket } from '@/types/project'
 
@@ -30,29 +29,29 @@ export default function AltitudePage() {
     }, []);
 
     if (isLoading) {
-      return <div className="flex justify-center items-center h-screen">Loading...</div>;
+        return <div className="flex justify-center items-center h-screen">Loading...</div>;
     }
-  
+
     if (error) {
-      return <div className="flex justify-center items-center h-screen text-red-500">{error}</div>;
+        return <div className="flex justify-center items-center h-screen text-red-500">{error}</div>;
     }
 
     return (
-      <div>
-          {isLoading ? (
-              <div className="flex justify-center items-center h-[calc(100vh-64px)]">Loading...</div>
-          ) : error || buckets.length === 0 ? (
-              <div className="flex justify-center items-center h-[calc(100vh-64px)]">No projects to display</div>
-          ) : (
-              <div className="grid gap-4 p-4">
-                  {buckets.map((bucket) => (
-                      <AltitudeListCard
-                          key={bucket.id.toString()}
-                          {...bucket}
-                      />
-                  ))}
-              </div>
-          )}
-      </div>
+        <div>
+            {isLoading ? (
+                <div className="flex justify-center items-center h-[calc(100vh-64px)]">Loading...</div>
+            ) : error || buckets.length === 0 ? (
+                <div className="flex justify-center items-center h-[calc(100vh-64px)]">No projects to display</div>
+            ) : (
+                <div className="grid gap-4 p-4">
+                    {buckets.map((bucket) => (
+                        <AltitudeListCard
+                            key={bucket.id.toString()}
+                            {...bucket}
+                        />
+                    ))}
+                </div>
+            )}
+        </div>
     );
 }

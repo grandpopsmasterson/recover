@@ -1,5 +1,5 @@
 "use client"
-import { SearchIcon } from '@/components/ui/SearchIcon';
+import { SearchIcon } from '@/components/ui/icons/SearchIcon';
 //import Button1 from "@/components/ui/ButtonC";
 //import {useRouter} from "next/navigation"
 

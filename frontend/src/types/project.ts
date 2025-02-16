@@ -74,3 +74,33 @@ export interface ProjectBucket {
 }
 
 export type DetailsProps = Pick<LongProject, 'lossDate' | 'startDate'>;
+
+export interface FilterError {
+  message: string;
+  field?: string;
+}
+
+export interface GroupedProjects {
+  [key: string]: string[]; // TODO CREATE THE INTERFACE FOR RECIEVING DATA
+};
+
+export const filters = [
+  {name: 'Technicians', group: 'Group' },
+  {name: 'Technician: Tommy Technician', group: 'Technician' },
+  {name: 'Pending Sale', group: 'Stage'},
+  {name: 'Stage', group: 'Group'},
+  {name: 'Scope', group: 'Group'},
+  {name: 'Mitigation', group: 'Scope'},
+  {name: 'Contents', group: 'Scope'},
+  {name: 'Reconstruction', group: 'Scope'},
+  {name: 'Flags', group: 'Group' },
+  {name: 'Urgent', group: 'Flags' },
+  {name: 'Action Needed', group: 'Flags' },
+  {name: 'Up to Date', group: 'Flags' },
+  {name: 'Invoice', group: 'Group' },
+  {name: 'Invoice Pending', group: 'Invoice' },
+  {name: 'Invoice Sent', group: 'Invoice' },
+  {name: 'Estimate', group: 'Group' },
+  {name: 'Estimate Pending', group: 'Estimate' },
+  {name: 'Estimate Complete', group: 'Estimate' },
+]

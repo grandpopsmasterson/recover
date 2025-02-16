@@ -1,7 +1,8 @@
 "use client"
 
-import { SearchIcon } from '@/components/ui/SearchIcon';
-import { GroupedProjects, filters } from '@/types/dashboard';
+import { filterApi } from '@/api/filterApi';
+import { SearchIcon } from '@/components/ui/icons/SearchIcon';
+import { FilterError, filters, GroupedProjects } from '@/types/project';
 import { Autocomplete, AutocompleteItem, AutocompleteSection, Chip } from '@heroui/react'
 import { useEffect, useState } from 'react';
 
@@ -15,16 +16,30 @@ export default function FilterComponent() {
     const [pendingRemoval, setPendingRemoval] = useState<string | null>(null);
     const [groupedProjects, setGroupedProjects] = useState<GroupedProjects>({});
     const [isLoading, setIsLoading] = useState<boolean>(false);
+    const [error, setError] = useState<FilterError|string|null>(null);
     //const [isOpen, setIsOpen] = useState<boolean>(false);
 
-    const determineGroupBy = (filters: string[]): string => {
-        if (filters.some(f => f.toLowerCase().includes('stage'))) return 'STAGE';
-        if (filters.some(f => f.toLowerCase().includes('flags'))) return 'FLAGS';
-        if (filters.some(f => f.toLowerCase().includes('owner'))) return 'OWNER';
-        return 'STAGE'; // Default grouping
-    };
+    const fetchProjects = async (filters: string[]) => {
+        setIsLoading(true);
+        setError(null);
+        try {
+            const data = await filterApi.getGroupedProjects(filters);
+            setGroupedProjects(data);
+            console.log(data);
+        } catch (error) {
+            setError(error instanceof Error ? error.message : 'An error occurred');
+            console.error('Error fetching projects: ', error);
+        } finally {
+            setIsLoading(false);
+        }
+    }
 
-
+    useEffect(() => {
+        const debounceTimeout = setTimeout(() => {
+            fetchProjects(selectedFilters);
+        }, 300);
+        return () => clearTimeout(debounceTimeout);
+    }, [selectedFilters]);
 
     useEffect(() => {
         if (pendingSelection && !selectedFilters.includes(pendingSelection)) {
@@ -57,7 +72,7 @@ export default function FilterComponent() {
     
 
     return (
-        <div className="h-screen w-full flex justify-center items-center">
+        <div className="flex justify-center items-center">
             <div className="h-1/6 w-1/4 bg-recovernavy">
                 <Autocomplete
                 // data-open={isOpen}

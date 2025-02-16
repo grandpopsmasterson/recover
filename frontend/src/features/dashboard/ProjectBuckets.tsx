@@ -1,3 +1,5 @@
+'use client'
+
 import { projectsApi } from '@/api/projectsApi';
 import { ShortProject } from '@/types/project';
 import React, { useEffect, useState } from 'react'

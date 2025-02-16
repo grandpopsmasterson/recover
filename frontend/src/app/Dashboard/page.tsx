@@ -4,22 +4,13 @@ import { useRouter } from "next/navigation"
 //import Button1 from "@/components/ui/ButtonC"
 import ProjectBuckets from "@/features/dashboard/ProjectBuckets";
 import { Button } from "@heroui/button";
+import FilterComponent from "@/features/dashboard/FilterComponent";
+import AltitudeListCard from "@/features/dashboard/AltitudeListCard";
 
 export default function DashboardPage() {
     const router = useRouter();
 
-    useEffect(() => {
-        // Check if the user is on the /dashboard route
-        if (window.location.pathname === '/dashboard') {
-            router.push('/dashboard/altitude'); // Redirect to /dashboard/altitude
-        }
-    }, [router]); // Add router to the dependency array
-
-
-    // Render a loading message while redirecting (optional but good UX)
-    if (window.location.pathname === '/dashboard') {
-        return <div>Redirecting...</div>;
-    }
+    const id: bigint = BigInt(1);
 
     return (
         <div>
@@ -33,7 +24,11 @@ export default function DashboardPage() {
                 Create Project
                 </Button>
             </div>
+            <div>
+                <FilterComponent />
+            </div>
                 <ProjectBuckets />
+                <AltitudeListCard id={id} stage={'PENDING SALE'} total={24} redTotal={4} yellowTotal={18} greenTotal={19} revenue={68354} />
             </div>
         </div>
     );

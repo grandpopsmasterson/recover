@@ -2,7 +2,7 @@ import React from 'react';
 import { Input } from "@heroui/react";
 
 import { StepTwoProps } from '@/types/signup';
-import { EyeFilledIcon, EyeSlashFilledIcon } from '@/components/ui/eyePasswordIcon';
+import { EyeFilledIcon, EyeSlashFilledIcon } from '@/components/ui/icons/eyePasswordIcon';
 
 
 export default function StepTwo({ formData, handleInputChange, errors, handleKeyDown, confirmPassword }: StepTwoProps) {
