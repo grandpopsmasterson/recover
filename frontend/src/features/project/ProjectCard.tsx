@@ -31,7 +31,7 @@ export default function ProjectCard({
 
     return (
         <div className="w-full">
-            <Card className="bg-[#090F21] flex flex-col justify-center items-center">
+            <Card className="bg-[#c8c5cb] flex flex-col justify-center items-center">
                 <CardHeader>
                     <Image 
                         alt='house picture'
@@ -40,16 +40,16 @@ export default function ProjectCard({
                         width={225} 
                     />
                 </CardHeader>
-                <CardBody className="flex flex-col bg-[#09090B] h-full w-[90%] mb-2 rounded-md">
+                <CardBody className="flex flex-col bg-recovernavy h-full w-[90%] mb-2 rounded-md">
                 <span className="absolute top-2 right-2 pt-1 text-xs text-gray-400">{stage}</span>
                     <p className="text-xs">{streetAddress}</p>
                     <p className="text-xs">{`${city}, ${state}`}</p>
-                    <p className="text-xs text-green-500">{clientName}</p> <br/><br/>
+                    <p className="text-xs text-purple-500">{clientName}</p> <br/><br/>
                     <CardFooter className=" w-full p-0 rounded-b-sm flex justify-between">
                         <div className="overflow-hidden">
                             <Button1 
                                 color='success' 
-                                className="!bg-green-500 font-semibold h-6 w-10 rounded-sm rounded-b-sm"
+                                className="!bg-purple-500 font-semibold h-6 w-10 rounded-sm rounded-b-sm"
                                 onPress={handleViewProject}
                                 >View</Button1>
                         </div>
@@ -57,7 +57,7 @@ export default function ProjectCard({
                         <Dropdown>
                         <DropdownTrigger>
                         <div className="flex items-center gap-1 pr-1">
-                            <AvatarGroup className=" flex items-center scale-75" size="sm" max={3} radius="full" isBordered color="success"
+                            <AvatarGroup className=" flex items-center scale-75" size="sm" max={3} radius="full" isBordered color="secondary"
                             >
                                 {assignedRoles.map((user) => (
                                     <Avatar key={user.id.toString()} src={defaultUser || user.profileImageUrl} />

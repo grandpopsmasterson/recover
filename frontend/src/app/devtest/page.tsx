@@ -1,104 +1,162 @@
 "use client"
-import Button1 from "@/components/ui/ButtonC";
+import { SearchIcon } from '@/components/ui/SearchIcon';
+//import Button1 from "@/components/ui/ButtonC";
 //import {useRouter} from "next/navigation"
 
-import { Card, CardHeader, CardBody, CardFooter, Image, Dropdown, DropdownTrigger, DropdownMenu, DropdownItem, AvatarGroup, Avatar, User} from '@heroui/react'
+import { Autocomplete, AutocompleteItem, AutocompleteSection, Chip } from '@heroui/react'
+import { useEffect, useState } from 'react';
 //import './../../images/house1.png';
 // const recoverGreen = "#4ade80";
 
 
 
-export default function devtest() {
+export default function Devtest() {
 
-  const DownArrow = () => {
-    return (
-      <svg width="24" height="24" viewBox="0 0 24 24">
-        <path fillRule="evenodd" clipRule='evenodd' d="M4.29289 8.29289C4.68342 7.90237 5.31658 7.90237 5.70711 8.29289L12 14.5858L18.2929 8.29289C18.6834 7.90237 19.3166 7.90237 19.7071 8.29289C20.0976 8.68342 20.0976 9.31658 19.7071 9.70711L12.7071 16.7071C12.3166 17.0976 11.6834 17.0976 11.2929 16.7071L4.29289 9.70711C3.90237 9.31658 3.90237 8.68342 4.29289 8.29289Z"
-        fill="#22C55E"
-        >
+  const [selectedFilters, setSelectedFilters] = useState<string[]>([]);
+  const [inputValue, setInputValue] = useState<string>('');
+  const [pendingSelection, setPendingSelection] = useState<string | null>(null);
+  const [pendingRemoval, setPendingRemoval] = useState<string | null>(null);
+  //const [isOpen, setIsOpen] = useState<boolean>(false);
 
-        </path>
-      </svg>
-    )
-  }
+  useEffect(() => {
+    if (pendingSelection && !selectedFilters.includes(pendingSelection)) {
+      setSelectedFilters(prev => [...prev, pendingSelection]);
+      setInputValue('');
+      setPendingSelection(null);
+      //setIsOpen(false);
+    }
+  }, [pendingSelection, selectedFilters]);
+
+  const handleSelectionChange = (value: string) => {
+    if (value) {
+      setPendingSelection(value);
+
+    }
+  };
+
+  useEffect(() => {
+    if (pendingRemoval) {
+      setSelectedFilters(prev => prev.filter(filter => filter !== pendingRemoval));
+      setPendingRemoval(null);
+    }
+  }, [pendingRemoval, selectedFilters]);
+
+  const removeFilter = (filterToRemove: string) => {
+    setPendingRemoval(filterToRemove);
+  };
+
+  
+  const filters = [
+    {name: 'Technicians', group: 'Group' },
+    {name: 'Tommy Technician', group: 'Technician' },
+    {name: 'Flags', group: 'Group' },
+    {name: 'Flags: Urgent', group: 'Flags' },
+    {name: 'Flags: Action Needed', group: 'Flags' },
+    {name: 'Flags: Up to Date', group: 'Flags' },
+    {name: 'Invoice', group: 'Group' },
+    {name: 'Invoice Pending', group: 'Invoice' },
+    {name: 'Invoice Sent', group: 'Invoice' },
+    {name: 'Estimate', group: 'Group' },
+    {name: 'Estimate Pending', group: 'Estimate' },
+    {name: 'Estimate Complete', group: 'Estimate' },
+  ]
 
   return (
     <div className="h-screen w-full flex justify-center items-center">
-    <div>
-      <Card className="bg-[#090F21] flex flex-col justify-center items-center">
-        <CardHeader>
-          <Image alt='house picture' className="rounded-md" src="./house1.png" width={225} />
-        </CardHeader>
-        <CardBody className="flex flex-col bg-[#09090B] h-full w-[90%] mb-2 rounded-md">
-          <span className="absolute top-2 right-2 pt-1 text-xs text-gray-400">PENDING SALE</span>
-          <p className="text-xs">123 Normal Lane</p>
-          <p className="text-xs">Scottsdale, AZ</p>
-          <p className="text-xs text-green-500">Lee, Nathan</p> <br/>
-        <CardFooter className=" w-full p-0 rounded-b-sm flex justify-between">
-          <div className="overflow-hidden">
-          <Button1 color='success' className="!bg-green-500 font-semibold h-6 rounded-sm rounded-b-sm">View</Button1>
-          </div>
-          <div className="flex rounded-md">
-          <Dropdown>
-          <DropdownTrigger>
-          <div className="flex items-center gap-1 pr-1">
-              <AvatarGroup className=" flex items-center scale-75 -mr-3" size="sm" max={3} radius="full" isBordered color="success"
-              >
-                <Avatar src="https://i.pravatar.cc/150?u=a042581f4e29026024d" />
-                <Avatar src="https://i.pravatar.cc/150?u=a04258a2462d826712d" />
-                <Avatar src="https://i.pravatar.cc/150?u=a042581f4e29026704d" />
-                <Avatar src="https://i.pravatar.cc/150?u=a04258114e29026302d" />
-                <Avatar src="https://i.pravatar.cc/150?u=a04258114e29026702d" />
-                <Avatar src="https://i.pravatar.cc/150?u=a04258114e29026708c" />
-              </AvatarGroup>
-              <div className="-mr-2">
-              <DownArrow />
-              </div>
-              </div>
-            </DropdownTrigger>
-            <DropdownMenu aria-label="Static Actions" style={{background: '#09090b', border: '5px solid #090f21', borderRadius: '5px'}}>
-              <DropdownItem key="user1">
-                <User
-                  avatarProps={{
-                    src: "https://i.pravatar.cc/150?u=a042581f4e29026024d",
-                  }}
-                  description="Project Manager"
-                  name="Martin Manager"
-                />
-              </DropdownItem>
-              <DropdownItem key="user2">
-                <User
-                  avatarProps={{
-                    src: "https://i.pravatar.cc/150?u=a04258a2462d826712d",
-                  }}
-                  description="Lead Technician"
-                  name="Tommy Technician"
-                />
-              </DropdownItem>
-              <DropdownItem key="user3">
-                <User
-                  avatarProps={{
-                    src: "https://i.pravatar.cc/150?u=a042581f4e29026704d",
-                  }}
-                  description="Technician"
-                  name="Timmy Technician"
-                />
-              </DropdownItem>
-              <DropdownItem key="user4">
-                <User
-                  avatarProps={{
-                    src: "https://i.pravatar.cc/150?u=a04258114e29026708c",
-                  }}
-                  description="Client"
-                  name="Cynthia Client"
-                />
-              </DropdownItem>
-            </DropdownMenu>
-          </Dropdown>
-          </div>
-        </CardFooter>
-        </CardBody>
-      </Card>
+      <div className="h-1/6 w-1/6 bg-recovernavy">
+      <Autocomplete
+      // data-open={isOpen}
+      onSelectionChange={(value) => handleSelectionChange(value as string)}
+      inputValue={inputValue}
+      onInputChange={(value) => setInputValue(value)}
+      aria-label="Select an employee"
+      className='p-4'
+      classNames={{
+        base: "max-w-xs",
+        listboxWrapper: "max-h-[320px]",
+        selectorButton: "text-default-500",
+      }}
+      // defaultItems={filters}
+      inputProps={{
+        classNames: {
+          input: "ml-1",
+          inputWrapper: "h-[48px]",
+        },
+      }}
+      listboxProps={{
+        hideSelectedIcon: true,
+        itemClasses: {
+          base: [
+            "rounded-medium",
+            "text-black",
+            "transition-opacity",
+            "data-[hover=true]:text-purple-500",
+            "dark:data-[hover=true]:bg-default-50",
+            "data-[pressed=true]:opacity-70",
+            "data-[hover=true]:bg-default-200",
+            "data-[selectable=true]:focus:bg-default-100",
+            "data-[focus-visible=true]:ring-default-500",
+          ],
+        },
+      }}
+      placeholder="Enter filters"
+      popoverProps={{
+        offset: 10,
+        classNames: {
+          base: "rounded-large",
+          content: "p-1 border-small border-default-100 bg-background",
+        },
+      }}
+      radius="full"
+      startContent={<SearchIcon className="text-default-400" size={20} strokeWidth={2.5} />}
+      variant="bordered"
+    >
+      <AutocompleteSection showDivider title='Group'>
+      {filters.map((item) => (
+        item.group == 'Group' 
+          ? (
+              
+              <AutocompleteItem key={item.name} textValue={item.name}>
+                <div className="flex justify-between items-center">
+                  <div className="flex gap-2 items-center">
+                    
+                    <div className="flex flex-col">
+                      <span className="text-small">{item.name}</span>
+                    </div>
+                  </div>
+        
+                </div>
+              </AutocompleteItem>
+              
+          )
+          : (<></>)
+      ))}
+      </AutocompleteSection>
+      <AutocompleteSection showDivider title='Values'>
+      {filters.map((item) => (
+        item.group !== 'Group' 
+          ? (
+              
+              <AutocompleteItem key={item.name} textValue={item.name}>
+                <div className="flex justify-between items-center">
+                  <div className="flex gap-2 items-center">
+                    
+                    <div className="flex flex-col">
+                      <span className="text-small">{item.name}</span>
+                    </div>
+                  </div>
+        
+                </div>
+              </AutocompleteItem>
+              
+          )
+          : (<></>)
+      ))}
+      </AutocompleteSection>
+    </Autocomplete>
+    <div className='space-x-2 space-y-2'>
+      {selectedFilters.map((filter) => <Chip key={filter} onClose={() => removeFilter(filter) }>{filter}</Chip>)}
+    </div>
     </div>
     </div>
   );

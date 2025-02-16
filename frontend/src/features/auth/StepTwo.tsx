@@ -13,16 +13,35 @@ export default function StepTwo({ formData, handleInputChange, errors, handleKey
     const toggleVisibilityConf = (): void => setIsVisibleConf(!isVisibleConf);
 
     return (
-        <div>
+        <div className='space-y-4'>
+            <div>
+                <p>Create username</p>
+                <Input 
+                    required
+                    className='w-full'
+                    label='Username'
+                    type='username'
+                    id='username'
+                    name='username'
+                    variant='bordered'
+                    color='secondary'
+                    value={formData.username}
+                    onChange={handleInputChange}
+                    onKeyDown={handleKeyDown}
+                    errorMessage={errors?.message}
+                    isInvalid={errors === null ? false : errors.field == 'username' ? true : false}
+                />
+            </div>
             <div>
                 <p>Create a password</p>
                 <Input 
-                className='w-[30vw]' 
+                className='w-full' 
                 label='Password' 
                 type={isVisible ? 'text' : 'password'}
                 id='password'
                 name='password'
                 variant='bordered'
+                color='secondary'
                 value={formData.password}
                 onChange={handleInputChange}
                 errorMessage={errors?.message}
@@ -42,17 +61,18 @@ export default function StepTwo({ formData, handleInputChange, errors, handleKey
                     )}
                     </button>
                 }
-                /> <br/>
+                /> 
             </div>
             <div>
                 <p>Confirm password</p>
                 <Input 
-                    className='w-[30vw]' 
+                    className='w-full' 
                     label='Password Confirmation' 
                     type={isVisibleConf ? "text" : "password"}
                     id='confirmPassword'
                     name='confirmPassword'
                     variant='bordered'
+                    color='secondary'
                     value={confirmPassword}
                     onChange={handleInputChange}
                     onKeyDown={handleKeyDown}
@@ -75,23 +95,7 @@ export default function StepTwo({ formData, handleInputChange, errors, handleKey
                 />
                 <br/>
             </div>
-            <div>
-                <p>Create username</p>
-                <Input 
-                    required
-                    className='w-[30vw]'
-                    label='Username'
-                    type='username'
-                    id='username'
-                    name='username'
-                    variant='bordered'
-                    value={formData.username}
-                    onChange={handleInputChange}
-                    onKeyDown={handleKeyDown}
-                    errorMessage={errors?.message}
-                    isInvalid={errors === null ? false : errors.field == 'username' ? true : false}
-                />
-            </div> <br/>
+            <br/>
         </div>
     );
 }

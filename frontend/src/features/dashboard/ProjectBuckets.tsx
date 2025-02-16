@@ -1,7 +1,7 @@
 import { projectsApi } from '@/api/projectsApi';
 import { ShortProject } from '@/types/project';
 import React, { useEffect, useState } from 'react'
-import DashboardCard from '../project/ProjectCard';
+import ProjectCard from '../project/ProjectCard';
 
 const ProjectBuckets = () => {
     const [projects, setProjects] = useState<ShortProject[]>([]);
@@ -33,7 +33,7 @@ const ProjectBuckets = () => {
                     : error 
                     ? <p>{error}</p> 
                     : projects.map((project) => (
-                        <DashboardCard
+                        <ProjectCard
                             key={project.id}
                             {...project}
                         />

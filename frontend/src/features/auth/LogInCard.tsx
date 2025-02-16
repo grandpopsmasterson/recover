@@ -89,68 +89,66 @@ export default function LogInCard() {
         };
 
     return (
-        <div className="min-h-screen w-full flex items-center justify-center bg-[#your-bg-color]">
-            <form onSubmit={handleSubmit}>
-            <Card
-            isBlurred
-            className="h-[clamp(30rem,30vw+10rem,45rem)]"
-            style={{backgroundColor: '#09090b', border: '10px solid #090f21'}}
-            shadow='md'
-            >
-                <CardHeader>
+        <form onSubmit={handleSubmit}>
+        <Card
+        isBlurred
+        className='border-10 h-[clamp(27rem,40vh+10rem,40rem)] w-[clamp(20rem,25vw+5rem,45rem)]'
+        style={{backgroundColor: '#09090b', border: '10px solid #090f21'}}
+        shadow='md'
+        >
+            <CardHeader>
+                <div>
+                    <RecoverLogo />
+                </div>
+                <div>
+                    <h1>Login</h1>
+                </div>
+            </CardHeader>
+            <CardBody>
                     <div>
-                        <RecoverLogo />
-                    </div>
+                        <Input
+                            variant="bordered"
+                            className='w-full' 
+                            label='Email or Username' 
+                            type='usernameOrEmail'
+                            id='usernameOrEmail'
+                            name='usernameOrEmail'
+                            value={loginData.usernameOrEmail}
+                            onChange={handleInputChange}
+                            errorMessage='Enter a valid email or username'
+                            isInvalid={error === null ? false : error.field == 'usernameOrEmail' ? true : false}
+                        />
+                    </div> 
+                    <br/>
                     <div>
-                        <h1>Login</h1>
-                    </div>
-                </CardHeader>
-                <CardBody>
-                        <div>
-                            <Input
-                                variant="bordered"
-                                className='w-[30vw]' 
-                                label='Email or Username' 
-                                type='usernameOrEmail'
-                                id='usernameOrEmail'
-                                name='usernameOrEmail'
-                                value={loginData.usernameOrEmail}
-                                onChange={handleInputChange}
-                                errorMessage='Enter a valid email or username'
-                                isInvalid={error === null ? false : error.field == 'usernameOrEmail' ? true : false}
-                            />
-                        </div> 
-                        <br/>
-                        <div>
-                            <Input 
-                                variant="bordered"
-                                className='w-[30vw]' 
-                                label='Password' 
-                                type='password'
-                                id='password'
-                                name='password'
-                                value={loginData.password}
-                                onChange={handleInputChange}
-                                errorMessage='Enter a valid password'
-                                isInvalid={error === null ? false : error.field == 'password' ? true : false}
-                            />
-                        </div> <br/>
-                        <Button1 
-                            variant="ghost" 
-                            color="success" 
-                            className="!bg-transparent font-bold !text-green-500" 
-                            type="submit"
-                            >
-                            {isLoading ? 'Logging in...' : 'Log In'}
-                        </Button1>
-                </CardBody>
-                <CardFooter className="flex justify-center">
-                    <div className='flex justify-center pt-4'>
-                        <p>Don&apos;t have an account? <a className='text-green-500 underline' href='./SignUp'>Sign up</a></p>
-                    </div>
-                </CardFooter>
-            </Card>
-            </form>
-        </div>
+                        <Input 
+                            variant="bordered"
+                            className='w-full' 
+                            label='Password' 
+                            type='password'
+                            id='password'
+                            name='password'
+                            value={loginData.password}
+                            onChange={handleInputChange}
+                            errorMessage='Enter a valid password'
+                            isInvalid={error === null ? false : error.field == 'password' ? true : false}
+                        />
+                    </div> <br/>
+                    <Button1 
+                        variant="ghost" 
+                        color="success" 
+                        className="!bg-transparent font-bold !text-green-500" 
+                        type="submit"
+                        >
+                        {isLoading ? 'Logging in...' : 'Log In'}
+                    </Button1>
+            </CardBody>
+            <CardFooter className="flex justify-center">
+                <div className='flex justify-center pt-4'>
+                    <p>Don&apos;t have an account? <a className='text-green-500 underline' href='./SignUp'>Sign up</a></p>
+                </div>
+            </CardFooter>
+        </Card>
+        </form>
     )
 }
