@@ -1,17 +1,17 @@
 'use client'
 
-import React, { useState, lazy, Suspense } from 'react';
 import { useRouter } from 'next/navigation';
-import type { SignupRequest, SignUpError, StepOneProps } from '../../types/signup';
+import React, { lazy, Suspense, useState } from 'react';
+import type { SignUpError, SignupRequest, StepOneProps } from '../../types/signup';
 
-import { Card, CardBody, CardHeader, Progress, Input, Alert, CardFooter, Button } from "@heroui/react";
-import { BackArrow } from '@/components/ui/BackArrow';
-import { RecoverLogo } from '@/components/ui/RecoverLogo';
-import { NavLink } from '../dashboard/DashboardNavbar';
-import Button1 from '@/components/ui/ButtonC';
-import { WrapperNoHREF } from '@/components/ui/WrapperNoHREF';
-import { validateEmail, validatePassword } from '@/api/utils/validation';
 import { signupApi } from '@/api/authApi';
+import { validateEmail, validatePassword } from '@/api/utils/validation';
+import Button1 from '@/components/ui/ButtonC';
+import { BackArrow } from '@/components/ui/icons/BackArrow';
+import { RecoverLogo } from '@/components/ui/icons/RecoverLogo';
+import { WrapperNoHREF } from '@/components/ui/WrapperNoHREF';
+import { Alert, Button, Card, CardBody, CardFooter, CardHeader, Input, Progress } from "@heroui/react";
+import { NavLink } from '../dashboard/DashboardNavbar';
 
 
 
@@ -217,7 +217,7 @@ export default function SignUpCard() {
             }
         
         
-            router.push('./Login')
+            router.push('./login')
         
         }
     }
@@ -265,7 +265,7 @@ export default function SignUpCard() {
 
     return(
         
-    <form onSubmit={handleSubmit} className='h-[clamp(30rem,40vh+10rem,50rem)] w-[clamp(25rem,25vw+5rem,45rem)]'>
+    <form onSubmit={handleSubmit} className='h-[clamp(30rem,40vh+10rem,50rem)] w-[clamp(25rem,25vw+5rem,45rem)] '>
         <Card
             isBlurred
             className='border-[10px] bg-recovernavy border-slate-500 min-h-[30rem] rounded-xl h-auto bg-clip-padding overflow-hidden'
@@ -326,7 +326,7 @@ export default function SignUpCard() {
                         </Button>
                     )}
                     <div className='flex justify-center'>
-                        <p>Already have an account? <a className='text-purple-500 underline' href='./Login'>Sign in</a></p>
+                        <p>Already have an account? <a className='text-purple-500 underline' href='./login'>Sign in</a></p>
                     </div>
                 </div>
             </CardFooter>

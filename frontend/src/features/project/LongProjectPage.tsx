@@ -3,7 +3,7 @@
 // import {useRouter} from "next/navigation";
 import { Dropdown, DropdownTrigger, AvatarGroup, Avatar, DropdownMenu, DropdownItem, User, Tabs, Tab, divider} from '@heroui/react';
 import { LongProject } from "@/types/project";
-import { DownArrow } from "@/components/ui/DownArrow";
+import { DownArrow } from "@/components/ui/icons/DownArrow";
 import Details from './projectContent/Details';
 
 export default function LongProjectPage({

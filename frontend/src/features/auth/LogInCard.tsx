@@ -1,9 +1,8 @@
 'use client'
 import { useRouter } from "next/navigation";
 import { useState } from "react";
-import { Card, CardHeader, CardBody, Input, CardFooter } from "@heroui/react";
-import { RecoverLogo } from "@/components/ui/RecoverLogo";
-import Button1 from "@/components/ui/ButtonC";
+import { Card, CardHeader, CardBody, Input, CardFooter, Button } from "@heroui/react";
+import { RecoverLogo } from "@/components/ui/icons/RecoverLogo";
 import { LoginCredentials } from "@/types/login";
 import { loginApi } from "@/api/authApi";
 
@@ -92,8 +91,7 @@ export default function LogInCard() {
         <form onSubmit={handleSubmit}>
         <Card
         isBlurred
-        className='border-10 h-[clamp(27rem,40vh+10rem,40rem)] w-[clamp(20rem,25vw+5rem,45rem)]'
-        style={{backgroundColor: '#09090b', border: '10px solid #090f21'}}
+        className='border-10 h-[clamp(27rem,40vh+10rem,40rem)] w-[clamp(20rem,25vw+5rem,45rem)] bg-recovernavy border-[10px] border-slate-500'
         shadow='md'
         >
             <CardHeader>
@@ -108,11 +106,15 @@ export default function LogInCard() {
                     <div>
                         <Input
                             variant="bordered"
-                            className='w-full' 
+                            className='w-full'
+                            classNames={{
+                                label: '!text-white'
+                            }} 
                             label='Email or Username' 
                             type='usernameOrEmail'
                             id='usernameOrEmail'
                             name='usernameOrEmail'
+                            color="secondary"
                             value={loginData.usernameOrEmail}
                             onChange={handleInputChange}
                             errorMessage='Enter a valid email or username'
@@ -123,29 +125,33 @@ export default function LogInCard() {
                     <div>
                         <Input 
                             variant="bordered"
-                            className='w-full' 
+                            className='w-full'
+                            classNames={{
+                                label: '!text-white'
+                            }} 
                             label='Password' 
                             type='password'
                             id='password'
                             name='password'
+                            color="secondary"
                             value={loginData.password}
                             onChange={handleInputChange}
                             errorMessage='Enter a valid password'
                             isInvalid={error === null ? false : error.field == 'password' ? true : false}
                         />
                     </div> <br/>
-                    <Button1 
-                        variant="ghost" 
-                        color="success" 
-                        className="!bg-transparent font-bold !text-green-500" 
+                    <Button 
+                        variant="bordered" 
+                        color="secondary" 
+                        className="border-white font-bold !text-white hover:bg-purple-500" 
                         type="submit"
                         >
                         {isLoading ? 'Logging in...' : 'Log In'}
-                    </Button1>
+                    </Button>
             </CardBody>
             <CardFooter className="flex justify-center">
                 <div className='flex justify-center pt-4'>
-                    <p>Don&apos;t have an account? <a className='text-green-500 underline' href='./SignUp'>Sign up</a></p>
+                    <p>Don&apos;t have an account? <a className='text-purple-500 underline' href='./signup'>Sign up</a></p>
                 </div>
             </CardFooter>
         </Card>

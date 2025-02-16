@@ -1,16 +1,16 @@
 'use client'
 
+import { projectsApi } from "@/api/projectsApi";
 import { validateEmail, validatePhonenumber } from "@/api/utils/validation";
-import { RecoverLogo } from "@/components/ui/RecoverLogo";
+import Button1 from "@/components/ui/ButtonC";
+import { BackArrow } from "@/components/ui/icons/BackArrow";
+import { RecoverLogo } from "@/components/ui/icons/RecoverLogo";
+import { WrapperNoHREF } from "@/components/ui/WrapperNoHREF";
 import { CreateProject, CreateProjectError, StepOneProps } from "@/types/createProject";
 import { Alert, Card, CardBody, CardFooter, CardHeader, Input, Progress } from "@heroui/react";
 import { useRouter } from "next/navigation";
-import { lazy, Suspense, useEffect, useState } from "react";
+import { lazy, Suspense, useState } from "react";
 import { NavLink } from "../dashboard/DashboardNavbar";
-import { BackArrow } from "@/components/ui/BackArrow";
-import { WrapperNoHREF } from "@/components/ui/WrapperNoHREF";
-import Button1 from "@/components/ui/ButtonC";
-import { projectsApi } from "@/api/projectsApi";
 
 // Lazy loading the other components
 
@@ -96,7 +96,7 @@ export default function MainCard() {
     const [errors, setErrors] = useState<CreateProjectError | null>(null);
     //sliging animation state
     const [slideDirection, setSlideDirection] = useState<string>('');
-const [currentContent, setCurrentContent] = useState<React.ReactNode | null>(null);
+    //const [currentContent, setCurrentContent] = useState<React.ReactNode | null>(null);
 
     const [localForm, setLocalForm] = useState({
         firstName: '',
@@ -113,7 +113,7 @@ const [currentContent, setCurrentContent] = useState<React.ReactNode | null>(nul
         city: '',
         state: '',
         zipcode: '',
-        stage: 1,
+        stage: '',
         projectType: '',
         carrier: '',
         //assignedUser: '',
@@ -134,21 +134,30 @@ const [currentContent, setCurrentContent] = useState<React.ReactNode | null>(nul
         'Other'
     ];
     
-    const lossType: string[] = [
-        'Fire',
-        'Clean Water - Cat 1',
-        'Grey Water - Cat 2',
-        'Black Water - Cat 3',
-        'Wind',
-        'Mold',
-        'Chemical',
-        'Structural'
+    const lossType: string[] = [ //TODO make all the string[] work like the project type does if possible, display lowercase, but send to backend uppercase
+        'FIRE',
+        'WATER',
+        'WIND',
+        'MOLD',
+        'CHEMICAL',
+        'STRUCTURAL'
     ]
 
     const scope: string[] = [
-        'Mitigation',
-        'Contents',
-        'Reconstruction'
+        'MITIGATION',
+        'CONTENTS',
+        'RECONSTRUCTION'
+    ]
+
+    const projStage: string[] = [
+        'PENDING_SALE',
+        'PRE_PRODUCTION',
+        'ESTIMATION',
+        'MITIGATION',
+        'RECONSTRUCTION',
+        'PENDING_INVOICE',
+        'ACCOUNTS_RECEIVABLE',
+        'COMPLETE'
     ]
 
     const progress: Record<number, number> = {
@@ -220,26 +229,32 @@ const [currentContent, setCurrentContent] = useState<React.ReactNode | null>(nul
                     setErrors({ message: 'Please enter the year the property was built', field: 'yearBuilt'});
                     return false;
                 }
+                break;
+            case 5:
+                if(!formData.stage) {
+                    setErrors({ message: 'Please select a stage', field: 'stage'});
+                    return false;
+                }
         }
         return true;
     }
 
     //prefetch the other steps
-    const prefetchOtherSteps = () => {
-        const prefetchStep = async () => {
-            await Promise.all([
-                import('./steps/StepTwo'),
-                import('./steps/StepThree'),
-                import('./steps/StepFour'),
-                import('./steps/StepFive')
-            ]);
-        };
-        if ('requestIdleCallback' in window) {
-            window.requestIdleCallback(() => prefetchStep());
-        } else {
-            setTimeout(prefetchStep, 1000);
-        }
-    };
+    // const prefetchOtherSteps = () => {
+    //     const prefetchStep = async () => {
+    //         await Promise.all([
+    //             import('./steps/StepTwo'),
+    //             import('./steps/StepThree'),
+    //             import('./steps/StepFour'),
+    //             import('./steps/StepFive')
+    //         ]);
+    //     };
+    //     if ('requestIdleCallback' in window) {
+    //         window.requestIdleCallback(() => prefetchStep());
+    //     } else {
+    //         setTimeout(prefetchStep, 1000);
+    //     }
+    // };
 
     //useEffect(() => { prefetchOtherSteps(); })
 
@@ -288,6 +303,15 @@ const [currentContent, setCurrentContent] = useState<React.ReactNode | null>(nul
         setErrors(null); //? is this necessary???
     }
 
+    const handleStageChange = (projStage: string): void => {
+        setFormData(prev => ({
+            ...prev,
+            stage: projStage
+        }));
+        console.log(projStage);
+        setErrors(null);
+    }
+
     const handleNext = (): void => {
         if (validateStage()) {
             setSlideDirection('slide-out-left');
@@ -302,9 +326,9 @@ const [currentContent, setCurrentContent] = useState<React.ReactNode | null>(nul
         setStage(prev => prev - 1);
     };
 
-    const handleHome = (): void => {
-        router.push('./dashboard');
-    };
+    // const handleHome = (): void => {
+    //     router.push('./dashboard');
+    // };
 
     const handleKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
         if (event.key === 'Enter') {
@@ -394,7 +418,9 @@ const [currentContent, setCurrentContent] = useState<React.ReactNode | null>(nul
                 return (
                     <Suspense fallback={<div>Loading...</div>}>
                         <StepFive 
-                        
+                            formData={formData}
+                            projStage={projStage}
+                            handleStageChange={handleStageChange}
                         />
                     </Suspense>
                 )
@@ -404,7 +430,7 @@ const [currentContent, setCurrentContent] = useState<React.ReactNode | null>(nul
     };
 
     return (
-        <div className='w-[100%] h-[100%]'>
+        <div className='flex justify-center items-center w-[100%] h-[100%]'>
             <form onSubmit={handleSubmit}>
                 <div className="relarive overflow-hidden">
                     <div
@@ -414,17 +440,16 @@ const [currentContent, setCurrentContent] = useState<React.ReactNode | null>(nul
                             ${slideDirection === 'initial' ? 'translate-x-0' : ''}`}
                     >
         <Card
-            className={`border-10 w-[40vw] h-[40vw] max-w-[40vw]`}
-            style={{backgroundColor: '#09090b', border: '10px solid #090f21'}}
+            className={`h-[clamp(40rem,40vh+10rem,60rem)] w-[clamp(35rem,25vw+5rem,55rem)] bg-recovernavy border-[10px] border-slate-500`}
             shadow='md'
         >
-            <CardHeader className='w-[100%]'>
-                <div className='w-[35vw]'>
+            <CardHeader className='w-full'>
+                <div className='w-full'>
                     <div className='flex justify-center items-center'>
                         <RecoverLogo/>
                     </div> <br/>
-                    <div className='w-[95%]'>
-                        <Progress aria-label='Progress bar' color="success" size='sm' value={progress[stage]} />
+                    <div className='w-full'>
+                        <Progress aria-label='Progress bar' color="secondary" size='sm' value={progress[stage]} />
                     </div> <br/>
                     <div className='grid grid-cols-[auto_1fr] items-center relative gap-4'>
                         <div className="flex items-center gap-4">
@@ -454,7 +479,7 @@ const [currentContent, setCurrentContent] = useState<React.ReactNode | null>(nul
             </CardBody>
             <CardFooter>
                 <div className='mt-auto w-[35vw] mb-16'>
-                    {stage < 4 ? (
+                    {stage < 5 ? (
                         <Button1 
                             variant='ghost' 
                             className='!bg-transparent font-bold opacity-100 text-white w-full h-[50px] mb-8' 
