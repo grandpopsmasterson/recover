@@ -51,7 +51,8 @@ public class Project {
     @Column(name = "loss_date")
     private LocalDate lossDate;
 
-    @Column(name = "received_date")
+    @Column(name = "received_date", insertable = false, updatable = false, 
+        columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
     private LocalDate receivedDate;
 
     @Column(name = "cat_reference")

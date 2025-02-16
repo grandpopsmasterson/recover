@@ -26,7 +26,7 @@ export default function ProjectCard({
     //console.log('Card props:', { streetAddress, clientName, assignedRoles, stage, city, state }); // Debug log
 
     const handleViewProject = () => {
-        router.push(`/projects/${id}`);  // Navigate to project detail page
+        router.push(`/dashboard/projects/${id}`);  // Navigate to project detail page
     };
 
     return (

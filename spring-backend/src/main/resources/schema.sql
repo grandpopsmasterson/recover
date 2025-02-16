@@ -30,7 +30,7 @@ CREATE TABLE IF NOT EXISTS projects (
     claim_number VARCHAR(20),              -- Changed to VARCHAR for phone numbers
     start_date TIMESTAMP,
     loss_date TIMESTAMP,
-    received_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    received_date DATE DEFAULT CURRENT_DATE,
     cat_reference VARCHAR(20),
     policy_start TIMESTAMP,
     policy_expiration TIMESTAMP,
@@ -40,10 +40,18 @@ CREATE TABLE IF NOT EXISTS projects (
     state VARCHAR(20),                     -- Changed from CHAR to VARCHAR
     zipcode VARCHAR(20),                   -- Changed from CHAR to VARCHAR
     carrier VARCHAR(50),                   -- Increased length
-    project_stage VARCHAR(20),
+    stage VARCHAR(20),
     project_type VARCHAR(20),
     loss_type VARCHAR(20),
     scope VARCHAR(20)              -- Removed trailing comma
+);
+
+CREATE TABLE IF NOT EXISTS flags (
+    id BIGSERIAL PRIMARY KEY,
+    status VARCHAR(20),           
+    event VARCHAR(20),
+    project_id BIGINT NOT NULL,
+    FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE
 );
 
 CREATE TABLE IF NOT EXISTS floors (

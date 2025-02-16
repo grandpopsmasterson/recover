@@ -7,7 +7,7 @@ export default function HomeNavBar() {
   const [isOpen, setIsOpen] = useState(false);
 
   return (
-    <nav className="max-w-screen-xl w-full mx-auto px-4 py-3">
+    <nav className="max-w-screen-xl bg-white rounded-full mx-auto m-2 py-2">
             <div className="flex justify-between px-4 items-center">
             {/* Logo */}
                 <Link href="/" className="flex items-center">
@@ -22,7 +22,7 @@ export default function HomeNavBar() {
             <div className="hidden md:flex items-center space-x-2 ml-12">
                 {/* Who We Serve Dropdown */}
                 <div className="relative group">
-                <button className="flex items-center space-x-1 hover:text-gray-600">
+                <button className="flex items-center px-3 py-1 rounded-lg border-1 border-transparent text-[16px] text-black hover:border-black transition-all duration-200">
                     <span>Who we serve</span>
                     <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
@@ -42,17 +42,17 @@ export default function HomeNavBar() {
                 </div>
                 </div>
 
-                <Link href="/pricing" className="px-3 py-1 rounded-lg border-1 border-transparent hover:border-gray-400 transition-all duration-200">
+                <Link href="/pricing" className="px-3 py-1 rounded-lg border-1 border-transparent text-[16px] text-black hover:border-black transition-all duration-200">
                 Pricing
                 </Link>
                 
-                <Link href="/reviews" className="px-3 py-1 rounded-lg border-1 border-transparent hover:border-gray-400 transition-all duration-200">
+                <Link href="/reviews" className="px-3 py-1 rounded-lg border-1 border-transparent text-[16px] text-black hover:border-black transition-all duration-200">
                 Reviews
                 </Link>
 
                 {/* Resources Dropdown */}
                 <div className="relative group">
-                <button className="flex items-center space-x-1 hover:text-gray-600">
+                <button className="flex items-center px-3 py-1 rounded-lg border-1 border-transparent text-[16px] text-black hover:border-black transition-all duration-200">
                     <span>Resources</span>
                     <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
@@ -60,7 +60,7 @@ export default function HomeNavBar() {
                 </button>
                 <div className="absolute left-0 mt-2 w-48 rounded-md shadow-lg bg-white hidden group-hover:block">
                     <div className="py-1">
-                    <Link href="/blog" className="block px-4 py-2 hover:bg-gray-100">Blog</Link>
+                    <Link href="/blog" className="block px-4 py-2 hover:border-black">Blog</Link>
                     <Link href="/help" className="block px-4 py-2 hover:bg-gray-100">Help Center</Link>
                     </div>
                 </div>
@@ -68,18 +68,18 @@ export default function HomeNavBar() {
             </div>
 
             {/* Auth Buttons */}
-            <div className="hidden md:flex items-center space-x-4">
+            <div className="hidden md:flex items-center text-[18px] space-x-4">
                 <Link 
                 href="/auth/login"
-                className="px-4 py-0.5 border border-emerald-400 rounded-md hover:border-emerald-950 hover:bg-cyan-500"
+                className="px-4 border-3 border-purple-500 text-black rounded-md hover:border-purple-700 hover:text-purple-800 transition-all duration-200"
                 >
-                Login
+                login
                 </Link>
                 <Link 
-                href="/start"
-                className="px-4 py-0.5 bg-cyan-500 text-white rounded-md hover:bg-cyan-600"
+                href="/auth/signup"
+                className="px-4 bg-purple-400 py-0.75 rounded-md hover:bg-purple-500 transition-all duration-300"
                 >
-                Start an estimate
+                Start an Estimate
                 </Link>
             </div>
 

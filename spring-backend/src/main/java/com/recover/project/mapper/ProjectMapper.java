@@ -1,6 +1,7 @@
 package com.recover.project.mapper;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import org.mapstruct.Mapper;
@@ -9,6 +10,7 @@ import org.mapstruct.Mappings;
 
 import com.recover.project.dto.project.CreateProject;
 import com.recover.project.dto.project.LongProjectDto;
+import com.recover.project.dto.project.ProjectBucketDto;
 import com.recover.project.dto.project.ShortProjectDto;
 import com.recover.project.model.Project;
 import com.recover.project.model.enums.LossType;
@@ -46,9 +48,21 @@ public interface ProjectMapper {
     @Mapping(source = "roles", target = "assignedRoles")  // assigned roles is a dto that was packaged and passed in from RoleMapper
     ShortProjectDto toShortDto(Project project);
 
-    Set<ShortProjectDto> toShortDtoList(Set<Project> projects);
+    List<ShortProjectDto> toShortDtoList(List<Project> projects);
 
-    default ProjectStage mapProjectStage(Integer projectStage) {
+    @Mapping(target = "groupKey", expression = "java(formatGroupKey(entry.getKey()))")
+    @Mapping(target = "projects", expression = "java(toShortDtoList(entry.getValue()))")
+    @Mapping(target = "count", expression = "java(entry.getValue().size())")
+    ProjectBucketDto toProjectBucketDto(Map.Entry<?, List<Project>> entry);
+
+    default String formatGroupKey(Object key) {
+        // Simply convert the enum or object to a string
+        return key != null ? key.toString() : "Unknown";
+    }
+
+
+    // Utilities //
+    default ProjectStage mapProjectStage(String projectStage) {
         return StageMap.STAGE_MAP.get(projectStage);
     }
 

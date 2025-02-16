@@ -43,7 +43,7 @@ export const projectsApi = {
   },
   async getAllBuckets(): Promise<ProjectBucket[]> {
     try {
-      const response = await apiClient.get('/dashboard/altitude');
+      const response = await apiClient.get('/dashboard/buckets');
       return response.data; // Extract the data from the axios response
     } catch (error) {
       console.error('Failed to fetch buckets:', error);
