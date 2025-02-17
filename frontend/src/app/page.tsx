@@ -10,8 +10,7 @@ export default function RootPage() {
         <nav className="fixed top-1 left-0 px-4 w-full shadow-lg">
           <HomeNavBar />
         </nav>
-        <div className="h-[clamp(35rem,50vw+10rem,60rem)] flex flex-col items-center justify-center rounded-2xl m-2 p-2 px-3"
-        style={{ backgroundColor: '#111127' }}>
+        <div className="h-[clamp(35rem,50vw+10rem,60rem)] flex flex-col items-center justify-center rounded-2xl m-2 p-2 px-3 bg-recovernavy">
           
           <div className="flex flex-col items-center justify-center">
             <div className="flex flex-col items-center w-[75vw]">
@@ -21,7 +20,7 @@ export default function RootPage() {
               <h1 className="text-h1 text-gray-500 mb-8">
                 Effortlessly manage your projects in one place
               </h1>
-              <button className="bg-purple-400 font-bold text-h1 px-6 py-2 rounded-xl hover:bg-purple-500 ease-in-out transition-all duration-300">
+              <button className="bg-purple-500 font-bold text-h1 px-6 py-2 rounded-xl hover:bg-secondary ease-in-out transition-all duration-300">
                 Request a Demo
               </button>
             </div>

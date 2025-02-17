@@ -57,14 +57,21 @@ export default function StepThree({ scope, lossType, formData, handleInputChange
 
     return (
         <div>
-            <div className="space-y-4 w-full - max-w-2xl">
-                <p>Loss information</p>
-                <DatePicker 
+            <div className="space-y-2 w-full -mt-4">
+                <p className="text-white">Loss information</p>
+                <DatePicker //TODO Deal with this bs -- close to scrapping all the date pickers and making them inputs and we can just regex the shit out of them
                     label='Loss date'
                     labelPlacement="outside"
                     id="lossDate"
                     name="lossDate"
                     variant="bordered"
+                    className="border-white text-white"
+                    classNames={{
+                        label: 'text-white',
+                        segment: '!text-white',
+                        timeInput: '!text-white'
+                    }}
+                    color="secondary"
                     value={selectedDate}
                     onChange={handleChange}
                     maxValue={today(getLocalTimeZone())}

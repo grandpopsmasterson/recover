@@ -72,8 +72,8 @@ export default function FilterComponent() {
     
 
     return (
-        <div className="flex justify-center items-center">
-            <div className="h-1/6 w-1/4 bg-recovernavy">
+        <div >
+            <div className="h-full w-full pt-2 flex">
                 <Autocomplete
                 // data-open={isOpen}
                 onSelectionChange={(value) => handleSelectionChange(value as string)}
@@ -153,6 +153,7 @@ export default function FilterComponent() {
                                     
                                     <div className="flex flex-col">
                                     <span className="text-small">{item.name}</span>
+                                    <span className="text-xs">{item.group}</span>
                                     </div>
                                 </div>
                         

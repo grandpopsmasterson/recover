@@ -15,18 +15,12 @@ export default function DashboardPage() {
     return (
         <div>
             <div className="container mx-auto px-4 py-8">
-            <div className="flex items-end mb-4 mt-4">
-                <Button 
-                onPress={() => router.push('./createProject')} 
-                color="secondary"
-                className="ml-auto"
-                >
-                Create Project
-                </Button>
-            </div>
-            <div>
-                <FilterComponent />
-            </div>
+                <div className="flex justify-between w-full bg-recovernavy rounded-bl-lg rounded-br-lg ">
+                    <FilterComponent />
+                    <div className="flex items-center mt-2">
+                        
+                    </div>
+                </div>
                 <ProjectBuckets />
                 <AltitudeListCard id={id} stage={'PENDING SALE'} total={24} redTotal={4} yellowTotal={18} greenTotal={19} revenue={68354} />
             </div>

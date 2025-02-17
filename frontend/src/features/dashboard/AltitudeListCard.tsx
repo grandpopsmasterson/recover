@@ -19,22 +19,22 @@ const AltitudeListCard: React.FC<ProjectBucket> = ({
 }) => {
   const getStatusColor = (): string => {
     const maxCount = Math.max(yellowTotal, redTotal, greenTotal);
-    if (maxCount === redTotal) return 'border-red-500';
-    if (maxCount === yellowTotal) return 'border-yellow-500';
-    return 'border-green-500';
+    if (maxCount === redTotal) return 'red-500';
+    if (maxCount === yellowTotal) return 'yellow-500';
+    return 'green-500';
   };
 
   return (
 
-    <div className="grid columns-1 gap-2 bg-white"> 
+    <div className="grid columns-1 gap-2 bg-white w-3/4"> 
 
       <div className="border-black rounded-lg p-4 ">
 
         {/* card title + icons section */}
-        <div className="grid grid-cols-[auto_auto_1fr] items-center gap-4">
-          <div className={`text-lg font-semibold ${getStatusColor()}`}>{stage}</div>
-
-          <div className={`flex h-7 items-center border-2 px-4 rounded-full gap-1 ${getStatusColor()}`}>
+        <div className="grid grid-cols-[auto_auto_1fr] items-center gap-4 w-2/5">
+          <div className={`text-lg font-semibold text-${getStatusColor()}`}>{stage}</div>
+          <p className='text-md text-slate-500'>{yellowTotal + redTotal + greenTotal}</p>
+          <div className={`flex h-7 items-center border-2 px-4 rounded-full gap-1 w-full border-${getStatusColor()}`}>
             <Warning />
             <p className="text-md">{yellowTotal}</p>
             <CircleX />
@@ -45,7 +45,7 @@ const AltitudeListCard: React.FC<ProjectBucket> = ({
 
         </div>
 
-        <hr className={`my-6 w-full border-t-4 ${getStatusColor()}`} />
+        <hr className={`my-6 w-full border-t-4 border-${getStatusColor()}`} />
 
         {/* lower section, details */}
         <div className="grid grid-cols-2 items-end">

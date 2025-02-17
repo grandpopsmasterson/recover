@@ -7,7 +7,7 @@ import { BackArrow } from "@/components/ui/icons/BackArrow";
 import { RecoverLogo } from "@/components/ui/icons/RecoverLogo";
 import { WrapperNoHREF } from "@/components/ui/WrapperNoHREF";
 import { CreateProject, CreateProjectError, StepOneProps } from "@/types/createProject";
-import { Alert, Card, CardBody, CardFooter, CardHeader, Input, Progress } from "@heroui/react";
+import { Alert, Button, Card, CardBody, CardFooter, CardHeader, Input, Progress } from "@heroui/react";
 import { useRouter } from "next/navigation";
 import { lazy, Suspense, useState } from "react";
 import { NavLink } from "../dashboard/DashboardNavbar";
@@ -29,9 +29,13 @@ const StepOne: React.FC<StepOneProps> =({
     handleKeyDown
 }) => (
     <div className="space-y-4">
-        <p>Client Information</p>
+        <p className="text-white -mt-2">Client Information</p>
+        <div className="flex gap-2">
         <Input 
-            className="w-[50%] h-[50px]"
+            className="w-1/2 h-[50px] text-white"
+            classNames={{
+                label: 'text-white'
+            }}
             radius="sm"
             label='First name'
             type="firstName"
@@ -39,13 +43,17 @@ const StepOne: React.FC<StepOneProps> =({
             name="firstName"
             variant="bordered"
             value={firstName}
+            color="secondary"
             errorMessage='Please enter client&apos;s first name'
             onChange={handleInputChange}
             onKeyDown={handleKeyDown}
             isInvalid={errors === null ? false : errors.field == 'firstName' ? true : false}
         />
         <Input 
-            className="w-[50%] h-[50px]"
+            className="w-1/2 h-[50px] text-white"
+            classNames={{
+                label: 'text-white'
+            }}
             radius="sm"
             label='Last name'
             type="lastName"
@@ -53,19 +61,25 @@ const StepOne: React.FC<StepOneProps> =({
             name="lastName"
             variant="bordered"
             value={lastName}
+            color="secondary"
             errorMessage='Please enter client&apos;s last name'
             onChange={handleInputChange}
             onKeyDown={handleKeyDown}
             isInvalid={errors === null ? false : errors.field == 'lastName' ? true : false}
         />
+        </div>
         <Input 
-            className="w-[100%] h-[50px]"
+            className="w-[100%] h-[50px] text-white"
+            classNames={{
+                label: 'text-white'
+            }}
             radius="sm"
             label='Email'
             type="clientEmail"
             id="clientEmail"
             name="clientEmail"
             variant="bordered"
+            color="secondary"
             value={formData.clientEmail}
             errorMessage='Please enter client&apos;s email'
             onChange={handleInputChange}
@@ -73,13 +87,17 @@ const StepOne: React.FC<StepOneProps> =({
             isInvalid={errors === null ? false : errors.field == 'clientEmail' ? true : false}
         />
         <Input 
-            className="w-[100%] h-[50px]"
+            className="w-[100%] h-[50px] text-white"
+            classNames={{
+                label: 'text-white'
+            }}
             radius="sm"
             label='Phone Number'
             type="clientPhone"
             id="clientPhone"
             name="clientPhone"
             variant="bordered"
+            color="secondary"
             value={formData.clientPhone}
             errorMessage='Please enter client&apos;s phone number'
             onChange={handleInputChange}
@@ -445,13 +463,13 @@ export default function MainCard() {
         >
             <CardHeader className='w-full'>
                 <div className='w-full'>
-                    <div className='flex justify-center items-center'>
-                        <RecoverLogo/>
+                    <div className='flex justify-center items-center -mb-4 -mt-2'>
+                        <RecoverLogo size={50}/>
                     </div> <br/>
                     <div className='w-full'>
-                        <Progress aria-label='Progress bar' color="secondary" size='sm' value={progress[stage]} />
+                        <Progress classNames={{indicator: 'bg-purple-500'}} aria-label='Progress bar' size='sm' value={progress[stage]} />
                     </div> <br/>
-                    <div className='grid grid-cols-[auto_1fr] items-center relative gap-4'>
+                    <div className='grid grid-cols-[auto_1fr] items-center relative gap-4 -mt-4'>
                         <div className="flex items-center gap-4">
                         {stage === 1 && (
                                 <NavLink
@@ -465,12 +483,12 @@ export default function MainCard() {
                                     <BackArrow />
                                     </WrapperNoHREF>
                             )}
-                        <p className='w-[10vw]'>Step {stage} of 5</p>
+                        <p className='w-[10vw] text-white'>Step {stage} of 5</p>
                     </div>
                     {errors === null ? '' : errors.field == 'server' ? (
                         <Alert color='default' hideIconWrapper variant='bordered' className={'bg-transparent color-red'} title={errors.message} /> 
                     ) : ''} 
-                    <h1 className="absolute left-1/2 transform -translate-x-1/2 text-xl whitespace-nowrap">Create a project</h1>
+                    <h1 className="absolute left-1/2 transform -translate-x-1/2 text-xl whitespace-nowrap text-white">Create a project</h1>
                     </div>
                 </div>
             </CardHeader>
@@ -480,24 +498,24 @@ export default function MainCard() {
             <CardFooter>
                 <div className='mt-auto w-[35vw] mb-16'>
                     {stage < 5 ? (
-                        <Button1 
+                        <Button 
                             variant='ghost' 
-                            className='!bg-transparent font-bold opacity-100 text-white w-full h-[50px] mb-8' 
-                            color='success' 
+                            className='!bg-transparent font-bold opacity-100 text-white w-full h-[50px] mb-8 border-white' 
+                            color='secondary' 
                             onPress={handleNext}
                             >
                                 Next
-                            </Button1>
+                            </Button>
                     ) : (
-                        <Button1 
-                            color='success'
+                        <Button 
+                            color='secondary'
                             type='submit'
                             variant='ghost' 
                             isDisabled={isLoading} 
                             className='!bg-transparent font-bold opacity-100 text-white w-full h-[50px] mb-8'
                         >
                             {isLoading ? 'Creating Project...' : 'Create Project'}
-                        </Button1>
+                        </Button>
                     )}
                 </div>
             </CardFooter>

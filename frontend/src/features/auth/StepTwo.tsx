@@ -15,10 +15,13 @@ export default function StepTwo({ formData, handleInputChange, errors, handleKey
     return (
         <div className='space-y-4'>
             <div>
-                <p>Create username</p>
+                <p className='text-white'>Create username</p>
                 <Input 
                     required
-                    className='w-full'
+                    className='w-full text-white'
+                    classNames={{
+                        label: 'text-white'
+                    }}
                     label='Username'
                     type='username'
                     id='username'
@@ -33,9 +36,12 @@ export default function StepTwo({ formData, handleInputChange, errors, handleKey
                 />
             </div>
             <div>
-                <p>Create a password</p>
+                <p className='text-white'>Create a password</p>
                 <Input 
-                className='w-full' 
+                className='w-full text-white' 
+                classNames={{
+                    label: 'text-white'
+                }}
                 label='Password' 
                 type={isVisible ? 'text' : 'password'}
                 id='password'
@@ -64,9 +70,12 @@ export default function StepTwo({ formData, handleInputChange, errors, handleKey
                 /> 
             </div>
             <div>
-                <p>Confirm password</p>
+                <p className='text-white'>Confirm password</p>
                 <Input 
-                    className='w-full' 
+                    className='w-full text-white' 
+                    classNames={{
+                        label: 'text-white'
+                    }}
                     label='Password Confirmation' 
                     type={isVisibleConf ? "text" : "password"}
                     id='confirmPassword'
