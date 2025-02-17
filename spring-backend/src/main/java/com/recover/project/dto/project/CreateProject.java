@@ -21,8 +21,6 @@ public class CreateProject {
    @NotNull(message = "Loss date is required") 
    private LocalDate lossDate;
 
-   private LocalDate receivedDate;
-
    private LocalDate policyStart;
 
    private LocalDate policyExpiration;
@@ -52,7 +50,7 @@ public class CreateProject {
 
    private String zipcode;
 
-   private Integer stage;
+   private String stage;
 
    private String projectType;
 

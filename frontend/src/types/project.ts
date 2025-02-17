@@ -34,7 +34,7 @@ export interface LongProject {
   city: string;
   state: string;
   zipcode: string;
-  stage: 'INITIAL' | 'IN_PROGRESS' | 'COMPLETED';
+  stage: string;
   projectType: 'RESIDENTIAL' | 'COMMERCIAL';
   carrier: string;
   assignedRoles: {
@@ -63,3 +63,49 @@ export interface Project {
     createdAt: string;
   }
 
+export interface ProjectBucket {
+  id: bigint;
+  stage: string;
+  total: number;
+  redTotal: number | 0;
+  yellowTotal: number | 0;
+  greenTotal?: number;
+  revenue: number | 25000;
+}
+
+export type DetailsProps = Pick<LongProject, 'lossDate' | 'startDate'>;
+
+export interface FilterError {
+  message: string;
+  field?: string;
+}
+
+export interface GroupedProjects {
+  [key: string]: string[]; // TODO CREATE THE INTERFACE FOR RECIEVING DATA
+};
+
+export const filters = [
+  {name: 'Stage', group: 'Group'},
+  {name: 'Pending Sale', group: 'Stage'},
+  {name: 'Scope', group: 'Group'},
+  {name: 'Mitigation', group: 'Scope'},
+  {name: 'Contents', group: 'Scope'},
+  {name: 'Reconstruction', group: 'Scope'},
+  {name: 'Flags', group: 'Group' },
+  {name: 'Urgent', group: 'Flags' },
+  {name: 'Action Needed', group: 'Flags' },
+  {name: 'Up to Date', group: 'Flags' },
+  {name: 'Invoice', group: 'Group' },
+  {name: 'Invoice Pending', group: 'Invoice' },
+  {name: 'Invoice Sent', group: 'Invoice' },
+  {name: 'Estimate', group: 'Group' },
+  {name: 'Estimate Pending', group: 'Estimate' },
+  {name: 'Estimate Complete', group: 'Estimate' },
+  {name: 'Loss Type', group: 'Group' },
+  {name: 'Project Type', group: 'Group' },
+  {name: 'Carrier', group: 'Group' },
+  {name: 'Manager', group: 'Group' },
+  {name: 'Adjuster', group: 'Group' },
+  {name: 'Technician', group: 'Group' },
+  {name: 'Tommy Tech', group: 'Technician' },
+]

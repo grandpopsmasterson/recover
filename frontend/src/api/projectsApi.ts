@@ -1,6 +1,6 @@
 import { apiClient } from './apiClient';
 import { CreateProject } from '@/types/createProject';
-import { ShortProject, Project, LongProject } from '@/types/project';
+import { ShortProject, LongProject, ProjectBucket } from '@/types/project';
 
 export const projectsApi = {
 
@@ -40,5 +40,17 @@ export const projectsApi = {
       console.error('Failed to fetch project details:', error);
       throw error;
     }
-  }
+  },
+
+  async getAllBuckets(): Promise<ProjectBucket[]> {
+    try {
+      const response = await apiClient.get('/dashboard/buckets');
+      return response.data; // Extract the data from the axios response
+    } catch (error) {
+      console.error('Failed to fetch buckets:', error);
+      throw error;
+    }
+  },
+
+  
 };

@@ -117,6 +117,13 @@
             <version>${jjwt.version}</version>
         </dependency>
 
+        <!--Guave Map-->
+        <dependency>
+            <groupId>com.google.guava</groupId>
+            <artifactId>guava</artifactId>
+            <version>32.1.2-jre</version>
+        </dependency>
+
         <!-- Development Tools -->
         <dependency>
             <groupId>org.projectlombok</groupId>

@@ -7,9 +7,11 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 import org.springframework.security.core.context.SecurityContextHolder;
 import com.recover.project.dto.project.CreateProject;
 import com.recover.project.dto.project.LongProjectDto;
+import com.recover.project.dto.project.ProjectBucketDto;
 import com.recover.project.dto.project.ShortProjectDto;
 import com.recover.project.mapper.ProjectMapper;
 import com.recover.project.model.Project;
@@ -17,6 +19,8 @@ import com.recover.project.model.Role;
 import com.recover.project.model.enums.ProjectRole;
 import com.recover.project.repository.ProjectRepository;
 import com.recover.project.repository.RoleRepository;
+import com.recover.project.search.GenericSpecification;
+import com.recover.project.search.ProjectSearchCriteria;
 import com.recover.project.service.authorization.AuthenticationService;
 //import com.recover.project.service.notifications.NotificationService;
 import com.recover.project.service.search.ProjectCriteria;
@@ -28,6 +32,7 @@ import lombok.RequiredArgsConstructor;
 import java.util.Collections;
 import java.util.List;
 import java.util.Set;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 @Service
@@ -57,13 +62,44 @@ public class ProjectService {
         
         return projectMapper.toShortDto(project);
     }
-    // still to do:
     
-    // update any field on the project
+    public List<ProjectBucketDto> getGroupedProjects(ProjectSearchCriteria criteria) {
+        Specification<Project> spec = GenericSpecification.createSpecification(criteria);
+        List<Project> projects = StringUtils.hasText(criteria.getQuery())
+            ? projectRepository.findAll(spec)
+            : projectRepository.findAll();
 
-    // event listeners 
+        Function<Project, ?> groupingFunction = getGroupingFunction(criteria.getGroupBy());
 
-    // more inspection additions to the project (adding forms, receipts, photos)
+        return projects.stream()
+            .collect(Collectors.groupingBy(groupingFunction))
+            .entrySet().stream()
+            .map(projectMapper::toProjectBucketDto)
+            .collect(Collectors.toList());
+    }
+
+    private Function<Project, ?> getGroupingFunction(String groupBy) {
+        return switch (groupBy.toUpperCase()) {
+            case "STAGE" -> Project::getStage;
+            case "SCOPE" -> Project::getScope;
+            case "CARRIER" -> Project::getCarrier;
+            case "LOSS_TYPE" -> Project::getLossType;
+            case "PROJECT_TYPE" -> Project::getProjectType;
+            case "MANAGER" -> project -> project.getRoles().stream()
+            .filter(role -> role.getProjectRole() == ProjectRole.MANAGER)
+            .map(role -> role.getUser().getFullName())
+            .collect(Collectors.joining(", "));
+            case "TECHNICIAN" -> project -> project.getRoles().stream()
+            .filter(role -> role.getProjectRole() == ProjectRole.TECHNICIAN)
+            .map(role -> role.getUser().getFullName())
+            .collect(Collectors.joining(", "));
+            case "ADJUSTER" -> project -> project.getRoles().stream()
+            .filter(role -> role.getProjectRole() == ProjectRole.ADJUSTER)
+            .map(role -> role.getUser().getFullName())
+            .collect(Collectors.joining(", "));
+            default -> throw new IllegalArgumentException("Invalid grouping criteria: " + groupBy);
+        };
+    }
 
     public Set<ShortProjectDto> getAllProjects(Long userId) {
         try {

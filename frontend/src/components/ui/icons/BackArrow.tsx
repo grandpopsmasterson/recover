@@ -8,12 +8,12 @@ interface IconProps extends React.SVGProps<SVGSVGElement> {
     fill?: string;
 };
 
-export const RecoverLogo: React.FC<IconProps> = ({
-    size = 32,
+export const BackArrow: React.FC<IconProps> = ({
+    size = 30,
     width,
     height,
-    strokeWidth = 1.5,
-    fill = 'none',
+    strokeWidth = '.5' ,
+    fill = 'white',
     ...props
 }) => {
     return (
@@ -23,12 +23,12 @@ export const RecoverLogo: React.FC<IconProps> = ({
         focusable="false"
         height={size || height}
         role="presentation"
-        viewBox="0 0 24 24"
+        viewBox="0 0 60 60"
         width={size || width}
         {...props}
         >
             <path
-                d='M16,15V11a2,2,0,0,0-2-2H8V23h2V17h1.48l2.34,6H16l-2.33-6H14A2,2,0,0,0,16,15Zm-6-4h4v4H10Z'
+                d='M38,52a2,2,0,0,1-1.41-.59l-24-24a2,2,0,0,1,0-2.82l24-24a2,2,0,0,1,2.82,0,2,2,0,0,1,0,2.82L16.83,26,39.41,48.59A2,2,0,0,1,38,52Z'
                 stroke='currentColor'
                 strokeLinecap="round"
                 strokeLinejoin="round"

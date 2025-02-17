@@ -1,17 +1,16 @@
 'use client'
 
-import React, { useState, lazy, Suspense } from 'react';
 import { useRouter } from 'next/navigation';
-import type { SignupRequest, SignUpError, StepOneProps } from '../../types/signup';
+import React, { lazy, Suspense, useState } from 'react';
+import type { SignUpError, SignupRequest, StepOneProps } from '../../types/signup';
 
-import { Card, CardBody, CardHeader, Progress, Input, Alert, CardFooter } from "@heroui/react";
-import { BackArrow } from '@/components/ui/BackArrow';
-import { RecoverLogo } from '@/components/ui/RecoverLogo';
-import { NavLink } from '../dashboard/DashboardNavbar';
-import Button1 from '@/components/ui/ButtonC';
-import { WrapperNoHREF } from '@/components/ui/WrapperNoHREF';
-import { validateEmail, validatePassword } from '@/api/utils/validation';
 import { signupApi } from '@/api/authApi';
+import { validateEmail, validatePassword } from '@/api/utils/validation';
+import { BackArrow } from '@/components/ui/icons/BackArrow';
+import { RecoverLogo } from '@/components/ui/icons/RecoverLogo';
+import { WrapperNoHREF } from '@/components/ui/WrapperNoHREF';
+import { Alert, Button, Card, CardBody, CardFooter, CardHeader, Input, Progress } from "@heroui/react";
+import { NavLink } from '../dashboard/DashboardNavbar';
 
 
 
@@ -27,14 +26,18 @@ const StepOne: React.FC<StepOneProps> =({
     errors
 }) => (
     <div>
-        <p>Enter your email</p><br/>
+        <p className='text-white'>Enter your email</p><br/>
         <Input 
-            className='w-[100%] h-[50px] '
+            className='w-full h-[50px]'
+            classNames={{
+                label: 'text-white'
+            }}
             radius='sm' 
             label='Email' 
             type='email'
             id='email'
             name='email'
+            color='secondary'
             variant='bordered'
             value={formData.email}
             errorMessage='Please enter a valid email. Format: example@recover.com'
@@ -81,7 +84,7 @@ export default function SignUpCard() {
     };
 
     //stage validation with switch cases for error40 handling
-    const validateStage = (): boolean => {
+    const validateStage = (stage: number): boolean => {
         switch (stage) {
             case 1:
                 if (!validateEmail(formData.email)) {
@@ -179,7 +182,7 @@ export default function SignUpCard() {
     }
     
     const handleNext = (): void => {
-        if (validateStage()) {
+        if (validateStage(stage)) {
             setStage(prev => prev + 1);
         }
     };
@@ -203,7 +206,7 @@ export default function SignUpCard() {
 
         if (event){ event.preventDefault(); }
 
-            if (validateStage()) {
+            if (validateStage(stage)) {
                 console.log(formData); // TODO remove this at a later date ---------------------------------------------------------------------------
             
             try {
@@ -216,7 +219,7 @@ export default function SignUpCard() {
             }
         
         
-            router.push('./Login')
+            router.push('./login')
         
         }
     }
@@ -263,22 +266,21 @@ export default function SignUpCard() {
     };
 
     return(
-        <div className='w-[100%] h-[100%]'>
-            <form onSubmit={handleSubmit}>
+        
+    <form onSubmit={handleSubmit} className='h-[clamp(30rem,40vh+10rem,60rem)] w-[clamp(25rem,25vw+5rem,45rem)] '>
         <Card
-            
             isBlurred
-            className='border-10  w-[35vw] h-[40vw]'
-            style={{backgroundColor: '#09090b', border: '10px solid #090f21'}}
+            className='border-[10px] !bg-recovernavy border-slate-500 min-h-[30rem] rounded-2xl h-auto bg-clip-padding overflow-hidden'
             shadow='md'
         >
-            <CardHeader className='w-[100%]'>
-                <div className='w-[35vw]'>
+
+            <CardHeader className='w-[100%] '>
+                <div className='w-full'>
                     <div className='flex justify-center items-center'>
-                        <RecoverLogo/>
+                        <RecoverLogo size={50}/>
                     </div> <br/>
                     <div className='w-[95%]'>
-                        <Progress aria-label='Progress bar' color='success' size='sm' value={progress[stage]} />
+                        <Progress aria-label='Progress bar' color='secondary' size='sm' value={progress[stage]} />
                     </div> <br/>
                     <div className='flex gap-4'>
                     {stage === 1 && (
@@ -293,45 +295,44 @@ export default function SignUpCard() {
                                 <BackArrow />
                                 </WrapperNoHREF>
                         )}
-                    <p className='w-[10vw]'>Step {stage} of 3</p>
+                    <p className='w-[10vw] text-white'>Step {stage} of 3</p>
                     {errors === null ? '' : errors.field == 'server' ? (
                         <Alert color='default' hideIconWrapper variant='bordered' className={'bg-transparent color-red'} title={errors.message} /> 
                     ) : ''} 
                     </div>
                 </div>
             </CardHeader>
-            <CardBody>
+            <CardBody className='flex flex-col'>
                 {renderStep(stage)}
             </CardBody>
             <CardFooter>
-                <div className='mt-auto w-[35vw] mb-16'>
+                <div className='mt-auto w-full'>
                     {stage < 3 ? (
-                        <Button1 
-                            variant='ghost' 
-                            className='!bg-transparent font-bold opacity-100 text-white w-full h-[50px] mb-8' 
-                            color='success' 
+                        <Button 
+                            variant='bordered' 
+                            className='border-white font-bold opacity-100 !text-white w-full h-[50px] mb-8 hover:bg-secondary' 
+                            color='secondary' 
                             onPress={handleNext}
                             >
                                 Next
-                            </Button1>
+                            </Button>
                     ) : (
-                        <Button1 
-                            color='success'
+                        <Button 
+                            color='secondary'
                             type='submit'
-                            variant='ghost' 
+                            variant='bordered' 
                             isDisabled={isLoading} 
-                            className='!bg-transparent font-bold opacity-100 text-white w-full h-[50px] mb-8'
+                            className='font-bold opacity-100 !text-white w-full h-[50px] mb-8 border-white hover:bg-purple-500'
                         >
                             {isLoading ? 'Signing up...' : 'Sign Up'}
-                        </Button1>
+                        </Button>
                     )}
-                    <div className='flex justify-center pt-4'>
-                        <p>Already have an account? <a className='text-green-500 underline' href='./Login'>Sign in</a></p>
+                    <div className='flex justify-center'>
+                        <small className='text-white'>Already have an account? <a className='text-purple-500 underline' href='./login'>Sign in</a></small>
                     </div>
                 </div>
             </CardFooter>
         </Card>
-        </form>
-        </div>
+    </form>
     )
 }

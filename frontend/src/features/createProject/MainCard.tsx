@@ -1,16 +1,16 @@
 'use client'
 
-import { validateEmail, validatePhonenumber } from "@/api/utils/validation";
-import { RecoverLogo } from "@/components/ui/RecoverLogo";
-import { CreateProject, CreateProjectError, StepOneProps } from "@/types/createProject";
-import { Alert, Card, CardBody, CardFooter, CardHeader, Input, Progress } from "@heroui/react";
-import { useRouter } from "next/navigation";
-import { lazy, Suspense, useEffect, useState } from "react";
-import { NavLink } from "../dashboard/DashboardNavbar";
-import { BackArrow } from "@/components/ui/BackArrow";
-import { WrapperNoHREF } from "@/components/ui/WrapperNoHREF";
-import Button1 from "@/components/ui/ButtonC";
 import { projectsApi } from "@/api/projectsApi";
+import { validateEmail, validatePhonenumber } from "@/api/utils/validation";
+import Button1 from "@/components/ui/ButtonC";
+import { BackArrow } from "@/components/ui/icons/BackArrow";
+import { RecoverLogo } from "@/components/ui/icons/RecoverLogo";
+import { WrapperNoHREF } from "@/components/ui/WrapperNoHREF";
+import { CreateProject, CreateProjectError, StepOneProps } from "@/types/createProject";
+import { Alert, Button, Card, CardBody, CardFooter, CardHeader, Input, Progress } from "@heroui/react";
+import { useRouter } from "next/navigation";
+import { lazy, Suspense, useState } from "react";
+import { NavLink } from "../dashboard/DashboardNavbar";
 
 // Lazy loading the other components
 
@@ -29,9 +29,13 @@ const StepOne: React.FC<StepOneProps> =({
     handleKeyDown
 }) => (
     <div className="space-y-4">
-        <p>Client Information</p>
+        <p className="text-white -mt-2">Client Information</p>
+        <div className="flex gap-2">
         <Input 
-            className="w-[50%] h-[50px]"
+            className="w-1/2 h-[50px] text-white"
+            classNames={{
+                label: 'text-white'
+            }}
             radius="sm"
             label='First name'
             type="firstName"
@@ -39,13 +43,17 @@ const StepOne: React.FC<StepOneProps> =({
             name="firstName"
             variant="bordered"
             value={firstName}
+            color="secondary"
             errorMessage='Please enter client&apos;s first name'
             onChange={handleInputChange}
             onKeyDown={handleKeyDown}
             isInvalid={errors === null ? false : errors.field == 'firstName' ? true : false}
         />
         <Input 
-            className="w-[50%] h-[50px]"
+            className="w-1/2 h-[50px] text-white"
+            classNames={{
+                label: 'text-white'
+            }}
             radius="sm"
             label='Last name'
             type="lastName"
@@ -53,19 +61,25 @@ const StepOne: React.FC<StepOneProps> =({
             name="lastName"
             variant="bordered"
             value={lastName}
+            color="secondary"
             errorMessage='Please enter client&apos;s last name'
             onChange={handleInputChange}
             onKeyDown={handleKeyDown}
             isInvalid={errors === null ? false : errors.field == 'lastName' ? true : false}
         />
+        </div>
         <Input 
-            className="w-[100%] h-[50px]"
+            className="w-[100%] h-[50px] text-white"
+            classNames={{
+                label: 'text-white'
+            }}
             radius="sm"
             label='Email'
             type="clientEmail"
             id="clientEmail"
             name="clientEmail"
             variant="bordered"
+            color="secondary"
             value={formData.clientEmail}
             errorMessage='Please enter client&apos;s email'
             onChange={handleInputChange}
@@ -73,13 +87,17 @@ const StepOne: React.FC<StepOneProps> =({
             isInvalid={errors === null ? false : errors.field == 'clientEmail' ? true : false}
         />
         <Input 
-            className="w-[100%] h-[50px]"
+            className="w-[100%] h-[50px] text-white"
+            classNames={{
+                label: 'text-white'
+            }}
             radius="sm"
             label='Phone Number'
             type="clientPhone"
             id="clientPhone"
             name="clientPhone"
             variant="bordered"
+            color="secondary"
             value={formData.clientPhone}
             errorMessage='Please enter client&apos;s phone number'
             onChange={handleInputChange}
@@ -96,7 +114,7 @@ export default function MainCard() {
     const [errors, setErrors] = useState<CreateProjectError | null>(null);
     //sliging animation state
     const [slideDirection, setSlideDirection] = useState<string>('');
-const [currentContent, setCurrentContent] = useState<React.ReactNode | null>(null);
+    //const [currentContent, setCurrentContent] = useState<React.ReactNode | null>(null);
 
     const [localForm, setLocalForm] = useState({
         firstName: '',
@@ -113,7 +131,7 @@ const [currentContent, setCurrentContent] = useState<React.ReactNode | null>(nul
         city: '',
         state: '',
         zipcode: '',
-        stage: 1,
+        stage: '',
         projectType: '',
         carrier: '',
         //assignedUser: '',
@@ -134,21 +152,30 @@ const [currentContent, setCurrentContent] = useState<React.ReactNode | null>(nul
         'Other'
     ];
     
-    const lossType: string[] = [
-        'Fire',
-        'Clean Water - Cat 1',
-        'Grey Water - Cat 2',
-        'Black Water - Cat 3',
-        'Wind',
-        'Mold',
-        'Chemical',
-        'Structural'
+    const lossType: string[] = [ //TODO make all the string[] work like the project type does if possible, display lowercase, but send to backend uppercase
+        'FIRE',
+        'WATER',
+        'WIND',
+        'MOLD',
+        'CHEMICAL',
+        'STRUCTURAL'
     ]
 
     const scope: string[] = [
-        'Mitigation',
-        'Contents',
-        'Reconstruction'
+        'MITIGATION',
+        'CONTENTS',
+        'RECONSTRUCTION'
+    ]
+
+    const projStage: string[] = [
+        'PENDING_SALE',
+        'PRE_PRODUCTION',
+        'ESTIMATION',
+        'MITIGATION',
+        'RECONSTRUCTION',
+        'PENDING_INVOICE',
+        'ACCOUNTS_RECEIVABLE',
+        'COMPLETE'
     ]
 
     const progress: Record<number, number> = {
@@ -220,26 +247,32 @@ const [currentContent, setCurrentContent] = useState<React.ReactNode | null>(nul
                     setErrors({ message: 'Please enter the year the property was built', field: 'yearBuilt'});
                     return false;
                 }
+                break;
+            case 5:
+                if(!formData.stage) {
+                    setErrors({ message: 'Please select a stage', field: 'stage'});
+                    return false;
+                }
         }
         return true;
     }
 
     //prefetch the other steps
-    const prefetchOtherSteps = () => {
-        const prefetchStep = async () => {
-            await Promise.all([
-                import('./steps/StepTwo'),
-                import('./steps/StepThree'),
-                import('./steps/StepFour'),
-                import('./steps/StepFive')
-            ]);
-        };
-        if ('requestIdleCallback' in window) {
-            window.requestIdleCallback(() => prefetchStep());
-        } else {
-            setTimeout(prefetchStep, 1000);
-        }
-    };
+    // const prefetchOtherSteps = () => {
+    //     const prefetchStep = async () => {
+    //         await Promise.all([
+    //             import('./steps/StepTwo'),
+    //             import('./steps/StepThree'),
+    //             import('./steps/StepFour'),
+    //             import('./steps/StepFive')
+    //         ]);
+    //     };
+    //     if ('requestIdleCallback' in window) {
+    //         window.requestIdleCallback(() => prefetchStep());
+    //     } else {
+    //         setTimeout(prefetchStep, 1000);
+    //     }
+    // };
 
     //useEffect(() => { prefetchOtherSteps(); })
 
@@ -288,6 +321,15 @@ const [currentContent, setCurrentContent] = useState<React.ReactNode | null>(nul
         setErrors(null); //? is this necessary???
     }
 
+    const handleStageChange = (projStage: string): void => {
+        setFormData(prev => ({
+            ...prev,
+            stage: projStage
+        }));
+        console.log(projStage);
+        setErrors(null);
+    }
+
     const handleNext = (): void => {
         if (validateStage()) {
             setSlideDirection('slide-out-left');
@@ -302,9 +344,9 @@ const [currentContent, setCurrentContent] = useState<React.ReactNode | null>(nul
         setStage(prev => prev - 1);
     };
 
-    const handleHome = (): void => {
-        router.push('./dashboard');
-    };
+    // const handleHome = (): void => {
+    //     router.push('./dashboard');
+    // };
 
     const handleKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
         if (event.key === 'Enter') {
@@ -394,7 +436,9 @@ const [currentContent, setCurrentContent] = useState<React.ReactNode | null>(nul
                 return (
                     <Suspense fallback={<div>Loading...</div>}>
                         <StepFive 
-                        
+                            formData={formData}
+                            projStage={projStage}
+                            handleStageChange={handleStageChange}
                         />
                     </Suspense>
                 )
@@ -404,7 +448,7 @@ const [currentContent, setCurrentContent] = useState<React.ReactNode | null>(nul
     };
 
     return (
-        <div className='w-[100%] h-[100%]'>
+        <div className='flex justify-center items-center w-[100%] h-[100%]'>
             <form onSubmit={handleSubmit}>
                 <div className="relarive overflow-hidden">
                     <div
@@ -414,19 +458,18 @@ const [currentContent, setCurrentContent] = useState<React.ReactNode | null>(nul
                             ${slideDirection === 'initial' ? 'translate-x-0' : ''}`}
                     >
         <Card
-            className={`border-10 w-[40vw] h-[40vw] max-w-[40vw]`}
-            style={{backgroundColor: '#09090b', border: '10px solid #090f21'}}
+            className={`h-[clamp(40rem,40vh+10rem,60rem)] w-[clamp(35rem,25vw+5rem,55rem)] bg-recovernavy border-[10px] border-slate-500`}
             shadow='md'
         >
-            <CardHeader className='w-[100%]'>
-                <div className='w-[35vw]'>
-                    <div className='flex justify-center items-center'>
-                        <RecoverLogo/>
+            <CardHeader className='w-full'>
+                <div className='w-full'>
+                    <div className='flex justify-center items-center -mb-4 -mt-2'>
+                        <RecoverLogo size={50}/>
                     </div> <br/>
-                    <div className='w-[95%]'>
-                        <Progress aria-label='Progress bar' color="success" size='sm' value={progress[stage]} />
+                    <div className='w-full'>
+                        <Progress classNames={{indicator: 'bg-purple-500'}} aria-label='Progress bar' size='sm' value={progress[stage]} />
                     </div> <br/>
-                    <div className='grid grid-cols-[auto_1fr] items-center relative gap-4'>
+                    <div className='grid grid-cols-[auto_1fr] items-center relative gap-4 -mt-4'>
                         <div className="flex items-center gap-4">
                         {stage === 1 && (
                                 <NavLink
@@ -440,12 +483,12 @@ const [currentContent, setCurrentContent] = useState<React.ReactNode | null>(nul
                                     <BackArrow />
                                     </WrapperNoHREF>
                             )}
-                        <p className='w-[10vw]'>Step {stage} of 5</p>
+                        <p className='w-[10vw] text-white'>Step {stage} of 5</p>
                     </div>
                     {errors === null ? '' : errors.field == 'server' ? (
                         <Alert color='default' hideIconWrapper variant='bordered' className={'bg-transparent color-red'} title={errors.message} /> 
                     ) : ''} 
-                    <h1 className="absolute left-1/2 transform -translate-x-1/2 text-xl whitespace-nowrap">Create a project</h1>
+                    <h1 className="absolute left-1/2 transform -translate-x-1/2 text-xl whitespace-nowrap text-white">Create a project</h1>
                     </div>
                 </div>
             </CardHeader>
@@ -454,25 +497,25 @@ const [currentContent, setCurrentContent] = useState<React.ReactNode | null>(nul
             </CardBody>
             <CardFooter>
                 <div className='mt-auto w-[35vw] mb-16'>
-                    {stage < 4 ? (
-                        <Button1 
+                    {stage < 5 ? (
+                        <Button 
                             variant='ghost' 
-                            className='!bg-transparent font-bold opacity-100 text-white w-full h-[50px] mb-8' 
-                            color='success' 
+                            className='!bg-transparent font-bold opacity-100 text-white w-full h-[50px] mb-8 border-white' 
+                            color='secondary' 
                             onPress={handleNext}
                             >
                                 Next
-                            </Button1>
+                            </Button>
                     ) : (
-                        <Button1 
-                            color='success'
+                        <Button 
+                            color='secondary'
                             type='submit'
                             variant='ghost' 
                             isDisabled={isLoading} 
                             className='!bg-transparent font-bold opacity-100 text-white w-full h-[50px] mb-8'
                         >
                             {isLoading ? 'Creating Project...' : 'Create Project'}
-                        </Button1>
+                        </Button>
                     )}
                 </div>
             </CardFooter>

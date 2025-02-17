@@ -1,11 +1,12 @@
 package com.recover.project.model.enums;
 
 public enum ProjectStage {
-    INITIAL,
-    INSPECTION,
-    ESTIMATE,
+    PENDING_SALE,
+    PRE_PRODUCTION,
+    ESTIMATION,
     MITIGATION,
-    RESTORATION,
+    RECONSTRUCTION,
+    PENDING_INVOICE,
     ACCOUNTS_RECEIVABLE,
-    COMPLETED
+    COMPLETE
 }

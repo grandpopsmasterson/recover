@@ -2,7 +2,7 @@ import React from 'react';
 import { Input } from "@heroui/react";
 
 import { StepTwoProps } from '@/types/signup';
-import { EyeFilledIcon, EyeSlashFilledIcon } from '@/components/ui/eyePasswordIcon';
+import { EyeFilledIcon, EyeSlashFilledIcon } from '@/components/ui/icons/eyePasswordIcon';
 
 
 export default function StepTwo({ formData, handleInputChange, errors, handleKeyDown, confirmPassword }: StepTwoProps) {
@@ -13,16 +13,41 @@ export default function StepTwo({ formData, handleInputChange, errors, handleKey
     const toggleVisibilityConf = (): void => setIsVisibleConf(!isVisibleConf);
 
     return (
-        <div>
+        <div className='space-y-4'>
             <div>
-                <p>Create a password</p>
+                <p className='text-white'>Create username</p>
                 <Input 
-                className='w-[30vw]' 
+                    required
+                    className='w-full text-white'
+                    classNames={{
+                        label: 'text-white'
+                    }}
+                    label='Username'
+                    type='username'
+                    id='username'
+                    name='username'
+                    variant='bordered'
+                    color='secondary'
+                    value={formData.username}
+                    onChange={handleInputChange}
+                    onKeyDown={handleKeyDown}
+                    errorMessage={errors?.message}
+                    isInvalid={errors === null ? false : errors.field == 'username' ? true : false}
+                />
+            </div>
+            <div>
+                <p className='text-white'>Create a password</p>
+                <Input 
+                className='w-full text-white' 
+                classNames={{
+                    label: 'text-white'
+                }}
                 label='Password' 
                 type={isVisible ? 'text' : 'password'}
                 id='password'
                 name='password'
                 variant='bordered'
+                color='secondary'
                 value={formData.password}
                 onChange={handleInputChange}
                 errorMessage={errors?.message}
@@ -42,17 +67,21 @@ export default function StepTwo({ formData, handleInputChange, errors, handleKey
                     )}
                     </button>
                 }
-                /> <br/>
+                /> 
             </div>
             <div>
-                <p>Confirm password</p>
+                <p className='text-white'>Confirm password</p>
                 <Input 
-                    className='w-[30vw]' 
+                    className='w-full text-white' 
+                    classNames={{
+                        label: 'text-white'
+                    }}
                     label='Password Confirmation' 
                     type={isVisibleConf ? "text" : "password"}
                     id='confirmPassword'
                     name='confirmPassword'
                     variant='bordered'
+                    color='secondary'
                     value={confirmPassword}
                     onChange={handleInputChange}
                     onKeyDown={handleKeyDown}
@@ -75,23 +104,7 @@ export default function StepTwo({ formData, handleInputChange, errors, handleKey
                 />
                 <br/>
             </div>
-            <div>
-                <p>Create username</p>
-                <Input 
-                    required
-                    className='w-[30vw]'
-                    label='Username'
-                    type='username'
-                    id='username'
-                    name='username'
-                    variant='bordered'
-                    value={formData.username}
-                    onChange={handleInputChange}
-                    onKeyDown={handleKeyDown}
-                    errorMessage={errors?.message}
-                    isInvalid={errors === null ? false : errors.field == 'username' ? true : false}
-                />
-            </div> <br/>
+            <br/>
         </div>
     );
 }

@@ -3,12 +3,59 @@
 @tailwind utilities;
 
 :root {
-  --background: #020617;
+  --background: #ebeaec;
   --foreground: #e5e5e6;
+
+  /* Fluid Typography Scale - Larger */
+  --fluid-small: clamp(0.75rem, 0.25vw + 0.625rem, 1rem);
+  --fluid-p1: clamp(1rem, 0.5vw + 0.875rem, 1.5rem);
+  --fluid-h2: clamp(1.5rem, 1vw + 1rem, 2rem);
+  --fluid-h1: clamp(1.875rem, 1.5vw + 1.15rem, 2.5rem);
+  --fluid-header: clamp(2rem, 2.25vw + 1.5rem, 3rem);
+  --fluid-big-header: clamp(3rem, 4vw + 2rem, 5rem);
 }
+
 
 body {
   color: var(--foreground);
   background: var(--background);
   font-family: Arial, Helvetica, sans-serif;
+  font-size: var(--fluid-p1);
+  line-height: 1.6;
+}
+
+.text-small {
+  font-size: var(--fluid-small);
+  line-height: 1.4;
+}
+
+.text-p1 {
+  font-size: var(--fluid-p1);
+  line-height: 1.6;
+}
+
+.text-h2 {
+  font-size: var(--fluid-h2);
+  line-height: 1.4;
+}
+
+.text-h1 {
+  font-size: var(--fluid-h1);
+  line-height: 1.3;
+}
+
+.text-header {
+  font-size: var(--fluid-header);
+  line-height: 1.2;
+}
+
+.text-big-header {
+  font-size: var(--fluid-big-header);
+  line-height: 1.1;
+}
+input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus {
+  -webkit-text-fill-color: white !important;
+  caret-color: white;
 }

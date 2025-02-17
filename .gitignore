@@ -68,3 +68,4 @@ spring-backend/src/main/resources/application-local.properties
 *.log
 *.gz
 *.tmp
+node_modules

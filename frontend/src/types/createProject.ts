@@ -11,7 +11,7 @@ export interface CreateProject {
     city: string;
     state: string;
     zipcode: string;
-    stage: number;
+    stage: string;
     projectType: string;
     carrier: string;
     //assignedUser: string[]; //??? maybe add later
@@ -74,7 +74,6 @@ export interface StepFourProps {
 
 export interface StepFiveProps {
     formData: CreateProject
-    errors: CreateProjectError | null;
-    handleInputChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
-    handleKeyDown: (e: React.KeyboardEvent<HTMLInputElement>) => void;
+    projStage: string[];
+    handleStageChange: (projectStage: string) => void;
 }

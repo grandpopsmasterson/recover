@@ -1,6 +1,6 @@
 'use client'
 
-import { Navbar, NavbarBrand, NavbarContent, NavbarItem, Link, DropdownItem, DropdownTrigger, Dropdown, DropdownMenu } from "@heroui/react"
+import { Navbar, NavbarBrand, NavbarContent, NavbarItem, Link, DropdownItem, DropdownTrigger, Dropdown, DropdownMenu, Button } from "@heroui/react"
 import React, {useState, useEffect, useCallback, memo} from "react";
 import { usePathname, useRouter } from 'next/navigation';
 import NextLink from 'next/link';
@@ -13,6 +13,10 @@ interface NavLinkProps {
     children: React.ReactNode;
     className?: string;
 }
+
+// interface DashboardNavBarProps {
+//     currentPath: string;
+// }
 
 
 //memoize the logo
@@ -74,7 +78,7 @@ const UserDropdown = memo(() => {
             <svg fill="none" height="36" viewBox="0 0 32 32" width="36">
                 <path
                     d="M4 6H20M4 12H20M4 18H20" 
-                    stroke="#4ade80" 
+                    stroke="#7828c8" 
                     strokeWidth="2" 
                     strokeLinecap="round" 
                     strokeLinejoin="round"
@@ -114,7 +118,7 @@ export default function DashboardNavBar() {
     const isActive = useCallback((path:string) => pathname === path, [pathname]);
 
     return (
-        <div className="fixed top-0 left-0 w-full">
+        <div className="fixed top-0 left-0 w-full bg-recovernavy">
             <Navbar>
                 <NavbarBrand>                
                     <NextLink href="/#" passHref>
@@ -129,31 +133,69 @@ export default function DashboardNavBar() {
 
                 <NavbarContent className="hidden sm:flex gap-4" justify="center">
                 <NavbarItem >
-                        <NavLink href="/Dashboard" isActive={isActive('/Dashboard')}>
+                        <NavLink href="/dashboard" isActive={isActive('/Dashboard')}>
                             Dashboard 
                         </NavLink>
                     </NavbarItem>
                     <NavbarItem >
-                        <NavLink href="/Dashboard/AllProjects" isActive={isActive('/Dashboard/AllProjects')}>
+                        <NavLink href="/dashboard/AllProjects" isActive={isActive('/Dashboard/AllProjects')}>
                             Projects 
                         </NavLink>
                     </NavbarItem>
                     <NavbarItem >
-                        <NavLink href="/Dashboard/AllEstimates" isActive={isActive('/Dashboard/AllEstimates')}>
+                        <NavLink href="/dashboard/AllEstimates" isActive={isActive('/Dashboard/AllEstimates')}>
                             Estimates 
                         </NavLink>
                     </NavbarItem>
                     <NavbarItem >
-                        <NavLink href="/Dashboard/Network" isActive={isActive('/Dashboard/Network')}>    
+                        <NavLink href="/dashboard/Network" isActive={isActive('/Dashboard/Network')}>    
                             Network 
                         </NavLink>
                 </NavbarItem>
             </NavbarContent> 
 
             <NavbarContent as="div" justify="end">
+                <div>
+                <Button 
+                    onPress={() => router.push('./createProject')} 
+                    color="secondary"
+                    className="mr-4"
+                    >
+                    Create Project
+                </Button>
+                </div>
                 <UserDropdown />
             </NavbarContent>
         </Navbar>
     </div>
     )
 }
+
+
+
+// const DashboardNavBar: FC<DashboardNavBarProps> = ({ currentPath }) => {
+//     return (
+//         <nav className="flex justify-between p-4 border-b">
+//             {currentPath === '/dashboard/altitude' && (
+//                 // Altitude-specific nav content
+//                 <div>
+//                     <h1>Altitude Dashboard</h1>
+//                     {/* Altitude-specific buttons/links */}
+//                 </div>
+//             )}
+            
+//             {currentPath === '/dashboard/projects' && (
+//                 // Projects-specific nav content
+//                 <div>
+//                     <h1>Projects Dashboard</h1>
+//                     {/* Projects-specific buttons/links */}
+//                 </div>
+//             )}
+            
+//             {/* Common nav elements that appear on all pages */}
+//             <div>
+//                 {/* Common buttons, user menu, etc. */}
+//             </div>
+//         </nav>
+//     );
+// };

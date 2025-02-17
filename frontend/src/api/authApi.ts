@@ -11,7 +11,7 @@ export const loginApi = {
             // Extract token from response body
             const { token } = response.data;
             if (token) {
-                localStorage.setItem('token', `Bearer ${token}`);
+                localStorage.setItem(`token`, `Bearer ${token}`);
             }
             
             return response;

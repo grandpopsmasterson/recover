@@ -56,5 +56,11 @@ public class User {
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     @Builder.Default
     private Set<Role> roles = new HashSet<>();
-
+    
+    public String getFullName() {
+        String first = (firstName != null && !firstName.isEmpty()) ? firstName : "Unknown";
+        String last = (lastName != null && !lastName.isEmpty()) ? lastName : "Unknown";
+        return first + " " + last;
+    }
+    
 }
