@@ -91,22 +91,22 @@ export default function LogInCard() {
         <form onSubmit={handleSubmit}>
         <Card
         isBlurred
-        className='border-10 h-[clamp(27rem,40vh+10rem,40rem)] w-[clamp(20rem,25vw+5rem,45rem)] bg-recovernavy border-[10px] border-slate-500'
+        className='border-10 h-[clamp(27rem,40vh+10rem,40rem)] w-[clamp(20rem,25vw+5rem,45rem)] !bg-recovernavy border-[10px] border-slate-500'
         shadow='md'
         >
-            <CardHeader>
+            <CardHeader className="flex flex-col space-y-4">
                 <div>
-                    <RecoverLogo />
+                    <RecoverLogo size={50} />
                 </div>
                 <div>
-                    <h1>Login</h1>
+                    <h1 className="text-white">Login</h1>
                 </div>
             </CardHeader>
             <CardBody>
                     <div>
                         <Input
                             variant="bordered"
-                            className='w-full'
+                            className='w-full text-white'
                             classNames={{
                                 label: '!text-white'
                             }} 
@@ -125,7 +125,7 @@ export default function LogInCard() {
                     <div>
                         <Input 
                             variant="bordered"
-                            className='w-full'
+                            className='w-full text-white'
                             classNames={{
                                 label: '!text-white'
                             }} 
@@ -143,7 +143,7 @@ export default function LogInCard() {
                     <Button 
                         variant="bordered" 
                         color="secondary" 
-                        className="border-white font-bold !text-white hover:bg-purple-500" 
+                        className="border-white font-bold !text-white hover:bg-secondary" 
                         type="submit"
                         >
                         {isLoading ? 'Logging in...' : 'Log In'}
@@ -151,7 +151,7 @@ export default function LogInCard() {
             </CardBody>
             <CardFooter className="flex justify-center">
                 <div className='flex justify-center pt-4'>
-                    <p>Don&apos;t have an account? <a className='text-purple-500 underline' href='./signup'>Sign up</a></p>
+                    <small className="text-white">Don&apos;t have an account? <a className='text-purple-500 underline' href='./signup'>Sign up</a></small>
                 </div>
             </CardFooter>
         </Card>

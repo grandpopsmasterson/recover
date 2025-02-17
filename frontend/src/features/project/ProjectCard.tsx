@@ -41,9 +41,9 @@ export default function ProjectCard({
                     />
                 </CardHeader>
                 <CardBody className="flex flex-col bg-recovernavy h-full w-[90%] mb-2 rounded-md">
-                <span className="absolute top-2 right-2 pt-1 text-xs text-gray-400">{stage}</span>
-                    <p className="text-xs">{streetAddress}</p>
-                    <p className="text-xs">{`${city}, ${state}`}</p>
+                <span className="absolute top-2 right-2 pt-1 text-xs text-gray-100">{stage}</span>
+                    <p className="text-xs text-white">{streetAddress}</p>
+                    <p className="text-xs text-white">{`${city}, ${state}`}</p>
                     <p className="text-xs text-purple-500">{clientName}</p> <br/><br/>
                     <CardFooter className=" w-full p-0 rounded-b-sm flex justify-between">
                         <div className="overflow-hidden">

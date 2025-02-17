@@ -77,7 +77,7 @@ export default function HomeNavBar() {
                 </Link>
                 <Link 
                 href="/auth/signup"
-                className="px-4 bg-purple-400 py-0.75 rounded-md hover:bg-purple-500 transition-all duration-300"
+                className="px-4 bg-purple-500 py-0.75 rounded-md hover:bg-secondary transition-all duration-300"
                 >
                 Start an Estimate
                 </Link>

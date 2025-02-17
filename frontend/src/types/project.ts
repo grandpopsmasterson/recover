@@ -85,8 +85,8 @@ export interface GroupedProjects {
 };
 
 export const filters = [
-  {name: 'Technicians', group: 'Group' },
-  {name: 'Technician: Tommy Technician', group: 'Technician' },
+  {name: 'Technician', group: 'Group' },
+  {name: 'Tommy Technician', group: 'Technician' },
   {name: 'Pending Sale', group: 'Stage'},
   {name: 'Stage', group: 'Group'},
   {name: 'Scope', group: 'Group'},
@@ -103,4 +103,9 @@ export const filters = [
   {name: 'Estimate', group: 'Group' },
   {name: 'Estimate Pending', group: 'Estimate' },
   {name: 'Estimate Complete', group: 'Estimate' },
+  {name: 'Loss Type', group: 'Group' },
+  {name: 'Project Type', group: 'Group' },
+  {name: 'Carrier', group: 'Group' },
+  {name: 'Manager', group: 'Group' },
+  {name: 'Adjuster', group: 'Group' },
 ]

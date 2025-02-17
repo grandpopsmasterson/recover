@@ -13,6 +13,7 @@ module.exports = {
     extend: {
       colors: {
         recover: '#111127',
+        recovernavy: '#15154e',
       },
       fontSize: {
         'fluid-small': 'var(--fluid-small)',

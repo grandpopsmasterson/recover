@@ -1,6 +1,6 @@
 'use client'
 
-import { Navbar, NavbarBrand, NavbarContent, NavbarItem, Link, DropdownItem, DropdownTrigger, Dropdown, DropdownMenu } from "@heroui/react"
+import { Navbar, NavbarBrand, NavbarContent, NavbarItem, Link, DropdownItem, DropdownTrigger, Dropdown, DropdownMenu, Button } from "@heroui/react"
 import React, {useState, useEffect, useCallback, memo} from "react";
 import { usePathname, useRouter } from 'next/navigation';
 import NextLink from 'next/link';
@@ -155,6 +155,15 @@ export default function DashboardNavBar() {
             </NavbarContent> 
 
             <NavbarContent as="div" justify="end">
+                <div>
+                <Button 
+                    onPress={() => router.push('./createProject')} 
+                    color="secondary"
+                    className="mr-4"
+                    >
+                    Create Project
+                </Button>
+                </div>
                 <UserDropdown />
             </NavbarContent>
         </Navbar>
