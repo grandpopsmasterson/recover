@@ -1,27 +1,20 @@
 import { GroupedProjects } from "@/types/project";
-import { buildQuereyString, determineGroupBy } from "./utils/filterFunctions";
+import { buildQueryString, determineGroupBy } from "./utils/filterFunctions";
 import axios, { AxiosError } from "axios";
-
-const api = axios.create({
-    baseURL: '/api/projects',
-    headers: {
-        'Accept': 'application.json',
-    },
-    withCredentials: true,
-});
+import { apiClient } from "./apiClient";
 
 export const filterApi = {
     async getGroupedProjects(filters: string[]): Promise<GroupedProjects> {
         if (filters.length === 0){ return {} };
 
         const groupBy = determineGroupBy(filters);
-        const querey = buildQuereyString(filters);
+        const query = buildQueryString(filters);
 
         try {
-            const { data } = await api.get<GroupedProjects>('/grouped', {
+            const { data } = await apiClient.get<GroupedProjects>('/grouped', {
                 params: {
                     groupBy,
-                    querey,
+                    query,
                 },
             });
             console.log(data);

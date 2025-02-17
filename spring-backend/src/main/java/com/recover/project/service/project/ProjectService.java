@@ -81,11 +81,22 @@ public class ProjectService {
     private Function<Project, ?> getGroupingFunction(String groupBy) {
         return switch (groupBy.toUpperCase()) {
             case "STAGE" -> Project::getStage;
+            case "SCOPE" -> Project::getScope;
+            case "CARRIER" -> Project::getCarrier;
             case "LOSS_TYPE" -> Project::getLossType;
             case "PROJECT_TYPE" -> Project::getProjectType;
-            case "TEAM_MEMBER" -> p -> p.getRoles().stream()
-                .map(role -> role.getUser().getFirstName())
-                .collect(Collectors.joining(", "));
+            case "MANAGER" -> project -> project.getRoles().stream()
+            .filter(role -> role.getProjectRole() == ProjectRole.MANAGER)
+            .map(role -> role.getUser().getFullName())
+            .collect(Collectors.joining(", "));
+            case "TECHNICIAN" -> project -> project.getRoles().stream()
+            .filter(role -> role.getProjectRole() == ProjectRole.TECHNICIAN)
+            .map(role -> role.getUser().getFullName())
+            .collect(Collectors.joining(", "));
+            case "ADJUSTER" -> project -> project.getRoles().stream()
+            .filter(role -> role.getProjectRole() == ProjectRole.ADJUSTER)
+            .map(role -> role.getUser().getFullName())
+            .collect(Collectors.joining(", "));
             default -> throw new IllegalArgumentException("Invalid grouping criteria: " + groupBy);
         };
     }

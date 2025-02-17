@@ -6,7 +6,7 @@ import com.recover.project.model.enums.ProjectStage;
 
 public class StageMap {
     public static final BiMap<String, ProjectStage> STAGE_MAP = ImmutableBiMap.of(
-        "PENDING SALE", ProjectStage.PENDING_SALE,
+        "PENDING_SALE", ProjectStage.PENDING_SALE,
         "PRE_PRODUCTION", ProjectStage.PRE_PRODUCTION,
         "ESTIMATION", ProjectStage.ESTIMATION,
         "MITIGATION", ProjectStage.MITIGATION,

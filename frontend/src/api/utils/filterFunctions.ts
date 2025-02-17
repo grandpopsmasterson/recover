@@ -33,7 +33,7 @@ export const determineGroupBy = (filter: string[]): string => {
     return 'STAGE'; // Default group for no matches
 };
 
-export const buildQuereyString = (filter: string[]): string => {
+export const buildQueryString = (filter: string[]): string => {
     for (const name of filter){
     const foundFilter = filters.find(f => f.name === name);
 
