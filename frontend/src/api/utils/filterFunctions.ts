@@ -14,6 +14,11 @@ export const determineGroupBy = (filter: string[]): string => {
             if (filter.some(f => f.toLowerCase().includes('invoice'))) return 'INVOICE';
             if (filter.some(f => f.toLowerCase().includes('estimate'))) return 'ESTIMATE';
             if (filter.some(f => f.toLowerCase().includes('scope'))) return 'SCOPE';
+            if (filter.some(f => f.toLowerCase().includes('loss type'))) return 'LOSS_TYPE';
+            if (filter.some(f => f.toLowerCase().includes('carrier'))) return 'CARRIER';
+            if (filter.some(f => f.toLowerCase().includes('manager'))) return 'MANAGER';
+            if (filter.some(f => f.toLowerCase().includes('adjuster'))) return 'ADJUSTER';
+            if (filter.some(f => f.toLowerCase().includes('technician'))) return 'TECHNICIAN';
         }
 
         // const groupMap: Record<string, string> = {
