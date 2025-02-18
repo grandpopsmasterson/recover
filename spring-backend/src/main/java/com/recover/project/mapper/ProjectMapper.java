@@ -1,8 +1,10 @@
 package com.recover.project.mapper;
 
+import java.util.AbstractMap;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
@@ -11,6 +13,7 @@ import org.mapstruct.Mappings;
 import com.recover.project.dto.project.CreateProject;
 import com.recover.project.dto.project.LongProjectDto;
 import com.recover.project.dto.project.ProjectBucketDto;
+import com.recover.project.dto.project.ProjectListDto;
 import com.recover.project.dto.project.ShortProjectDto;
 import com.recover.project.model.Project;
 import com.recover.project.model.enums.LossType;
@@ -48,12 +51,26 @@ public interface ProjectMapper {
     @Mapping(source = "roles", target = "assignedRoles")  // assigned roles is a dto that was packaged and passed in from RoleMapper
     ShortProjectDto toShortDto(Project project);
 
-    List<ShortProjectDto> toShortDtoList(List<Project> projects);
+    //List<ShortProjectDto> toShortDtoList(List<Project> projects);
+    default List<ShortProjectDto> toShortDtoList(List<Project> projects) {
+        if (projects == null) {
+            return Collections.emptyList();
+        }
+        return projects.stream()
+                      .map(this::toShortDto)
+                      .collect(Collectors.toList());
+    }
 
+    // multiple grouped buckets
     @Mapping(target = "groupKey", expression = "java(formatGroupKey(entry.getKey()))")
     @Mapping(target = "projects", expression = "java(toShortDtoList(entry.getValue()))")
     @Mapping(target = "count", expression = "java(entry.getValue().size())")
     ProjectBucketDto toProjectBucketDto(Map.Entry<?, List<Project>> entry);
+
+
+    @Mapping(target = "projects", expression = "java(toShortDtoList(projects.getValue()))")
+    @Mapping(target = "count", expression = "java(projects.getValue().size())")
+    ProjectListDto toProjectListDto(AbstractMap.SimpleEntry<String, List<Project>> projects);
 
     default String formatGroupKey(Object key) {
         // Simply convert the enum or object to a string

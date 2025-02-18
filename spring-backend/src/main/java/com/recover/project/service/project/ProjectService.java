@@ -12,6 +12,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import com.recover.project.dto.project.CreateProject;
 import com.recover.project.dto.project.LongProjectDto;
 import com.recover.project.dto.project.ProjectBucketDto;
+import com.recover.project.dto.project.ProjectListDto;
 import com.recover.project.dto.project.ShortProjectDto;
 import com.recover.project.mapper.ProjectMapper;
 import com.recover.project.model.Project;
@@ -29,6 +30,7 @@ import com.recover.project.utils.exceptions.ResourceNotFoundException;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 
+import java.util.AbstractMap;
 import java.util.Collections;
 import java.util.List;
 import java.util.Set;
@@ -69,7 +71,7 @@ public class ProjectService {
             ? projectRepository.findAll(spec)
             : projectRepository.findAll();
 
-        Function<Project, ?> groupingFunction = getGroupingFunction(criteria.getGroupBy());
+        Function<Project, ?> groupingFunction = GenericSpecification.getGroupingFunction(criteria.getGroupBy());
 
         return projects.stream()
             .collect(Collectors.groupingBy(groupingFunction))
@@ -78,30 +80,7 @@ public class ProjectService {
             .collect(Collectors.toList());
     }
 
-    private Function<Project, ?> getGroupingFunction(String groupBy) {
-        return switch (groupBy.toUpperCase()) {
-            case "STAGE" -> Project::getStage;
-            case "SCOPE" -> Project::getScope;
-            case "CARRIER" -> Project::getCarrier;
-            case "LOSS_TYPE" -> Project::getLossType;
-            case "PROJECT_TYPE" -> Project::getProjectType;
-            case "MANAGER" -> project -> project.getRoles().stream()
-            .filter(role -> role.getProjectRole() == ProjectRole.MANAGER)
-            .map(role -> role.getUser().getFullName())
-            .collect(Collectors.joining(", "));
-            case "TECHNICIAN" -> project -> project.getRoles().stream()
-            .filter(role -> role.getProjectRole() == ProjectRole.TECHNICIAN)
-            .map(role -> role.getUser().getFullName())
-            .collect(Collectors.joining(", "));
-            case "ADJUSTER" -> project -> project.getRoles().stream()
-            .filter(role -> role.getProjectRole() == ProjectRole.ADJUSTER)
-            .map(role -> role.getUser().getFullName())
-            .collect(Collectors.joining(", "));
-            default -> throw new IllegalArgumentException("Invalid grouping criteria: " + groupBy);
-        };
-    }
-
-    public Set<ShortProjectDto> getAllProjects(Long userId) {
+    public Set<ShortProjectDto> getAllProjectsById(Long userId) {
         try {
             logger.info("Fetching projects for userId: {}", userId);
             
@@ -118,6 +97,23 @@ public class ProjectService {
             
             // Either rethrow or return an empty set based on your error handling strategy
             return Collections.emptySet();
+        }
+    }
+
+    public ProjectListDto getAllProjects() {
+        try {
+            logger.info("Fetching projects");   
+            List<Project> projects = projectRepository.findAll();
+            ProjectListDto projectList = projectMapper.toProjectListDto(
+                new AbstractMap.SimpleEntry<>("all", projects)
+            );
+            logger.info("Number of projects found: {}", projectList.getCount());   
+            return projectList;
+        } catch (Exception e) {
+            logger.error("Error fetching projects", e);     
+            return projectMapper.toProjectListDto(
+                new AbstractMap.SimpleEntry<>("all", Collections.emptyList())
+            );
         }
     }
 

@@ -8,13 +8,16 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.recover.project.utils.constants.Constants;
 import com.recover.project.dto.project.ProjectBucketDto;
+import com.recover.project.dto.project.ProjectListDto;
 import com.recover.project.dto.project.ShortProjectDto;
+import com.recover.project.model.Project;
 import com.recover.project.model.enums.ProjectRole;
 import com.recover.project.search.ProjectSearchCriteria;
 import com.recover.project.search.SearchOperation;
 import com.recover.project.service.authorization.AuthenticationService;
 import com.recover.project.service.authorization.UserService;
 import com.recover.project.service.project.ProjectService;
+import com.recover.project.utils.exceptions.ResourceNotFoundException;
 import com.recover.project.utils.exceptions.UnauthorizedException;
 
 import lombok.RequiredArgsConstructor;
@@ -32,17 +35,12 @@ public class BaseDashboardController {
     @GetMapping("/dashboard")
     public ResponseEntity<?> getAllProjects() {
         try {
-            Long userId = authenticationService.getCurrentUserId();
-            //ProjectRole currentUserRole = Constants.ROLE_MAP.get(userService.findById(userId).getUserType());
-
-            Set<ShortProjectDto> projects = projectService.getAllProjects(userId);
-            if (projects.isEmpty()) {
+            ProjectListDto projects = projectService.getAllProjects();
+            if (projects.getProjects().isEmpty()) {
                 return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Projects not found or not authorized");
             }
             return ResponseEntity.ok(projects);
-        } catch (UnauthorizedException e) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("User not authenticated");
-        } catch (Exception e) {
+        } catch (ResourceNotFoundException e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("An error occurred while processing the request");
         }
     }

@@ -50,7 +50,5 @@ export const projectsApi = {
       console.error('Failed to fetch buckets:', error);
       throw error;
     }
-  },
-
-  
+  }, 
 };

@@ -27,8 +27,12 @@ public class Flag {
 
     private String event;
 
+    private Long entityId;
+
     @ManyToOne
     @JoinColumn(name = "project_id")
     private Project project;
+
+    // add polymorphic 
     
 }
