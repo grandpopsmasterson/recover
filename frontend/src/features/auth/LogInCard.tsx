@@ -1,6 +1,6 @@
 'use client'
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Card, CardHeader, CardBody, Input, CardFooter, Button } from "@heroui/react";
 import { RecoverLogo } from "@/components/ui/icons/RecoverLogo";
 import { LoginCredentials } from "@/types/login";
@@ -23,6 +23,14 @@ export default function LogInCard() {
     
     //TODO add error40 handlers (email format, blank fields)
 
+    useEffect(() => {
+        const token = localStorage.getItem('token');
+        if (token) {
+            console.log('Token found, navigating to dashboard');
+            router.push('/dashboard');
+        }
+    }, [router]);
+
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
 
         e.preventDefault();
@@ -42,8 +50,8 @@ export default function LogInCard() {
                 // Clear sensitive data
                 setLoginData({ usernameOrEmail: '', password: '' });
                 
-            router.push('/dashboard')
             console.log(response);
+            router.push('/dashboard');
 
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         } catch (error: any) {

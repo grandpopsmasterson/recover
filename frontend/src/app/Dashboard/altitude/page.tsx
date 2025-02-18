@@ -9,7 +9,6 @@ export default function AltitudePage() {
     const [buckets, setBuckets] = useState<ProjectBucket[]>([]);
     const [isLoading, setIsLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
-    const router = useRouter();
 
     useEffect(() => {
         const fetchBuckets = async () => {

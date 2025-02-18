@@ -1,5 +1,5 @@
 import React from 'react';
-import { ProjectBucket} from '../../types/project';
+import { ListBucket} from '../../types/project';
 import { Warning } from '@/components/ui/icons/Warning';
 import { CircleX } from '@/components/ui/icons/CircleX';
 import { CircleCheck } from '@/components/ui/icons/CircleCheck';
@@ -8,13 +8,12 @@ import { AlertCircle } from '@/components/ui/icons/AlertCircle';
 import { Phone } from '@/components/ui/icons/Phone';
 import { RightArrow } from '@/components/ui/icons/RightArrow';
 
-const AltitudeListCard: React.FC<ProjectBucket> = ({ 
-    id,
-    stage,
+const AltitudeListCard: React.FC<ListBucket> = ({ 
+    name,
     total,
     redTotal,
     yellowTotal,
-    greenTotal = total,
+    greenTotal,
     revenue
 }) => {
   const getStatusColor = (): string => {
@@ -32,8 +31,8 @@ const AltitudeListCard: React.FC<ProjectBucket> = ({
 
         {/* card title + icons section */}
         <div className="grid grid-cols-[auto_auto_1fr] items-center gap-4 w-2/5">
-          <div className={`text-lg font-semibold text-${getStatusColor()}`}>{stage}</div>
-          <p className='text-md text-slate-500'>{yellowTotal + redTotal + greenTotal}</p>
+          <div className={`text-lg font-semibold text-${getStatusColor()}`}>{name}</div>
+          <p className='text-md text-slate-500'>{total}</p>
           <div className={`flex h-7 items-center border-2 px-4 rounded-full gap-1 w-full border-${getStatusColor()}`}>
             <Warning />
             <p className="text-md">{yellowTotal}</p>
