@@ -63,13 +63,13 @@ export interface Project {
     createdAt: string;
   }
 
-export interface ProjectBucket {
-  id: bigint;
-  stage: string;
+export interface ListBucket {
+  // id: bigint; not needed - id is for individual projects?
+  name: string;
   total: number;
   redTotal: number | 0;
   yellowTotal: number | 0;
-  greenTotal?: number;
+  greenTotal: number | 0;
   revenue: number | 25000;
 }
 
@@ -81,8 +81,12 @@ export interface FilterError {
 }
 
 export interface GroupedProjects {
-  [key: string]: string[]; // TODO CREATE THE INTERFACE FOR RECIEVING DATA
+  groupKey: string;
+  projects:ShortProject[];
+  count: number;
 };
+
+
 
 export const filters = [
   {name: 'Stage', group: 'Group'},

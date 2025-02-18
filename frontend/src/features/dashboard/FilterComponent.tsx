@@ -1,54 +1,64 @@
 "use client"
 
-import { filterApi } from '@/api/filterApi';
+import { CardDisplay } from '@/components/ui/icons/CardDisplay';
+import { ListCardDisplay } from '@/components/ui/icons/ListCardDisplay';
+import { ListDisplay } from '@/components/ui/icons/ListDisplay';
 import { SearchIcon } from '@/components/ui/icons/SearchIcon';
-import { FilterError, filters, GroupedProjects } from '@/types/project';
-import { Autocomplete, AutocompleteItem, AutocompleteSection, Chip } from '@heroui/react'
-import { useEffect, useState } from 'react';
+import { FilterProps } from '@/types/dashboard';
+import { filters } from '@/types/project';
+import { Autocomplete, AutocompleteItem, AutocompleteSection, Button, Chip } from '@heroui/react'
+import { useEffect } from 'react';
 
+export default function FilterComponent({
+    setDisplayType, 
+    selectedFilters, 
+    setSelectedFilters, 
+    setPendingRemoval, 
+    pendingRemoval, 
+    setPendingSelection, 
+    inputValue, 
+    setInputValue
+}: FilterProps) {
 
-
-export default function FilterComponent() {
-
-    const [selectedFilters, setSelectedFilters] = useState<string[]>([]);
-    const [inputValue, setInputValue] = useState<string>('');
-    const [pendingSelection, setPendingSelection] = useState<string | null>(null);
-    const [pendingRemoval, setPendingRemoval] = useState<string | null>(null);
-    const [groupedProjects, setGroupedProjects] = useState<GroupedProjects>({});
-    const [isLoading, setIsLoading] = useState<boolean>(false);
-    const [error, setError] = useState<FilterError|string|null>(null);
+    //const [selectedFilters, setSelectedFilters] = useState<string[]>(['Stage']);
+    // const [inputValue, setInputValue] = useState<string>('');
+    // const [pendingSelection, setPendingSelection] = useState<string | null>(null);
+    // const [pendingRemoval, setPendingRemoval] = useState<string | null>(null);
+    // const [groupedProjects, setGroupedProjects] = useState<GroupedProjects>({}); // this will be used to map out the card groups
+    // const [isLoading, setIsLoading] = useState<boolean>(false);
+    // const [error, setError] = useState<FilterError|string|null>(null);
     //const [isOpen, setIsOpen] = useState<boolean>(false);
 
-    const fetchProjects = async (filters: string[]) => {
-        setIsLoading(true);
-        setError(null);
-        try {
-            const data = await filterApi.getGroupedProjects(filters);
-            setGroupedProjects(data);
-            console.log(data);
-        } catch (error) {
-            setError(error instanceof Error ? error.message : 'An error occurred');
-            console.error('Error fetching projects: ', error);
-        } finally {
-            setIsLoading(false);
-        }
-    }
+    // const fetchProjects = async (filters: string[]) => {
+    //     setIsLoading(true);
+    //     setError(null);
+    //     try {
+    //         const data = await filterApi.getGroupedProjects(filters);
+    //         setGroupedProjects(data);
+    //         console.log(data);
+    //     } catch (error) {
+    //         setError(error instanceof Error ? error.message : 'An error occurred');
+    //         console.error('Error fetching projects: ', error);
+    //     } finally {
+    //         setIsLoading(false);
+    //     }
+    // }
 
-    useEffect(() => {
-        const debounceTimeout = setTimeout(() => {
-            fetchProjects(selectedFilters);
-        }, 300);
-        return () => clearTimeout(debounceTimeout);
-    }, [selectedFilters]);
+    // useEffect(() => {
+    //     const debounceTimeout = setTimeout(() => {
+    //         fetchProjects(selectedFilters);
+    //     }, 300);
+    //     return () => clearTimeout(debounceTimeout);
+    // }, [selectedFilters]);
 
-    useEffect(() => {
-        if (pendingSelection && !selectedFilters.includes(pendingSelection)) {
-        setSelectedFilters(prev => [...prev, pendingSelection]);
-        setInputValue('');
-        setPendingSelection(null);
-        //setIsOpen(false);
-        }
-    }, [pendingSelection, selectedFilters]);
+    // useEffect(() => {
+    //     if (pendingSelection && !selectedFilters.includes(pendingSelection)) {
+    //     setSelectedFilters(prev => [...prev, pendingSelection]);
+    //     setInputValue('');
+    //     setPendingSelection(null);
+    //     //setIsOpen(false);
+    //     }
+    // }, [pendingSelection, selectedFilters]);
 
     const handleSelectionChange = (value: string) => {
         if (value) {
@@ -59,10 +69,10 @@ export default function FilterComponent() {
 
     useEffect(() => {
         if (pendingRemoval) {
-        setSelectedFilters(prev => prev.filter(filter => filter !== pendingRemoval));
+        setSelectedFilters((prev: string[]) => prev.filter((filter: string) => filter !== pendingRemoval));
         setPendingRemoval(null);
         }
-    }, [pendingRemoval, selectedFilters]);
+    }, [pendingRemoval, setSelectedFilters, setPendingRemoval, selectedFilters]);
 
     const removeFilter = (filterToRemove: string) => {
         setPendingRemoval(filterToRemove);
@@ -167,6 +177,21 @@ export default function FilterComponent() {
                 </Autocomplete>
                 <div className='space-x-2 space-y-2'>
                     {selectedFilters.map((filter) => <Chip key={filter} onClose={() => removeFilter(filter) }>{filter}</Chip>)}
+                </div>
+                <div>
+                    <Button className='p-1 m-0 gap-0 !min-w-0 w-[25px] h-[25px] bg-red-400 rounded-md' onPress={() => setDisplayType('ListCard')}>
+                        <ListCardDisplay  />
+                    </Button>
+                </div>
+                <div>
+                <Button className='p-1 m-0 gap-0 !min-w-0 w-[25px] h-[25px] bg-red-400 rounded-md' onPress={() => setDisplayType('Card')}>
+                    <CardDisplay />
+                    </Button>
+                </div>
+                <div>
+                <Button className='p-1 m-0 gap-0 !min-w-0 w-[25px] h-[25px] bg-red-400 rounded-md' onPress={() => setDisplayType('List')}>
+                    <ListDisplay />
+                    </Button>
                 </div>
             </div>
         </div>

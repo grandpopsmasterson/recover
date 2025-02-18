@@ -473,7 +473,7 @@ export default function MainCard() {
                         <div className="flex items-center gap-4">
                         {stage === 1 && (
                                 <NavLink
-                                    href='/'
+                                    href='/dashboard'
                                 >
                                     <BackArrow />
                                 </NavLink>
