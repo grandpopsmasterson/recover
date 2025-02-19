@@ -6,13 +6,14 @@ import ProjectBuckets from './ProjectBuckets'
 import AltitudeListCard from './AltitudeListCard'
 import { FilterError, GroupedProjects, ShortProject } from '@/types/project'
 import { filterApi } from '@/api/filterApi'
+import ListView from './ListView'
+import { projectsApi } from '@/api/projectsApi'
 
 const DashboardPage = () => {
 
     const [displayType, setDisplayType] = useState<'ListCard'|'List'|'Card'>('ListCard');
-    const [project, setProject] = useState<ShortProject[]>([]);
+    // const [project, setProject] = useState<ShortProject[]>([]);
     const [selectedFilters, setSelectedFilters] = useState<string[]>(['Stage']);
-    // const id: bigint = BigInt(1);
     
     const [groupedProjects, setGroupedProjects] = useState<GroupedProjects[]>([]);
     const [isLoading, setIsLoading] = useState<boolean>(false);
@@ -21,14 +22,30 @@ const DashboardPage = () => {
     const [pendingRemoval, setPendingRemoval] = useState<string | null>(null);
     const [inputValue, setInputValue] = useState<string>('');
 
-    const fetchProjects = async (filters: string[]) => {
+    const [projArray, setProjArray] = useState<ShortProject[]>([]);
+
+    const fetchProjects = async (filter: string[]) => {
         setIsLoading(true);
         setError(null);
         try {
-            // eslint-disable-next-line @typescript-eslint/no-explicit-any
-            const data: any = await filterApi.getGroupedProjects(filters);
-            setGroupedProjects(data);
-            console.log(data);
+                if (filter.length === 0) {
+                    const data: GroupedProjects[] = await projectsApi.getAllProjects(); 
+                    setGroupedProjects(data);
+                    setDisplayType('List');
+                    console.log(data);
+                    return;
+                } else if (filter.length === 1) {
+                    const data: GroupedProjects[] =  await filterApi.getGroupedProjects(filter);
+                    setGroupedProjects(data);
+                    setDisplayType('ListCard');
+                    console.log(data);
+                    return;
+                } else if (filter.length >= 1) {
+                    const data: GroupedProjects[] = await filterApi.getMultiQuery(filter);
+                    setGroupedProjects(data);
+                    setDisplayType('List');
+                    console.log(data);
+                }
         } catch (error) {
             setError(error instanceof Error ? error.message : 'An error occurred');
             console.error('Error fetching projects: ', error);
@@ -53,6 +70,16 @@ const DashboardPage = () => {
         }
     }, [pendingSelection, selectedFilters]);
 
+    useEffect(() => {
+        if (!groupedProjects || groupedProjects.length === 0) return;
+
+        const extractedProjects = groupedProjects.flatMap(group => group.projects);
+
+        setProjArray(extractedProjects);
+    }, [groupedProjects]);
+
+    console.log(selectedFilters)
+
     return (
         <div className="container mx-auto px-4 py-8">
                     <div className="flex justify-between w-full bg-recovernavy rounded-bl-lg rounded-br-lg mb-4 ">
@@ -75,9 +102,12 @@ const DashboardPage = () => {
                     ) : displayType == 'Card' ? groupedProjects.map((projects) => (
                         
                         <ProjectBuckets key={projects.groupKey} projects={projects.projects} groupKey={projects.groupKey} count={projects.count} />
-                    )) : (
-                        <div className='text-black'>This will one day be a list</div>
-                    )}
+                    )
+                    ) : displayType == 'List' ? 
+
+                        <ListView key={'list'} groupKey={'key'} count={0} projects={projArray} />
+                    
+                    : <div><h1 className='text-red-500'>error yo</h1></div>}
                     </div>
                     
                     
