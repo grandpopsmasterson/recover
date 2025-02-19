@@ -20,12 +20,9 @@ import com.recover.project.model.Role;
 import com.recover.project.model.enums.ProjectRole;
 import com.recover.project.repository.ProjectRepository;
 import com.recover.project.repository.RoleRepository;
-import com.recover.project.search.GenericSpecification;
-import com.recover.project.search.ProjectSearchCriteria;
+import com.recover.project.search.ProjectSpecification;
 import com.recover.project.service.authorization.AuthenticationService;
 //import com.recover.project.service.notifications.NotificationService;
-import com.recover.project.service.search.ProjectCriteria;
-import com.recover.project.service.search.ProjectSpecification;
 import com.recover.project.utils.exceptions.ResourceNotFoundException;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -33,6 +30,7 @@ import lombok.RequiredArgsConstructor;
 import java.util.AbstractMap;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -65,13 +63,9 @@ public class ProjectService {
         return projectMapper.toShortDto(project);
     }
     
-    public List<ProjectBucketDto> getGroupedProjects(ProjectSearchCriteria criteria) {
-        Specification<Project> spec = GenericSpecification.createSpecification(criteria);
-        List<Project> projects = StringUtils.hasText(criteria.getQuery())
-            ? projectRepository.findAll(spec)
-            : projectRepository.findAll();
-
-        Function<Project, ?> groupingFunction = GenericSpecification.getGroupingFunction(criteria.getGroupBy());
+    public List<ProjectBucketDto> getGroupedProjects(String groupBy) {
+        List<Project> projects = projectRepository.findAll();
+        Function<Project, ?> groupingFunction = ProjectSpecification.getGroupingFunction(groupBy);
 
         return projects.stream()
             .collect(Collectors.groupingBy(groupingFunction))
@@ -80,23 +74,28 @@ public class ProjectService {
             .collect(Collectors.toList());
     }
 
-    public Set<ShortProjectDto> getAllProjectsById(Long userId) {
+    public ProjectListDto searchProjects(
+            String textQuery, 
+            String groupBy, 
+            Map<String, List<String>> filters) {      
         try {
-            logger.info("Fetching projects for userId: {}", userId);
+            // Get filtered projects
+            Specification<Project> spec = ProjectSpecification.createSpecification(textQuery, filters);
+            List<Project> projects = spec == null ? 
+                projectRepository.findAll() : 
+                projectRepository.findAll(spec);
             
-            Set<ShortProjectDto> projects = projectRepository.findAllProjectsByUserId(userId)
-                .stream()
-                .map(projectMapper::toShortDto)
-                .collect(Collectors.toSet());
-            
-            logger.info("Number of projects found: {}", projects.size());
-            
-            return projects;
-        } catch (Exception e) {
-            logger.error("Error fetching projects for userId: {}", userId, e);
-            
-            // Either rethrow or return an empty set based on your error handling strategy
-            return Collections.emptySet();
+            return projectMapper.toProjectListDto(
+                new AbstractMap.SimpleEntry<>(
+                    StringUtils.hasText(groupBy) ? groupBy : "all", 
+                    projects
+                )
+            );
+        } catch (IllegalArgumentException e) {
+            logger.error("Invalid grouping criteria: {}", groupBy, e);
+            return projectMapper.toProjectListDto(
+                new AbstractMap.SimpleEntry<>("all", Collections.emptyList())
+            );
         }
     }
 
@@ -117,14 +116,21 @@ public class ProjectService {
         }
     }
 
-   public Page<ShortProjectDto> searchProjects(String query, Pageable pageable) {
-       ProjectCriteria criteria = ProjectCriteria.builder()
-           .searchTerm(query)
-           .build();
-       Specification<Project> spec = ProjectSpecification.createSpecification(criteria);
-       return projectRepository.findAll(spec, pageable)
-           .map(projectMapper::toShortDto);
-   }
+    public Set<ShortProjectDto> getAllProjectsById(Long userId) {
+        try {
+            logger.info("Fetching projects for userId: {}", userId);   
+            Set<ShortProjectDto> projects = projectRepository.findAllProjectsByUserId(userId)
+                .stream()
+                .map(projectMapper::toShortDto)
+                .collect(Collectors.toSet()); 
+            logger.info("Number of projects found: {}", projects.size());  
+            return projects;
+        } catch (Exception e) {
+            logger.error("Error fetching projects for userId: {}", userId, e);    
+            // Either rethrow or return an empty set based on your error handling strategy
+            return Collections.emptySet();
+        }
+    }
 
     public List<ShortProjectDto> getProjectsListByRole(Long userId, ProjectRole projectRole) {
         return projectRepository.findProjectsByUserIdAndRole(userId, projectRole)
