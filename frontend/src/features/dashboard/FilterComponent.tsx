@@ -136,7 +136,7 @@ export default function FilterComponent({
                         item.group == 'Group' 
                         ? (
                             
-                            <AutocompleteItem key={item.name} textValue={item.name}>
+                            <AutocompleteItem key={`${item.name}`} textValue={item.name}>
                                 <div className="flex justify-between items-center">
                                 <div className="flex gap-2 items-center">
                                     
@@ -157,7 +157,7 @@ export default function FilterComponent({
                         item.group !== 'Group' 
                         ? (
                             
-                            <AutocompleteItem key={item.name} textValue={item.name}>
+                            <AutocompleteItem key={`${item.name}`} textValue={item.name}>
                                 <div className="flex justify-between items-center">
                                 <div className="flex gap-2 items-center">
                                     
