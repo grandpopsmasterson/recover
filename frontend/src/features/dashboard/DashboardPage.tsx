@@ -12,7 +12,7 @@ import { projectsApi } from '@/api/projectsApi'
 const DashboardPage = () => {
 
     const [displayType, setDisplayType] = useState<'ListCard'|'List'|'Card'>('ListCard');
-    // const [project, setProject] = useState<ShortProject[]>([]);
+    const [project, setProject] = useState<ShortProject[]>([]);
     const [selectedFilters, setSelectedFilters] = useState<string[]>(['Stage']);
     
     const [groupedProjects, setGroupedProjects] = useState<GroupedProjects[]>([]);
@@ -29,8 +29,8 @@ const DashboardPage = () => {
         setError(null);
         try {
                 if (filter.length === 0) {
-                    const data: GroupedProjects[] = await projectsApi.getAllProjects(); 
-                    setGroupedProjects(data);
+                    const data: ShortProject[] = await projectsApi.getAllProjects(); 
+                    setProject(data);
                     setDisplayType('List');
                     console.log(data);
                     return;
@@ -71,12 +71,12 @@ const DashboardPage = () => {
     }, [pendingSelection, selectedFilters]);
 
     useEffect(() => {
-        if (!groupedProjects || groupedProjects.length === 0) return;
+        if (!project || project.length === 0) return;
 
-        const extractedProjects = groupedProjects.flatMap(group => group.projects);
+        const extractedProjects = project;
 
         setProjArray(extractedProjects);
-    }, [groupedProjects]);
+    }, [project]);
 
     console.log(selectedFilters)
 
