@@ -63,7 +63,7 @@ export interface Project {
     createdAt: string;
   }
 
-export interface ListBucket {
+export interface ListBucket { // was project bucket
   // id: bigint; not needed - id is for individual projects?
   name: string;
   total: number;

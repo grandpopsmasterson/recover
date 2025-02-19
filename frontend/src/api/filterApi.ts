@@ -12,7 +12,7 @@ export const filterApi = {
         const query = buildQueryParams(filters);
 
         try {
-            const { data } = await apiClient.get<GroupedProjects[]>('/grouped', {
+            const { data } = await apiClient.get<GroupedProjects[]>('projects/grouped', {
                 params: { groupBy, ...query, },
                 paramsSerializer: (params) => qs.stringify(params, { arrayFormat: 'repeat' }),
             });
@@ -31,7 +31,7 @@ export const filterApi = {
         const query = buildQueryParams(filters);
 
         try {
-            const { data } = await apiClient.get<GroupedProjects[]>('/multi-query-filter', { //TODO ADD PROPER ENDPOINT
+            const { data } = await apiClient.get<GroupedProjects[]>('/projects/multi-query-filter', { //TODO ADD PROPER ENDPOINT
                 params: { groupBy, ...query, },
                 paramsSerializer: (params) => qs.stringify(params, { arrayFormat: 'repeat' }),
             });

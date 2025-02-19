@@ -1,6 +1,6 @@
 import { apiClient } from './apiClient';
 import { CreateProject } from '@/types/createProject';
-import { ShortProject, LongProject, ProjectBucket, GroupedProjects } from '@/types/project';
+import { ShortProject, LongProject, ListBucket, GroupedProjects } from '@/types/project';
 
 export const projectsApi = {
 
@@ -24,7 +24,7 @@ export const projectsApi = {
 
   async getAllProjects(): Promise<GroupedProjects[]> {
     try {
-      const response = await apiClient.get('/get-all-projects');
+      const response = await apiClient.get('/projects/get-all-projects');
       return response.data; // Extract the data from the axios response
     } catch (error) {
       console.error('Failed to fetch projects:', error);
@@ -42,7 +42,7 @@ export const projectsApi = {
     }
   },
 
-  async getAllBuckets(): Promise<ProjectBucket[]> {
+  async getAllBuckets(): Promise<ListBucket[]> {
     try {
       const response = await apiClient.get('/dashboard/buckets');
       return response.data; // Extract the data from the axios response
