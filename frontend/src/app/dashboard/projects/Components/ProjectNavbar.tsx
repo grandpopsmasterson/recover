@@ -67,13 +67,13 @@ const UserDropdown = memo(() => (
         </DropdownTrigger>
         <DropdownMenu variant="flat" className="top-full">
             <DropdownItem key="profile" className="h-14 gap-2">
-                <NavLink href="/User" isActive={false}>
+                <NavLink href="/user" isActive={false}>
                     <p className="font-semibold">Signed in as&nbsp;</p>
                     <p className="font-semibold">User 1</p> {/** to be imported from DB */}
                 </NavLink>
             </DropdownItem>
             <DropdownItem key="settings">
-                <NavLink href="/Settings" isActive={false}>
+                <NavLink href="/settings" isActive={false}>
                     My Settings
                 </NavLink>
             </DropdownItem>
@@ -111,17 +111,17 @@ export default function NavBar() {
 
                 <NavbarContent className="hidden sm:flex gap-4" justify="center">
                     <NavbarItem >
-                        <NavLink href="/Project" isActive={isActive('/Project')}>
+                        <NavLink href="/project" isActive={isActive('/project')}>
                             Project 
                         </NavLink>
                     </NavbarItem>
                     <NavbarItem >
-                        <NavLink href="/Snapshot" isActive={isActive('/Snapshot')}>
+                        <NavLink href="/snapshot" isActive={isActive('/snapshot')}>
                             Snapshot 
                         </NavLink>
                     </NavbarItem>
                     <NavbarItem >
-                        <NavLink href="/Estimate" isActive={isActive('/Estimate')}>    
+                        <NavLink href="/estimate" isActive={isActive('/estimate')}>    
                             Estimate 
                         </NavLink>
                 </NavbarItem>
