@@ -1,5 +1,5 @@
 import { GroupedProjects } from "@/types/project";
-import { buildQueryParams, buildQueryString, determineGroupBy } from "./utils/filterFunctions";
+import { buildQueryParams, determineGroupBy } from "./utils/filterFunctions";
 import { AxiosError } from "axios";
 import { apiClient } from "./apiClient";
 import qs from "qs";

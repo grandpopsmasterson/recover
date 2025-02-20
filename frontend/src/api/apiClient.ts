@@ -1,4 +1,4 @@
-import axios, { AxiosInstance, AxiosRequestConfig, AxiosResponse, AxiosError, InternalAxiosRequestConfig } from 'axios';
+import axios, { AxiosResponse, AxiosError, InternalAxiosRequestConfig } from 'axios';
 
 // Type for API error response
 interface ApiError {

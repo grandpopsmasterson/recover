@@ -1,7 +1,7 @@
 'use client'
 
 import { Navbar, NavbarBrand, NavbarContent, NavbarItem, Link, DropdownItem, DropdownTrigger, Dropdown, DropdownMenu, Button } from "@heroui/react"
-import React, {useState, useEffect, useCallback, memo} from "react";
+import React, { useCallback, memo } from "react";
 import { usePathname, useRouter } from 'next/navigation';
 import NextLink from 'next/link';
 import { logoutApi } from "@/api/authApi";

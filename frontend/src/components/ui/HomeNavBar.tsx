@@ -1,13 +1,33 @@
 'use client';
 
 import Link from 'next/link';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { useRouter } from 'next/navigation';
+import { Button } from '@heroui/button';
 
 export default function HomeNavBar() {
   const [isOpen, setIsOpen] = useState(false);
+  const [isNavigating, setIsNavigating] = useState<boolean>(false);
+
+  const router = useRouter();
+
+  // useEffect(() => {
+  //   if (intendedPath && intendedPath !== pathname) {
+  //     router.push(intendedPath);
+  //     setIntendedPath(null);
+  //   }
+  // }, [intendedPath, pathname, router]);
+
+  const handleLogin = () => {
+    router.push('/auth/login');
+  };
+
+  const handleEstimate = () => {
+    router.push('/start');
+  };
 
   return (
-    <nav className="max-w-screen-xl bg-white rounded-full mx-auto m-2 py-2">
+    <div className="max-w-screen-xl bg-white rounded-full mx-auto m-2 py-2">
             <div className="flex justify-between px-4 items-center">
             {/* Logo */}
                 <Link href="/" className="flex items-center">
@@ -69,18 +89,19 @@ export default function HomeNavBar() {
 
             {/* Auth Buttons */}
             <div className="hidden md:flex items-center text-[18px] space-x-4">
-                <Link 
-                href="/auth/login"
-                className="px-4 border-3 border-purple-500 text-black rounded-md hover:border-purple-700 hover:text-purple-800 transition-all duration-200"
+                <Button 
+                onPress={handleLogin}
+                type='button'
+                className="px-4 border-3 !border-purple-500 text-md text-black rounded-lg hover:!border-purple-700 hover:!text-purple-800 transition-all duration-200"
                 >
                 login
-                </Link>
-                <Link 
-                href="/auth/signup"
-                className="px-4 bg-purple-500 py-0.75 rounded-md hover:bg-secondary transition-all duration-300"
+                </Button>
+                <Button 
+                onPress={handleEstimate}
+                className="px-4 !bg-purple-500 py-0.75 rounded-lg hover:!bg-purple-600 transition-all duration-300"
                 >
                 Start an Estimate
-                </Link>
+                </Button>
             </div>
 
             {/* Mobile menu button */}
@@ -138,21 +159,22 @@ export default function HomeNavBar() {
             </Link>
           </div>
           <div className="px-2 pt-2 pb-3 space-y-1">
-            <Link
-              href="/auth/login"
+            <Button
+              onPress={handleLogin}
+              type='button'
               className="block w-full px-3 py-2 text-center border rounded-md"
             >
               Login
-            </Link>
-            <Link
-              href="/start"
+            </Button>
+            <Button
+              onPress={handleEstimate}
               className="block w-full px-3 py-2 text-center bg-blue-600 text-white rounded-md"
             >
               Start an estimate
-            </Link>
+            </Button>
           </div>
         </div>
       )}
-    </nav>
+    </div>
   );
 }
