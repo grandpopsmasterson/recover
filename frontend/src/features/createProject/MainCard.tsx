@@ -1,6 +1,6 @@
 'use client'
 
-import { projectsApi } from "@/api/projectsApi";
+import { projectsApi } from "@/api/features/projectsApi";
 import { validateEmail, validatePhonenumber } from "@/api/utils/validation";
 import Button1 from "@/components/ui/ButtonC";
 import { BackArrow } from "@/components/ui/icons/BackArrow";

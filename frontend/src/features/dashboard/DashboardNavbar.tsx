@@ -4,7 +4,7 @@ import { Navbar, NavbarBrand, NavbarContent, NavbarItem, Link, DropdownItem, Dro
 import React, {useState, useEffect, useCallback, memo} from "react";
 import { usePathname, useRouter } from 'next/navigation';
 import NextLink from 'next/link';
-import { logoutApi } from "@/api/authApi";
+import { logoutApi } from "@/api/features/authApi";
 
 //interface for the NavLink props
 interface NavLinkProps {

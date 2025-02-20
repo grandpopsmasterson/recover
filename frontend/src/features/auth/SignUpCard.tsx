@@ -4,7 +4,7 @@ import { useRouter } from 'next/navigation';
 import React, { lazy, Suspense, useState } from 'react';
 import type { SignUpError, SignupRequest, StepOneProps } from '../../types/signup';
 
-import { signupApi } from '@/api/authApi';
+import { signupApi } from '@/api/features/authApi';
 import { validateEmail, validatePassword } from '@/api/utils/validation';
 import { BackArrow } from '@/components/ui/icons/BackArrow';
 import { RecoverLogo } from '@/components/ui/icons/RecoverLogo';

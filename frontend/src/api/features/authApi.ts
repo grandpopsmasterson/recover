@@ -1,5 +1,5 @@
 import { LoginCredentials, LoginResponse } from "@/types/login";
-import { authClient } from "./apiClient";
+import { authClient } from "../clients";
 import { SignupRequest, SignupResponse } from "@/types/signup";
 import axios from "axios";
 

@@ -1,7 +1,7 @@
 'use client'
 import { useEffect, useState } from 'react';
 import { useParams } from 'next/navigation';
-import { projectsApi } from '@/api/projectsApi';
+import { projectsApi } from '@/api/features/projectsApi';
 import { LongProject } from '@/types/project';
 // import Timeline from '@/features/sidebars/Timeline';
 // import ActivityBar from '@/features/sidebars/ActivityBar';

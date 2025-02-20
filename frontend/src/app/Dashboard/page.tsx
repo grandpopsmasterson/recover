@@ -1,15 +1,6 @@
-import DashboardPage from "@/features/dashboard/DashboardPage";
+// app/dashboard/page.tsx
+import { redirect } from 'next/navigation'
 
-
-export default function Dashboard() {
-
-    
-
-    return (
-        <div>
-            <DashboardPage />
-        </div>
-    );
+export default function DashboardRedirect() {
+    redirect('/dashboard/ridgeline')
 }
-
-//this page doesn't exist, it literally just re-routes to altitude

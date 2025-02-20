@@ -1,7 +1,7 @@
 import { GroupedProjects } from "@/types/project";
-import { buildQueryParams, buildQueryString, determineGroupBy } from "./utils/filterFunctions";
+import { buildQueryParams, buildQueryString, determineGroupBy } from "../utils/filterFunctions";
 import { AxiosError } from "axios";
-import { apiClient } from "./apiClient";
+import { apiClient } from "../clients";
 import qs from "qs";
 
 export const filterApi = {

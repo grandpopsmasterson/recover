@@ -1,4 +1,4 @@
-import { apiClient } from './apiClient';
+import { apiClient } from '../clients';
 import { CreateProject } from '@/types/createProject';
 import { ShortProject, LongProject, ListBucket } from '@/types/project';
 

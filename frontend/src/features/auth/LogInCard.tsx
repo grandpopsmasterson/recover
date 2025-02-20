@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { Card, CardHeader, CardBody, Input, CardFooter, Button } from "@heroui/react";
 import { RecoverLogo } from "@/components/ui/icons/RecoverLogo";
 import { LoginCredentials } from "@/types/login";
-import { loginApi } from "@/api/authApi";
+import { loginApi } from "@/api/features/authApi";
 
 interface LoginError {
     message: string;
