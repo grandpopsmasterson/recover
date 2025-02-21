@@ -156,13 +156,23 @@ export default function DashboardNavBar() {
 
             <NavbarContent as="div" justify="end">
                 <div>
-                <Button 
-                    onPress={() => router.push('./createProject')} 
-                    color="secondary"
-                    className="mr-4"
+                    <Button
+                        onPress={() => router.push('./tech-dash')}
+                        color="secondary"
+                        variant="ghost"
+                        className="ml-4"
                     >
-                    Create Project
-                </Button>
+                        Technician View
+                    </Button>
+                    </div>
+                    <div>
+                    <Button 
+                        onPress={() => router.push('./createProject')} 
+                        color="secondary"
+                        className="mr-4"
+                        >
+                        Create Project
+                    </Button>
                 </div>
                 <UserDropdown />
             </NavbarContent>
