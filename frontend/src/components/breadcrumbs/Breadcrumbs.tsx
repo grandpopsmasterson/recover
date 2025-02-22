@@ -62,22 +62,22 @@ export const Breadcrumbs = () => {
     <nav aria-label="Breadcrumb" className="flex items-center space-x-2 text-sm p-4">
       <Link 
         href="/dashboard/alpine" // Make sure this is absolute
-        className="flex items-center text-gray-500 hover:text-gray-700"
+        className="flex items-center text-black hover:text-blue-800"
       >
         <Home className="h-4 w-4" />
       </Link>
 
       {buildBreadcrumbChain().map((breadcrumb, index) => (
         <div key={breadcrumb.href} className="flex items-center">
-          <ChevronRight className="h-4 w-4 text-gray-500" />
+          <ChevronRight className="h-4 w-4 text-black" />
           {index === buildBreadcrumbChain().length - 1 ? (
-            <span className="ml-2 text-gray-900 font-medium">
+            <span className="ml-2 text-black font-medium">
               {breadcrumb.label}
             </span>
           ) : (
             <Link
               href={breadcrumb.href} // This should now be correct with absolute paths
-              className="ml-2 text-gray-500 hover:text-gray-700"
+              className="ml-2 text-black hover:text-blue-800"
             >
               {breadcrumb.label}
             </Link>

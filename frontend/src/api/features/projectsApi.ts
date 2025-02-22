@@ -1,3 +1,4 @@
+import { User } from '@/components/buttons/AssignButton';
 import { apiClient } from '../clients';
 import { CreateProject } from '@/types/createProject';
 import { ShortProject, LongProject, ListBucket } from '@/types/project';
@@ -53,4 +54,15 @@ export const projectsApi = {
       throw error;
     }
   }, 
+
+  async getAllUsers(): Promise<User[]> {
+    try {
+      const response = await apiClient.get('/users/get-all');
+      return response.data; // Extract the data from the axios response
+    } catch (error) {
+      console.error('Failed to fetch buckets:', error);
+      throw error;
+    }
+  }, 
+
 };

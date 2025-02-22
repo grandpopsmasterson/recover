@@ -5,10 +5,9 @@ import { projectsApi } from '@/api/features/projectsApi';
 import { LongProject } from '@/types/project';
 // import Timeline from '@/features/sidebars/Timeline';
 // import ActivityBar from '@/features/sidebars/ActivityBar';
-import DashboardNavBar from '@/components/navbars/DashboardNavbar';
-import { ProjectBar } from '@/components/banners/ProjectBar';
 import LongProjectPage from '@/function/project/LongProjectPage';
 import ActivityBox from '@/components/widgets/RecentActivity';
+import { ProjectBar } from '@/components/banners/ProjectBar';
 
 
 export default function ProjectDetailPage() {

@@ -13,7 +13,7 @@ import {
   SidebarProvider,
   SidebarTrigger,
 } from "@/components/shadcn/ui/sidebar"
-export default function Page() {
+export default function SidebarComponent() {
   return (
     <SidebarProvider>
       <AppSidebar />

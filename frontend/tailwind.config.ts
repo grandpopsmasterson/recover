@@ -8,7 +8,7 @@ export default {
     "./src/**/*.{js,ts,jsx,tsx,mdx}",
     "./src/components/**/*.{js,ts,jsx,tsx,mdx}",
     "./src/app/**/*.{js,ts,jsx,tsx,mdx}",
-    "./src/features/**/*.{ts,tsx,js,jsx}",
+    "./src/functions/**/*.{ts,tsx,js,jsx}",
     "./node_modules/@heroui/theme/dist/**/*.{js,ts,jsx,tsx}",
   ],
   theme: {

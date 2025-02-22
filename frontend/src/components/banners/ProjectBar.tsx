@@ -1,8 +1,17 @@
 import { LongProject } from '@/types/project'
 import React from 'react'
 import { Image } from '@heroui/react'
+import { useParams } from 'next/navigation'
+import AssignUserBtn from '../buttons/AssignButton'
 
 export const ProjectBar = ({clientName, clientEmail, clientPhone, houseImage, zipcode, streetAddress, city, state, stage, projectType }: LongProject) => {
+
+    const params = useParams();
+        const projectId = params.id as string;
+    
+        if (!projectId) {
+            return <div>Loading...</div>;
+        }
 
     const stageProcess = () => {
         switch (stage) {
@@ -42,8 +51,11 @@ export const ProjectBar = ({clientName, clientEmail, clientPhone, houseImage, zi
                             <p className="text-purple-500 font-semibold mt-2">{projectType}</p>
                         </div>
 
-                        <div className="!col-start-4 col-span-1 row-start-1 flex justify-center items-center">
-                            <button className="bg-purple-500  font-semibold w-3/4 h-full text-2xl px-2 rounded-xl hover:bg-purple-700 ease-in-out transition-all duration-200">Continue progress</button>
+                        <div className="!col-start-4 col-span-1 row-start-1 flex flex-col justify-center items-center">
+                            <button className="bg-purple-500 font-semibold w-3/4 h-full text-2xl px-2 rounded-xl hover:bg-purple-700 ease-in-out transition-all duration-200">
+                                Continue progress
+                            </button>
+                            <AssignUserBtn projectId={projectId} />
                         </div>
 
                         <div className='col-start-2 row-start-2' >

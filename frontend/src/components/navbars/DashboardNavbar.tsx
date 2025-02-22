@@ -118,7 +118,7 @@ export default function DashboardNavBar() {
     const isActive = useCallback((path:string) => pathname === path, [pathname]);
 
     return (
-        <div className="fixed top-0 left-0 w-full bg-recovernavy">
+        <div className="w-full bg-recovernavy">
             <Navbar>
                 <NavbarBrand>                
                     <NextLink href="/#" passHref>
