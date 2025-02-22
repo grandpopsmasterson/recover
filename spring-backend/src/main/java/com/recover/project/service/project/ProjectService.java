@@ -14,12 +14,15 @@ import com.recover.project.dto.project.LongProjectDto;
 import com.recover.project.dto.project.ProjectBucketDto;
 import com.recover.project.dto.project.ProjectListDto;
 import com.recover.project.dto.project.ShortProjectDto;
+import com.recover.project.dto.user.ShortUser;
 import com.recover.project.mapper.ProjectMapper;
+import com.recover.project.mapper.UserMapper;
 import com.recover.project.model.Project;
 import com.recover.project.model.Role;
 import com.recover.project.model.enums.ProjectRole;
 import com.recover.project.repository.ProjectRepository;
 import com.recover.project.repository.RoleRepository;
+import com.recover.project.repository.UserRepository;
 import com.recover.project.search.ProjectSpecification;
 import com.recover.project.service.authorization.AuthenticationService;
 //import com.recover.project.service.notifications.NotificationService;
@@ -46,6 +49,8 @@ public class ProjectService {
     private final ApplicationEventPublisher eventPublisher;
     private final ProjectMapper projectMapper;
     private final Logger logger = LoggerFactory.getLogger(ProjectService.class);
+    private final UserRepository userRepository;
+    private final UserMapper userMapper;
 
 
     @Transactional
@@ -149,6 +154,13 @@ public class ProjectService {
         return projectRepository.findById(projectId)
             .map(projectMapper::toLongDto)
             .orElseThrow(() -> new ResourceNotFoundException("Project not found with id: " + projectId));
+    }
+
+    public List<ShortUser> getAllUsers() {
+        return userRepository.findAll()
+            .stream()
+            .map(userMapper::toShortDto)
+            .collect(Collectors.toList());
     }
 
     public void deleteProjectById(Long projectId) {

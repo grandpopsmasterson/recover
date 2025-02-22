@@ -23,9 +23,8 @@ public interface UserMapper {
 
     @Mappings({     
         @Mapping(source = "id", target = "id"),
-        @Mapping(target = "fullName", expression = "java(createFullName(user))"),
-        @Mapping(target = "profileImageUrl", expression = "java(getProfileImageUrl(user))"), // Changed this line
-        @Mapping(source = "available", target = "available")
+        @Mapping(target = "shortName", expression = "java(createShortName(user))"),
+        @Mapping(target = "profileImageUrl", expression = "java(getProfileImageUrl(user))")
     })
     ShortUser toShortDto(User user);
 
@@ -36,6 +35,15 @@ public interface UserMapper {
         return user.getFirstName() + " " + 
                (user.getLastName() != null ? user.getLastName() : "");
     }
+
+    default String createShortName(User user) {
+        if (user == null) return "";
+        String firstPart = user.getFirstName();
+        String lastInitial = user.getLastName() != null && !user.getLastName().isEmpty() ? 
+            " " + user.getLastName().substring(0, 1) : "";
+        return firstPart + lastInitial;
+    }
+
     default UserType mapUserType(String userType) {
         return UserTypeMap.USER_MAP.get(userType);
     }

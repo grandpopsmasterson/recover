@@ -70,11 +70,13 @@ public class JwtUtils {
             .getSubject();
     }
 
-    // Updated to extract token from Authorization header
     public String getTokenFromRequest(HttpServletRequest request) {
         String bearerToken = request.getHeader("Authorization");
         if (StringUtils.hasText(bearerToken) && bearerToken.startsWith("Bearer ")) {
-            return bearerToken.substring(7);
+            String token = bearerToken.substring(7).trim();
+            logger.debug("Extracted token from request: {}", bearerToken);
+            logger.debug("Cleaned token: {}", token);
+            return token;
         }
         logger.warn("No Bearer token found in request");
         return null;
@@ -82,6 +84,7 @@ public class JwtUtils {
 
     public boolean validateJwtToken(String authToken) {
         try {
+        
             logger.debug("Validating token: {}", authToken);
             Jwts.parser()
                 .verifyWith(getSigningKey())

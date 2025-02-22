@@ -13,10 +13,7 @@ import lombok.Setter;
 public class ShortUser {
 
     private Long id;
-    private ReferenceType referenceType; // "Entity: user" //
-    private String username;
-    private String FullName;
+    private String shortName;
     private String profileImageUrl;
-    private UserType userType;
-    private boolean isAvailable;
+    private UserType role;
 }

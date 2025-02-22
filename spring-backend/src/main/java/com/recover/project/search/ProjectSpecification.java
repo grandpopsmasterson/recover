@@ -74,9 +74,9 @@ public class ProjectSpecification {
                     return cb.equal(root.get("stage"), ProjectStage.valueOf(value.toUpperCase()));
                 case "SCOPE":
                     return cb.equal(root.get("scope"), Scope.valueOf(value.toUpperCase()));
-                case "LOSS_TYPE":
+                case "LOSS TYPE":
                     return cb.equal(root.get("lossType"), LossType.valueOf(value.toUpperCase()));
-                case "PROJECT_TYPE":
+                case "PROJECT TYPE":
                     return cb.equal(root.get("projectType"), ProjectType.valueOf(value.toUpperCase()));
                 default:
                     return null;
@@ -91,8 +91,8 @@ public class ProjectSpecification {
             case "STAGE" -> Project::getStage;
             case "SCOPE" -> Project::getScope;
             case "CARRIER" -> Project::getCarrier;
-            case "LOSS_TYPE" -> Project::getLossType;
-            case "PROJECT_TYPE" -> Project::getProjectType;
+            case "LOSS TYPE" -> Project::getLossType;
+            case "PROJECT TYPE" -> Project::getProjectType;
             case "MANAGER" -> project -> project.getRoles().stream()
                 .filter(role -> role.getProjectRole() == ProjectRole.MANAGER)
                 .map(role -> role.getUser().getFullName())
