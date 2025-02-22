@@ -12,6 +12,7 @@ import com.recover.project.utils.constants.Constants;
 import com.recover.project.dto.project.ProjectBucketDto;
 import com.recover.project.dto.project.ProjectListDto;
 import com.recover.project.dto.project.ShortProjectDto;
+import com.recover.project.dto.user.ShortUser;
 import com.recover.project.model.Project;
 import com.recover.project.model.enums.ProjectRole;
 import com.recover.project.service.authorization.AuthenticationService;
@@ -28,14 +29,13 @@ import java.util.Map;
 import java.util.Set;
 
 @RestController
-@RequestMapping("/projects")
 @RequiredArgsConstructor
 public class BaseDashboardController {
     private final ProjectService projectService;
     private final UserService userService;
     private final AuthenticationService authenticationService;
 
-   @GetMapping("/get-all")
+   @GetMapping("/projects/get-all")
     public ResponseEntity<?> getAllProjects() {
         try {
             ProjectListDto projects = projectService.getAllProjects();
@@ -50,7 +50,7 @@ public class BaseDashboardController {
         }
     }
 
-    @GetMapping("/grouped")
+    @GetMapping("/projects/grouped")
     public ResponseEntity<?> getGroupedProjects(@RequestParam String groupBy) {
         try {
             List<ProjectBucketDto> projects = projectService.getGroupedProjects(groupBy);
@@ -68,7 +68,7 @@ public class BaseDashboardController {
         }
     }
 
-    @GetMapping("/multi-query-filter")
+    @GetMapping("/projects/multi-query-filter")
     public ResponseEntity<?> searchProjects(
             @RequestParam(required = false) String query,
             @RequestParam(required = false) String groupBy,
@@ -88,6 +88,24 @@ public class BaseDashboardController {
         } catch (IllegalArgumentException e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                 .body("Invalid search criteria: " + e.getMessage());
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .body("An error occurred while processing the request");
+        }
+    }
+
+    @GetMapping("/users/get-all")
+    public ResponseEntity<?> getAllUsers(){
+        try {
+            List<ShortUser> users = projectService.getAllUsers();
+            if (users.isEmpty()) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body("No users found");
+            }
+            return ResponseEntity.ok(users); 
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                .body("Invalid request");
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                 .body("An error occurred while processing the request");

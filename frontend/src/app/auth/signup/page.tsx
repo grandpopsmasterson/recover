@@ -2,7 +2,7 @@
 //import SignUpCard from "../Components/SignUpCard";
 
 
-import SignUpCard from "@/features/auth/SignUpCard";
+import SignUpCard from "@/components/cards/SignUpCard";
 
 
 

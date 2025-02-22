@@ -1,0 +1,47 @@
+'use client'
+
+import {  GroupedProjects } from '@/types/project';
+// import { projectsApi } from '@/api/projectsApi';
+// import { ShortProject } from '@/types/project';
+// import React, { useEffect, useState } from 'react'
+import ProjectCard from '@/components/cards/ProjectCard';
+
+const ProjectCardBuckets = ({groupKey, projects, count}: GroupedProjects) => {
+    // const [projects, setProjects] = useState<ShortProject[]>([]);
+    // const [isLoading, setIsLoading] = useState(true);
+    // const [error, setError] = useState<string | null>(null);
+
+    // useEffect(() => {
+    //     const fetchProjects = async () => {
+    //         try {
+    //             setIsLoading(true);
+    //             const projectData = await projectsApi.getAllProjects();
+    //             console.log('Fetched project data:', projectData); // Debug log
+    //             setProjects(projectData.slice(0, 4));
+    //             setIsLoading(false);
+    //         } catch (err) {
+    //             console.error('Error fetching projects:', err); // Debug log
+    //             setError('Failed to fetch projects');
+    //             setIsLoading(false);
+    //         }
+    //     };
+    //     fetchProjects();
+    // }, []);
+
+    return (
+        <div className='container mx-auto  '>
+            <div className="grid gap-6 h-1/4" style={{ gridTemplateColumns: 'repeat(6, minmax(0, 1fr))' }}>
+                <h1 className='text-black'>{groupKey} <small>{count}</small></h1>
+                {projects.map((project) => (
+                        <ProjectCard
+                            key={project.id}
+                            {...project}
+                        />
+                    ))
+                }
+            </div>
+        </div>
+    )
+}
+
+export default ProjectCardBuckets

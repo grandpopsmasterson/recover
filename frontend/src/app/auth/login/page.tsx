@@ -1,7 +1,7 @@
 // app/auth/login/page.tsx
 'use client';
 
-import LogInCard from "@/features/auth/LogInCard";
+import LogInCard from "@/components/cards/LogInCard";
 
 
 export default function LogIn() {

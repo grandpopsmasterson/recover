@@ -9,9 +9,9 @@ export const loginApi = {
             const response = await authClient.post<LoginResponse>('/auth/login', credentials);
             
             // Extract token from response body
-            const { token } = response.data;
+            const token = response.data.token;
             if (token) {
-                localStorage.setItem(`token`, `Bearer ${token}`);
+                localStorage.setItem(`token`, `${token}`);
             }
             
             return response;
