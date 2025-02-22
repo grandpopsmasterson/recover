@@ -5,11 +5,11 @@ import { HeroUIProvider } from '@heroui/react';
 
 export default function RootPage() {
   return (
-    <HeroUIProvider>
+    
       <div className="min-h-screen">
-        <nav className="fixed top-1 left-0 px-4 w-full shadow-lg">
+        <div className="fixed top-1 left-0 px-4 w-full shadow-lg">
           <HomeNavBar />
-        </nav>
+        </div>
         <div className="h-[clamp(35rem,50vw+10rem,60rem)] flex flex-col items-center justify-center rounded-2xl m-2 p-2 px-3 bg-recovernavy">
           
           <div className="flex flex-col items-center justify-center">
@@ -35,6 +35,6 @@ export default function RootPage() {
           </section>
         </main>
       </div>
-    </HeroUIProvider>
+    
   );
 }
