@@ -1,7 +1,7 @@
 'use client'
 
 import { Navbar, NavbarBrand, NavbarContent, NavbarItem, Link, DropdownItem, DropdownTrigger, Dropdown, DropdownMenu, Button } from "@heroui/react"
-import React, {useState, useEffect, useCallback, memo} from "react";
+import React, { useCallback, memo } from "react";
 import { usePathname, useRouter } from 'next/navigation';
 import NextLink from 'next/link';
 import { logoutApi } from "@/api/features/authApi";
@@ -13,11 +13,6 @@ interface NavLinkProps {
     children: React.ReactNode;
     className?: string;
 }
-
-// interface DashboardNavBarProps {
-//     currentPath: string;
-// }
-
 
 //memoize the logo
 export const RecoverLogo = memo(() => { // memo (or React.memo // same thing) is for ensuring that components that dont change dont need to rerender, useMemo() is for expensive computations that should only rerender if the value changes
@@ -146,8 +141,17 @@ export default function DashboardNavBar() {
                     color="secondary"
                     className="mr-4"
                     >
-                    Create Project
-                </Button>
+                        Technician View
+                    </Button>
+                    </div>
+                    <div>
+                    <Button 
+                        onPress={() => router.push('./createProject')} 
+                        color="secondary"
+                        className="mr-4"
+                        >
+                        Create Project
+                    </Button>
                 </div>
                 <UserDropdown />
             </NavbarContent>
@@ -155,32 +159,3 @@ export default function DashboardNavBar() {
     </div>
     )
 }
-
-
-
-// const DashboardNavBar: FC<DashboardNavBarProps> = ({ currentPath }) => {
-//     return (
-//         <nav className="flex justify-between p-4 border-b">
-//             {currentPath === '/dashboard/altitude' && (
-//                 // Altitude-specific nav content
-//                 <div>
-//                     <h1>Altitude Dashboard</h1>
-//                     {/* Altitude-specific buttons/links */}
-//                 </div>
-//             )}
-            
-//             {currentPath === '/dashboard/projects' && (
-//                 // Projects-specific nav content
-//                 <div>
-//                     <h1>Projects Dashboard</h1>
-//                     {/* Projects-specific buttons/links */}
-//                 </div>
-//             )}
-            
-//             {/* Common nav elements that appear on all pages */}
-//             <div>
-//                 {/* Common buttons, user menu, etc. */}
-//             </div>
-//         </nav>
-//     );
-// };
