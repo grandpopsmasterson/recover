@@ -91,6 +91,10 @@ export default function SignUpCard() {
                     setErrors({ message: 'Please enter a valid email address', field: 'email'});
                     return false;
                 }
+                // if (!signupApi.checkEmailAvailability(formData.email)) {
+                //     setErrors({ message: 'An account with this email already exists', field: 'email'});
+                //     return false;
+                // }
                 break;
             case 2:
                 if (!validatePassword(formData.password)) {
@@ -105,6 +109,10 @@ export default function SignUpCard() {
                     setErrors({message: 'Username must be at least 5 characters long', field: 'username'});
                     return false;
                 }
+                // if (!signupApi.checkUsernameAvailable(formData.username)) {
+                //     setErrors({ message: 'Username is taken', field: 'username'});
+                //     return false;
+                // }
                 break;
             case 3:
                 if (!formData.firstName) {
