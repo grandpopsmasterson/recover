@@ -67,7 +67,7 @@ export default function ProjectDetailPage() {
                     <LongProjectPage {...project} />
                 </div>
                 <div style={{ flex: '1 1 0', height: '50vh' }} className='mr-20'>
-                    <ActivityBox />
+                    <ActivityBox id={project.id} />
                 </div>
             </div>
                 
