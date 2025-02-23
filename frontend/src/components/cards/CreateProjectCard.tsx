@@ -256,25 +256,6 @@ export default function MainCard() {
         return true;
     }
 
-    //prefetch the other steps
-    // const prefetchOtherSteps = () => {
-    //     const prefetchStep = async () => {
-    //         await Promise.all([
-    //             import('./steps/StepTwo'),
-    //             import('./steps/StepThree'),
-    //             import('./steps/StepFour'),
-    //             import('./steps/StepFive')
-    //         ]);
-    //     };
-    //     if ('requestIdleCallback' in window) {
-    //         window.requestIdleCallback(() => prefetchStep());
-    //     } else {
-    //         setTimeout(prefetchStep, 1000);
-    //     }
-    // };
-
-    //useEffect(() => { prefetchOtherSteps(); })
-
     const handleInputChange = (
         e: React.ChangeEvent<HTMLInputElement> | boolean, name?: string
     ): void => {

@@ -1,7 +1,7 @@
 'use client'
 
 import { useRouter } from 'next/navigation';
-import React, { lazy, Suspense, useState } from 'react';
+import React, { lazy, Suspense, useRef, useState } from 'react';
 import type { SignUpError, SignupRequest, StepOneProps } from '../../types/signup';
 
 import { signupApi } from '@/api/features/authApi';
@@ -28,16 +28,17 @@ const StepOne: React.FC<StepOneProps> =({
     <div>
         <p className='text-white'>Enter your email</p><br/>
         <Input 
-            className='w-full h-[50px]'
+            className='w-full h-[50px] text-white'
             classNames={{
-                label: 'text-white'
+                label: 'text-white',
+                errorMessage: 'font-semibold'
             }}
             radius='sm' 
             label='Email' 
             type='email'
             id='email'
             name='email'
-            color='secondary'
+            color='primary'
             variant='bordered'
             value={formData.email}
             errorMessage='Please enter a valid email. Format: example@recover.com'
@@ -53,6 +54,7 @@ export default function SignUpCard() {
     const [stage, setStage] = useState<number>(1);
     const [isLoading, setIsLoading]= useState<boolean>(false); // theres nothing currently to set is loading to true
     const [errors, setErrors] = useState<SignUpError | null>(null);
+    
 
     const [confirmPassword, setConfirmPassword] = useState<string>('');
 
@@ -85,6 +87,8 @@ export default function SignUpCard() {
 
     //stage validation with switch cases for error40 handling
     const validateStage = (stage: number): boolean => {
+        //console.log('validation triggered by: ', new Error().stack)
+        //console.log('validate stage call with stage: ', stage)
         switch (stage) {
             case 1:
                 if (!validateEmail(formData.email)) {
@@ -95,8 +99,12 @@ export default function SignUpCard() {
                 //     setErrors({ message: 'An account with this email already exists', field: 'email'});
                 //     return false;
                 // }
-                break;
+                return true;
             case 2:
+                if (formData.username.length < 5) {
+                    setErrors({message: 'Username must be at least 5 characters long', field: 'username'});
+                    return false;
+                }
                 if (!validatePassword(formData.password)) {
                     setErrors({ message: 'Password must be at least 8 characters with 1 uppercase, 1 lowercase, and 1 number', field: 'password'});
                     return false;
@@ -105,29 +113,24 @@ export default function SignUpCard() {
                     setErrors({ message: 'Passwords do not match', field: 'confirmPassword'});
                     return false;
                 }
-                if (formData.username.length < 5) {
-                    setErrors({message: 'Username must be at least 5 characters long', field: 'username'});
-                    return false;
-                }
                 // if (!signupApi.checkUsernameAvailable(formData.username)) {
                 //     setErrors({ message: 'Username is taken', field: 'username'});
                 //     return false;
                 // }
-                break;
+                return true;
             case 3:
-                if (!formData.firstName) {
-                    setErrors({ message: 'Please enter your first name', field: 'firstName'});
-                    return false;
-                }
-                if (!formData.lastName) {
-                    setErrors({ message: 'Please enter your last name', field: 'lastName'});
-                    return false;
-                }
-                break;
+                    if (!formData.firstName) {
+                        setErrors({ message: 'Please enter your first name', field: 'firstName'});
+                        return false;
+                    }
+                    if (formData.lastName.length < 1) {
+                        setErrors({ message: 'Please enter your last name', field: 'lastName'});
+                        return false;
+                    }
+                return true;
             default:
                 return false;
         };
-        return true;
     }
     //prefetch other steps
     const prefetchOtherSteps = () => {
@@ -189,18 +192,31 @@ export default function SignUpCard() {
         setErrors(null);
     }
     
-    const handleNext = (): void => {
+    //const isProcessing = useRef(false);
+
+    const handleNext = () => {
+        
+    
+        console.log("🚀 Button clicked!");
+        
         if (validateStage(stage)) {
-            setStage(prev => prev + 1);
+            console.log(`✅ Moving from stage ${stage} to ${stage + 1}`);
+    
+            setStage((prev) => {
+                console.log(`Updating stage state: ${prev} -> ${prev + 1}`);
+                return prev + 1;
+            });
+        } else {
+            console.log(`❌ Validation failed at stage: ${stage}`);
         }
     };
-    
     const handleBack = (): void => {
         setStage(prev => prev - 1);
     };
 
     const handleKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
         if (event.key === "Enter") {
+            event.preventDefault();
             if (stage < 3) {
                 handleNext();
             } else if (stage === 3) {
@@ -212,10 +228,13 @@ export default function SignUpCard() {
 
     const handleSubmit = async (event?: React.FormEvent) => { // event.preventDefault is not a function and never works???
 
-        if (event){ event.preventDefault(); }
+        if (event){ event.preventDefault(); 
+            if (stage !== 3) {
+                return;
+            }
+        }
 
             if (validateStage(stage)) {
-                console.log(formData); // TODO remove this at a later date ---------------------------------------------------------------------------
             
             try {
                 const response = await signupApi.signup(formData);
@@ -275,7 +294,7 @@ export default function SignUpCard() {
 
     return(
         
-    <form onSubmit={handleSubmit} className='h-[clamp(30rem,40vh+10rem,60rem)] w-[clamp(25rem,25vw+5rem,45rem)] '>
+    <form onSubmit={(e) => {if (stage !== 3) {e.preventDefault(); return;} handleSubmit(e)}} className='h-[clamp(30rem,40vh+10rem,60rem)] w-[clamp(25rem,25vw+5rem,45rem)] '>
         <Card
             isBlurred
             className='border-[10px] !bg-recovernavy border-slate-500 min-h-[30rem] rounded-2xl h-auto bg-clip-padding overflow-hidden'
@@ -321,6 +340,8 @@ export default function SignUpCard() {
                             className='border-white font-bold opacity-100 !text-white w-full h-[50px] mb-8 hover:bg-secondary' 
                             color='secondary' 
                             onPress={handleNext}
+                            type='button'
+                            
                             >
                                 Next
                             </Button>
@@ -330,13 +351,13 @@ export default function SignUpCard() {
                             type='submit'
                             variant='bordered' 
                             isDisabled={isLoading} 
-                            className='font-bold opacity-100 !text-white w-full h-[50px] mb-8 border-white hover:bg-purple-500'
+                            className='font-bold opacity-100 text-white w-full h-[50px] mb-8 border-white hover:bg-slate-500 hover:text-black'
                         >
                             {isLoading ? 'Signing up...' : 'Sign Up'}
                         </Button>
                     )}
                     <div className='flex justify-center'>
-                        <small className='text-white'>Already have an account? <a className='text-purple-500 underline' href='./login'>Sign in</a></small>
+                        <small className='text-white'>Already have an account? <a className='text-gray-300 underline' href='./login'>Sign in</a></small>
                     </div>
                 </div>
             </CardFooter>
