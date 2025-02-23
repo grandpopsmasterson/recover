@@ -114,7 +114,7 @@ export default function DashboardNavBar() {
 
     return (
         <div className="w-full bg-recovernavy">
-            <Navbar>
+            <Navbar maxWidth="full">
                 <NavbarBrand>                
                     <NextLink href="/#" passHref>
                         <div className="grid grid-cols-2"
@@ -137,7 +137,7 @@ export default function DashboardNavBar() {
             <NavbarContent as="div" justify="end">
                 <div>
                 <Button 
-                    onPress={() => router.push('/create-project')} 
+                    onPress={() => router.push('/tech-dash')} 
                     color="secondary"
                     className="mr-4"
                     >
@@ -146,13 +146,15 @@ export default function DashboardNavBar() {
                     </div>
                     <div>
                     <Button 
-                        onPress={() => router.push('./createProject')} 
+                        onPress={() => router.push('./create-project')} 
                         color="secondary"
                         className="mr-4"
                         >
                         Create Project
                     </Button>
                 </div>
+                </NavbarContent>
+                <NavbarContent className="flex items-center h-full" justify="end">
                 <UserDropdown />
             </NavbarContent>
         </Navbar>

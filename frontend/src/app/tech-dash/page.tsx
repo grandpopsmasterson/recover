@@ -1,7 +1,7 @@
 'use client'
 
-import Assigned from '@/features/tech-dash/Assigned'
-import InProgress from '@/features/tech-dash/InProgress'
+import Assigned from '@/function/tech-dash/Assigned';
+import InProgress from '@/function/tech-dash/InProgress';
 import { Button } from '@heroui/button'
 import { useRouter } from 'next/navigation'
 import React from 'react'

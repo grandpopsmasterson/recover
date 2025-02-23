@@ -1,8 +1,9 @@
 'use client'
-import { TechDash } from '@/types/texhDash';
+import { TechDash } from '@/types/techDash';
 import { useDisclosure, Divider, Button, Modal, ModalContent, ModalHeader, ModalBody, ModalFooter } from '@heroui/react';
 import { useRouter } from 'next/navigation';
 import React, { useRef, useState } from 'react';
+import { Button as ShadcnButton} from '@/components/shadcn/ui/button'; //TODO fix the overridden styles
 
 
 const AddyMapper = ({number, handleOpen}: TechDash) => (
@@ -13,7 +14,7 @@ const AddyMapper = ({number, handleOpen}: TechDash) => (
         <Divider orientation="vertical" />
         <div className='mx-2 text-fluid-p1'>Mitigation</div> 
         <Divider orientation="vertical" />  
-        <Button className='ml-auto mr-4' color='secondary' key={number} onPress={handleOpen} variant='ghost'>Check In</Button>
+        <Button className='ml-auto mr-4 text-black border-secondary-500 hover:border-secondary-300' color='secondary' key={number} onPress={handleOpen} variant='ghost'>Check In</Button>
     </div>
 );
 
@@ -42,7 +43,7 @@ export default function Assigned() {
 
     const pressHandler = () => {
         onClose();
-        router.push('/dashboard');
+        router.push('/tech-dash/checkin');
     }
 
     return (
