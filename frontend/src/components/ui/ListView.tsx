@@ -1,5 +1,5 @@
 import { GroupedProjects, ShortProject } from '@/types/project';
-import { Table, TableColumn, TableHeader, SortDescriptor, TableBody, TableRow, TableCell, getKeyValue } from '@heroui/react';
+import { Table, TableColumn, TableHeader, SortDescriptor, TableBody, TableRow, TableCell, getKeyValue, Button, Link } from '@heroui/react';
 import React, { useEffect, useState } from 'react'
 
 export default function ListView({projects}: GroupedProjects) {
@@ -29,7 +29,9 @@ export default function ListView({projects}: GroupedProjects) {
     };
 
     return (
-        <Table
+        <Table 
+            selectionMode="single"
+            color="warning"
             sortDescriptor={sortDescriptor}
             onSortChange={handleSort}
             classNames={{
@@ -74,7 +76,7 @@ export default function ListView({projects}: GroupedProjects) {
                     Loss Date
                 </TableColumn>
                 <TableColumn
-                    key='dateRecieved'
+                    key='receivedDate'
                     allowsSorting
                 >
                     Date Recieved
@@ -85,11 +87,18 @@ export default function ListView({projects}: GroupedProjects) {
                 >
                     Start Date
                 </TableColumn>
+                <TableColumn
+                    key='id'
+                >
+                    . . .
+                </TableColumn>
             </TableHeader>
             <TableBody items={sortedData}>
             {(item) => (
-                <TableRow key={item.streetAddress}>
-                    {(columnKey) => <TableCell>{getKeyValue(item, columnKey)}</TableCell>}
+                <TableRow key={item.id}>
+                    {(columnKey) => columnKey !== 'id' 
+                        ? (<TableCell>{getKeyValue(item, columnKey)}</TableCell>) 
+                        : (<TableCell><Button as={Link} color="secondary" href={`./frontline/projects/${item.id}`}>View</Button></TableCell>)}
                 </TableRow>
             )}    
             </TableBody> 

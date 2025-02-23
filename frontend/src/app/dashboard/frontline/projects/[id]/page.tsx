@@ -1,76 +1,79 @@
 'use client'
-import { useEffect, useState } from 'react';
-import { useParams } from 'next/navigation';
-import { projectsApi } from '@/api/features/projectsApi';
-import { LongProject } from '@/types/project';
-// import Timeline from '@/features/sidebars/Timeline';
-// import ActivityBar from '@/features/sidebars/ActivityBar';
-import LongProjectPage from '@/function/project/LongProjectPage';
-import ActivityBox from '@/components/widgets/RecentActivity';
-import { ProjectBar } from '@/components/banners/ProjectBar';
-
+import { useEffect, useState } from 'react'
+import { useParams } from 'next/navigation'
+import { projectsApi } from '@/api/features/projectsApi'
+import { LongProject } from '@/types/project'
+import MultiPage from '@/function/project/multi-page'
+import ActivityBox from '@/components/widgets/RecentActivity'
+import { ProjectBar } from '@/components/banners/ProjectBar'
+import { Skeleton } from '@/components/shadcn/ui/skeleton'
+import { Alert, AlertDescription } from '@/components/shadcn/ui/alert'
 
 export default function ProjectDetailPage() {
-    const params = useParams();
-    const [project, setProject] = useState<LongProject | null>(null);
-    const [isLoading, setIsLoading] = useState(true);
-    const [error, setError] = useState<string | null>(null);
+    const params = useParams()
+    const [project, setProject] = useState<LongProject | null>(null)
+    const [isLoading, setIsLoading] = useState(true)
+    const [error, setError] = useState<string | null>(null)
 
     useEffect(() => {
         const fetchProject = async () => {
             try {
-                setIsLoading(true);
-                const projectData = await projectsApi.getProject(params.id as string);
-                setProject(projectData);
+                setIsLoading(true)
+                const projectData = await projectsApi.getProject(params.id as string)
+                setProject(projectData)
             } catch (err) {
-                setError(`'Failed to fetch project details', ${err}`);
+                setError(`Failed to fetch project details: ${err}`)
             } finally {
-                setIsLoading(false);
+                setIsLoading(false)
             }
-        };
+        }
 
-        fetchProject();
-    }, [params.id]);
+        fetchProject()
+    }, [params.id])
 
     if (isLoading) {
         return (
-            <div className="flex justify-center items-center h-screen bg-[#09090B]">
-                <div className="text-green-500">Loading...</div>
+            <div className="flex flex-col w-full gap-4 p-4">
+                <Skeleton className="h-16 w-full" /> {/* ProjectBar skeleton */}
+                <div className="flex gap-4">
+                    <Skeleton className="flex-grow h-96" /> {/* Main content skeleton */}
+                    <Skeleton className="w-64 h-96" /> {/* Activity box skeleton */}
+                </div>
             </div>
-        );
+        )
     }
 
     if (error) {
         return (
-            <div className="flex justify-center items-center h-screen bg-[#09090B]">
-                <div className="text-red-500">{error}</div>
+            <div className="p-4">
+                <Alert variant="destructive">
+                    <AlertDescription>{error}</AlertDescription>
+                </Alert>
             </div>
-        );
+        )
     }
 
     if (!project) {
         return (
-            <div className="flex justify-center items-center h-screen bg-[#09090B]">
-                <div className="text-white">Project not found</div>
+            <div className="p-4">
+                <Alert>
+                    <AlertDescription>Project not found</AlertDescription>
+                </Alert>
             </div>
-        );
+        )
     }
 
     return (
-        <div className='flex flex-col min-h-screen'>
-            <div>
+        <div>
+            <div className="flex flex-col">
                 <ProjectBar {...project} />
-            </div>
-            <div className='p-8 flex w-full gap-2 border-2 border-white-500 min-h-[clamp(20rem,20vw+10rem,45rem)]'>
-                    {/* <Timeline /> */}
-                <div style={{ flex: '5 1 0' }}>
-                    <LongProjectPage {...project} />
-                </div>
-                <div style={{ flex: '1 1 0', height: '50vh' }} className='mr-20'>
-                    <ActivityBox />
-                </div>
-            </div>
                 
+                <div className="flex gap-4 p-8">
+                    <div className="flex-grow min-h-[clamp(20rem,20vw+10rem,45rem)]">
+                        <MultiPage {...project} />
+                    </div>  
+                </div>
+            </div>
         </div>
-    );
+    )
 }

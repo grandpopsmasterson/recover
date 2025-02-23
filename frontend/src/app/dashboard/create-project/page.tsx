@@ -1,4 +1,5 @@
-import MainCard from "@/app/pages/create-project/MainCard";
+import MainCard from "@/components/cards/CreateProjectCard";
+
 
 export default function CreateProject() {
 

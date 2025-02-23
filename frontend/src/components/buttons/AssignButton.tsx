@@ -69,9 +69,9 @@ const AssignUserBtn: React.FC<AssignUserBtnProps> = ({ projectId }) => {
       {loading && <div>Loading...</div>}
       <Select
         classNames={{
-          base: "max-w-xs",
           trigger: "min-h-12 py-2",
         }}
+        fullWidth
         isOpen={isOpen}
         onOpenChange={(open: boolean) => {
           setIsOpen(open);
@@ -109,7 +109,7 @@ const AssignUserBtn: React.FC<AssignUserBtnProps> = ({ projectId }) => {
           </SelectItem>
         )}
       </Select>
-      <Button onPress={() => handleSubmit([])}>Assign Users</Button> 
+      {/* <Button onPress={() => handleSubmit([])}>Assign Users</Button>  */}
     </>
   );
 };

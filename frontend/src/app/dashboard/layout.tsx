@@ -1,7 +1,7 @@
 'use client';
 
 import { Breadcrumbs } from '@/components/breadcrumbs/Breadcrumbs';
-import { AppSidebar } from '@/components/shadcn/components/app-sidebar';
+import { AppSidebar } from '@/components/shadcn/components/sidebar/app-sidebar';
 import { Separator } from '@/components/shadcn/ui/separator';
 import { 
     SidebarInset, 

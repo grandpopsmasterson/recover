@@ -1,4 +1,4 @@
-import { AppSidebar } from "@/components/shadcn/components/app-sidebar"
+import { AppSidebar } from "@/components/shadcn/components/sidebar/app-sidebar"
 import {
   Breadcrumb,
   BreadcrumbItem,

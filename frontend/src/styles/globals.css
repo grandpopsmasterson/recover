@@ -4,8 +4,10 @@
 
 :root {
 
+  --background: '#e8e8e8',
+  --foreground: '#e8e8e8',
   /* Fluid Typography Scale - Larger */
-  --fluid-small: clamp(0.75rem, 0.25vw + 0.625rem, 1rem);
+  --fluid-small: clamp(0.6rem, 0.23vw + 0.6rem, 0.9rem);
   --fluid-p1: clamp(1rem, 0.5vw + 0.875rem, 1.5rem);
   --fluid-h2: clamp(1.5rem, 1vw + 1rem, 2rem);
   --fluid-h1: clamp(1.875rem, 1.5vw + 1.15rem, 2.5rem);
@@ -15,8 +17,8 @@
 
 
 body {
-  font-size: var(--fluid-p1);
-  line-height: 1.6;
+  font-size: var(--fluid-small);
+  line-height: 1.4;
 }
 
 .text-small {
@@ -26,7 +28,7 @@ body {
 
 .text-p1 {
   font-size: var(--fluid-p1);
-  line-height: 1.6;
+  line-height: 1.4;
 }
 
 .text-h2 {
@@ -139,5 +141,16 @@ input:-webkit-autofill:focus {
   }
   body {
     @apply bg-background text-foreground;
+  }
+}
+@layer utilities {
+  /* Add the no-scrollbar utility class */
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+  
+  .no-scrollbar {
+    -ms-overflow-style: none;  /* IE and Edge */
+    scrollbar-width: none;  /* Firefox */
   }
 }
