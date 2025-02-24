@@ -1,12 +1,12 @@
 import React from 'react'
-import { LongProject } from '@/types/project'
+import { LongProject, ShortProject } from '@/types/project'
 import { Plus } from 'lucide-react'
 import { Image } from '@heroui/react'
 import { useParams } from 'next/navigation'
 import AssignUserBtn from '../buttons/AssignButton'
 import PhotoStack from '../buttons/PhotoStack'
 
-export const ProjectBar = ({clientName, clientEmail, clientPhone, houseImage, zipcode, streetAddress, city, state, stage, projectType }: LongProject) => {
+export const ProjectBar = ({clientName, houseImage, streetAddress, city, state, stage }: LongProject) => {
 
     const params = useParams();
         const projectId = params.id as string;
@@ -15,22 +15,14 @@ export const ProjectBar = ({clientName, clientEmail, clientPhone, houseImage, zi
             return <div>Loading...</div>;
         }
 
-    const stageProcess = () => {
-        switch (stage) {
-            case "PENDING_SALE":
-                return (<span className="text-gray-400 text-sm">PENDING SALE</span>)
-                break;
-            default:
-                return (<span className="text-gray-400 text-sm">Error</span>)
-        }
-    }
+    
     
 
     const defaultImage = '/house1.png';
     const thumbnailStyles = "aspect-[1] object-cover"
 
     return (
-        <div className="grid grid-cols-3 gap-4 p-4 max-w-full m-4 border-1 shadow-md rounded-lg">
+        <div className="grid grid-cols-[25vw,25vw,auto] gap-4 p-6 bg-white max-w-full m-4 shadow-[0_5px_15px_rgba(0,0,0,0.08)] border-1 rounded-2xl relative">
             {/* first column, house photos grid */}
             <div className="grid grid-cols-2 gap-4">
                 <div className="col-start-1">
@@ -40,7 +32,7 @@ export const ProjectBar = ({clientName, clientEmail, clientPhone, houseImage, zi
                         src={houseImage || defaultImage}
                     />
                 </div>
-                <div className="col-start-2 pr-10">
+                <div className="col-start-2 pr-6">
                     <div className="grid grid-cols-2 gap-3">
                         <Image
                             className={thumbnailStyles}
@@ -52,20 +44,21 @@ export const ProjectBar = ({clientName, clientEmail, clientPhone, houseImage, zi
                             count={12} 
                             navigationPath="./photos"
                         />
-                        <button className="col-span-2 bg-blue-400 w-full py-4 font-sans text-white rounded-md hover:bg-blue-500 transition-all duration-200">
+                        <button className="col-span-2 border-blue-400 border-1 w-full py-3 font-sans rounded-xl hover:bg-blue-200 transition-all duration-200">
                             See Photos
                         </button>
                     </div>
                 </div>
             </div>
-            {/* empty middle column */}
+            <div className="text-h1 font-thin">
+                <span className="text-h1">{streetAddress}</span><br />
+                <span className="text-h2">{clientName}</span>
+            </div>
 
-            <div className="col-start-3 space-y-4">
-                <div className="rounded-tr-lg rounded-bl-lg border-2 flex justify-start">
-                    PENDING SALE
-                </div>
-                <AssignUserBtn projectId={projectId} />
-                <button className="border-2 border-gray-200 text-gray-500 shadow-sm rounded-xl w-full py-3 font-sans ">
+            <div className="col-start-3 flex flex-row gap-5 items-start">
+            
+                <AssignUserBtn projectId={projectId} className="w-1/2"/>
+                <button className="border-1 border-blue-400 text-gray-500 shadow-sm rounded-xl px-6 py-2 font-sans ">
                     Continue progress
                 </button>
                 

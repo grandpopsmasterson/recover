@@ -1,7 +1,7 @@
 'use client'
 
 import { useState } from "react";
-import { CreateProject, LossTypeArray, ProjectStageArray } from "@/types/createProject";
+import { type CreateProject, LossTypeArray, ProjectStageArray } from "@/types/createProject";
 import { Autocomplete, AutocompleteItem, Button, Input, Link } from "@heroui/react";
 
 export default function CreateProject() {

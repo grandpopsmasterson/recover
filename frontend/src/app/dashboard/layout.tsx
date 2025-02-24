@@ -32,7 +32,7 @@ export default function DashboardLayout({
                             <Breadcrumbs />      
                         </div>
                     </header>
-                    <main>
+                    <main className="flex-1">
                         {children}
                     </main>   
                 </SidebarInset>

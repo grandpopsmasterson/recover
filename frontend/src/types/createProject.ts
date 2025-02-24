@@ -15,7 +15,6 @@ export interface CreateProject {
     projectType: string;
     carrier: string;
     //assignedUser: string[]; //??? maybe add later
-    //recievedDate: string; //Dave has this autosetting in backend
     catReference?: string;
     lossType: string;
     scope: string;

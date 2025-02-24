@@ -3,9 +3,11 @@ import { Dropdown, DropdownTrigger, AvatarGroup, Avatar, DropdownMenu, DropdownI
 import { LongProject } from "@/types/project";
 import { DownArrow } from "@/components/ui/icons/DownArrow";
 import Details from './projectContent/Details';
+import Image from 'next/image';
+import { useRouter } from 'next/navigation';
 
 export default function MultiApp({
-    //id,
+    id,
     //projectName,
     // clientName,
     // clientEmail,
@@ -21,6 +23,7 @@ export default function MultiApp({
     // carrier,
     assignedRoles,
     }: LongProject) {
+        const router = useRouter();
 
     // const defaultImage = '/house1.png';
     const defaultUser = './user-svgrepo-com.png';
@@ -39,9 +42,33 @@ export default function MultiApp({
     const content = (id: string) => {
         switch (id) {
             case "estimate":
-                return ( <div>Estimates</div> )
+                return ( 
+                    <div className="h-[35rem] relative">
+                        <div className="aspect-[2/1] relative p-4">
+                            <Image 
+                                src="/mockup_room.jpg" 
+                                alt="Description" 
+                                className="w-full h-full object-cover rounded-lg" 
+                                width={500} 
+                                height={300}
+                            />
+                            <button onClick={() => router.push(`./${id}/estimate-builder`)}className="absolute w-1/3 top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-green-400 text-black p-4 rounded-lg font-thin text-h2 hover:bg-green-300 transition-colors">
+                                Begin Estimating
+                            </button>
+                        </div>
+                    </div>
+                )
             case 'timeline':
-                return ( <div>Timeline</div> )
+                return ( 
+                    <div className="h-[45rem] relative">
+                        <Image 
+                            src="/jiraroadmap.jpg" 
+                            alt="Description" 
+                            className="w-full h-full rounded-lg" 
+                            fill
+                        />
+                    </div>
+                )
             case 'compliance':
                 return ( <Details startDate={startDate} lossDate={lossDate} /> ) // TODO LAZY LOADING FOR ALL OF THESE
             case 'work orders':
@@ -59,11 +86,11 @@ export default function MultiApp({
     
 
     return (
-        <div className="h-[30vw] rounded-md border-2 border-purple-500">
+        <div className="max-w-full rounded-xl m-4 bg-white shadow-sm">
             
-                <div className="rounded-md border-2" >
+                <div >
                     <div className='flex flex-col'>
-                        <Tabs items={tabs} className='justify-center' color='primary'>
+                        <Tabs items={tabs} variant="bordered" className='justify-center' color="primary" fullWidth={true}>
                             {(item) => (
                                 <Tab key={item.id} title={item.label}>
                                     {content(item.id)}
@@ -73,7 +100,5 @@ export default function MultiApp({
                     </div>
                 </div>
             </div>
-            
-        
     );
 }

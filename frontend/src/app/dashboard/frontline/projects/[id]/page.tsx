@@ -68,7 +68,7 @@ export default function ProjectDetailPage() {
             <div className="flex flex-col">
                 <ProjectBar {...project} />
                 
-                <div className="flex gap-4 p-8">
+                <div className="flex flex-col">
                     <div className="flex-grow min-h-[clamp(20rem,20vw+10rem,45rem)]">
                         <MultiPage {...project} />
                     </div>  

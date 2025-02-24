@@ -13,10 +13,11 @@ export interface User {
 }
 
 interface AssignUserBtnProps {
-  projectId: string; // Pass projectId from parent component
+  projectId: string;
+  className?: string; // Pass projectId from parent component
 }
 
-const AssignUserBtn: React.FC<AssignUserBtnProps> = ({ projectId }) => {
+const AssignUserBtn: React.FC<AssignUserBtnProps> = ({ projectId, className = '' }) => {
   const [users, setUsers] = useState<User[]>([]);
   const [isOpen, setIsOpen] = useState(false);
   const [loading, setLoading] = useState<boolean>(false);
@@ -66,12 +67,9 @@ const AssignUserBtn: React.FC<AssignUserBtnProps> = ({ projectId }) => {
   return (
     <>
       {error && <div className="text-red-500">{error}</div>}
-      {loading && <div>Loading...</div>}
+      {/* {loading && <div>Loading...</div>} */}
       <Select
-        classNames={{
-          trigger: "min-h-12 py-2",
-        }}
-        fullWidth
+        className={`${className}`}
         isOpen={isOpen}
         onOpenChange={(open: boolean) => {
           setIsOpen(open);

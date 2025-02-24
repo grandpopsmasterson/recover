@@ -18,7 +18,7 @@ const PhotoStack = ({ count, navigationPath, className = '' }: PhotoStackProps) 
   return (
     <button
         onClick={handlePress}
-        className="flex flex-col items-center justify-center bg-gray-800 hover:bg-gray-700 aspect-square rounded-xl"
+        className="flex flex-col items-center justify-center bg-gray-800 hover:bg-gray-700 aspect-square rounded-2xl"
         >
         <Plus className="h-5 w-5 text-gray-300 mb-2"/>
         <span className="text-gray-300 text-lg font-medium">
