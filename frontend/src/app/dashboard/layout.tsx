@@ -22,9 +22,9 @@ export default function DashboardLayout({
                 <AppSidebar />
                 <SidebarInset>
                     <header className="flex flex-col gap-2 transition-[width,height] ease-linear">
-                        <div className="w-full">
+                        {/* <div className="w-full">
                         <DashboardNavBar /> 
-                        </div>    
+                        </div>     */}
                                       
                         <div className="relative flex items-center gap-2 px-4">   
                             <SidebarTrigger className="-ml-1" />

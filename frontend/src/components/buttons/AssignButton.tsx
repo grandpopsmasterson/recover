@@ -81,9 +81,8 @@ const AssignUserBtn: React.FC<AssignUserBtnProps> = ({ projectId }) => {
         }}
         onSelectionChange={handleSelectionChange} // Directly pass the selected keys
         isMultiline={true}
-        label="Assigned to"
         labelPlacement="outside"
-        placeholder="Select a user"
+        placeholder="Assign a user"
         items={users}
         renderValue={(items) => {
             return (
