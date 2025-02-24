@@ -2,6 +2,8 @@ import { LoginCredentials, LoginResponse } from "@/types/login";
 import { authClient } from "../clients";
 import { SignupRequest, SignupResponse } from "@/types/signup";
 import axios from "axios";
+import { ErrorCode } from "@/types/api";
+import { getLoginErrorMessage } from "../utils/error";
 
 export const loginApi = {
     async login(credentials: LoginCredentials) {
@@ -17,12 +19,12 @@ export const loginApi = {
             return response;
         } catch (error) {
             if (axios.isAxiosError(error)) {
-                console.error('LOGIN FAILED: ', {
-                    status: error.response?.status,
-                    data: error.response?.data
-                });
+                const statusCode = error.response?.status as ErrorCode;
+                const errorMessage = getLoginErrorMessage(statusCode);
+
+                throw new Error(errorMessage);
             }
-            throw error;
+            throw Error;
         }
     }
 };
@@ -41,7 +43,35 @@ export const signupApi = {
             }
             throw error;
         }
-    }
+    },
+    async checkEmailAvailability(email: string) {
+        try {
+            const response = await authClient.post<{ available: boolean }>('/auth/check-email', { email });
+            return response.data.available;
+        } catch (error) {
+            if (axios.isAxiosError(error)) {
+                console.error('Email check failed:', {
+                    status: error.response?.status,
+                    data: error.response?.data
+                });
+            }
+            throw error;
+        }
+    },
+    async checkUsernameAvailability(username: string) {
+        try {
+            const response = await authClient.post<{ available: boolean }>(`/auth/check-username/`, { username });
+            return response.data.available;
+        } catch (error) {
+            if (axios.isAxiosError(error)) {
+            console.error('Username check failed:', {
+                status: error.response?.status,
+                data: error.response?.data
+                });
+            }
+            throw error;
+        }
+    },
 };
 
 export const logoutApi = {

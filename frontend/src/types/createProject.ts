@@ -37,6 +37,15 @@ export interface CreateProjectError {
     field?: string;
 }
 
+export interface ProjectStageArray {
+    label: string;
+    key: string;
+}
+export interface LossTypeArray {
+    label: string;
+    key: string;
+}
+
 export interface StepOneProps {
     firstName: string;
     lastName: string;

@@ -10,6 +10,7 @@ export default function StepThree({formData, handleInputChange, handleRoleChange
             <p className='text-white'>Enter your name</p>
             <div className='flex gap-1'>
             <Input 
+                required
                 className='w-1/2 text-white'
                 classNames={{
                     label: '!text-white'
@@ -19,7 +20,7 @@ export default function StepThree({formData, handleInputChange, handleRoleChange
                 id='firstName'
                 name='firstName'
                 variant='bordered'
-                color='secondary'
+                color='primary'
                 value={formData.firstName}
                 onChange={handleInputChange}
                 onKeyDown={handleKeyDown}
@@ -37,7 +38,7 @@ export default function StepThree({formData, handleInputChange, handleRoleChange
                 id='lastName'
                 name='lastName'
                 variant='bordered'
-                color='secondary'
+                color='primary'
                 value={formData.lastName}
                 onChange={handleInputChange}
                 onKeyDown={handleKeyDown}
@@ -58,7 +59,7 @@ export default function StepThree({formData, handleInputChange, handleRoleChange
                 id='companyId'
                 name='companyId'
                 variant='bordered'
-                color='secondary'
+                color='primary'
                 // value={formData.companyId}
                 onChange={handleInputChange}
                 onKeyDown={handleKeyDown}
@@ -67,18 +68,21 @@ export default function StepThree({formData, handleInputChange, handleRoleChange
 
         <div>
             <p className='text-white'>Select your role</p>
-            <Dropdown className='bg-[#090f21]'>
+            <Dropdown className='bg-slate-500'>
                 <DropdownTrigger>
-                    <Button color='secondary' variant='bordered' className='rounded-md w-1/2 border-white text-white hover:bg-purple-500'> 
+                    <Button color='primary' variant='bordered' className='rounded-md w-1/2 border-white text-white hover:bg-slate-500'> 
                         {formData.userType || "Viewer"}
                     </Button>
                 </DropdownTrigger>
                 <DropdownMenu
-                    style={{background: '#09090b', border: '5px solid #090f21', borderRadius: '5px'}}
+                    className='bg-recovernavy border-1 border-recovernavy rounded lg'
+                    
                     itemClasses={{
                         base: [
-                            '!bg-[#09090b]',
-                            '!data-[hover=true]:bg-green-500'
+                            'bg-slate-100',
+                            'data-[hover=true]:bg-slate-300',
+                            'text-center',
+                            'self-center'
                         ]
                 }}
                 onAction={(key) => handleRoleChange(key.toString())}

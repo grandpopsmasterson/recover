@@ -24,3 +24,8 @@ export interface UserDetails {
     userType: string;
     token: string;
 }
+
+export interface LoginError {
+    message: string;
+    field: string;
+}

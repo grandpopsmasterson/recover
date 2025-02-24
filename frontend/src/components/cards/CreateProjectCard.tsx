@@ -2,7 +2,6 @@
 
 import { projectsApi } from "@/api/features/projectsApi";
 import { validateEmail, validatePhonenumber } from "@/api/utils/validation";
-import Button1 from "@/components/ui/ButtonC";
 import { BackArrow } from "@/components/ui/icons/BackArrow";
 import { RecoverLogo } from "@/components/ui/icons/RecoverLogo";
 import { WrapperNoHREF } from "@/components/ui/WrapperNoHREF";
@@ -256,25 +255,6 @@ export default function MainCard() {
         }
         return true;
     }
-
-    //prefetch the other steps
-    // const prefetchOtherSteps = () => {
-    //     const prefetchStep = async () => {
-    //         await Promise.all([
-    //             import('./steps/StepTwo'),
-    //             import('./steps/StepThree'),
-    //             import('./steps/StepFour'),
-    //             import('./steps/StepFive')
-    //         ]);
-    //     };
-    //     if ('requestIdleCallback' in window) {
-    //         window.requestIdleCallback(() => prefetchStep());
-    //     } else {
-    //         setTimeout(prefetchStep, 1000);
-    //     }
-    // };
-
-    //useEffect(() => { prefetchOtherSteps(); })
 
     const handleInputChange = (
         e: React.ChangeEvent<HTMLInputElement> | boolean, name?: string
