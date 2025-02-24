@@ -41,6 +41,10 @@ export interface ProjectStageArray {
     label: string;
     key: string;
 }
+export interface InsurerArray {
+    label: string;
+    key: string;
+}
 export interface LossTypeArray {
     label: string;
     key: string;

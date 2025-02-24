@@ -1,15 +1,21 @@
 'use client'
 
 import { useState } from "react";
-import { CreateProject, LossTypeArray, ProjectStageArray } from "@/types/createProject";
-import { Autocomplete, AutocompleteItem, Button, Input, Link } from "@heroui/react";
+import { CreateProject, CreateProjectError, InsurerArray, LossTypeArray, ProjectStageArray } from "@/types/createProject";
+import { Autocomplete, AutocompleteItem, Button, CheckboxGroup, Dropdown, DropdownItem, DropdownMenu, DropdownTrigger, Input, Link } from "@heroui/react";
+import { CustomCheckbox } from "@/components/ui/CustomCheckbox";
+import { validateDate, validateEmail, validatePhonenumber } from "@/api/utils/validation";
 
 export default function CreateProject() {
-
+    // STATE SETTING
     const [stage, setStage] = useState<number>(0);
-    const [error, setError] = useState<string | null>(null);
+    const [errors, setErrors] = useState<CreateProjectError | null>(null);
+    const [view, setView] = useState<'visible'|'exit-left'|'exit-right'|'entering-left'|'entering-right'>('visible');
 
     const [ownProperty, setOwnProperty] = useState<boolean>(false);
+    const [policyInfo, setPolicyInfo] = useState<boolean>(false);
+    const [claim, setClaim] = useState<boolean>(false);
+    const [catastrophe, setCatastrophe] = useState<boolean>(false);
 
     const [localForm, setLocalForm] = useState({
         firstName: '',
@@ -17,401 +23,786 @@ export default function CreateProject() {
     });
 
     const [formData, setFormData] = useState<CreateProject>({
-            projectName: '',
-            lossDate: '',
-            clientName: '',
-            clientEmail: '',
-            clientPhone: '',
-            streetAddress: '',
-            city: '',
-            state: '',
-            zipcode: '',
-            stage: '',
-            projectType: '',
-            carrier: '',
-            //assignedUser: '',
-            catReference: '',
-            lossType: '',
-            scope: '',
-            claimNumber: '0',
-            policyExpiration: '',
-            policyStart: '',
-            yearBuilt: 0,
-            //office: ''
-        });
+        projectName: '',
+        lossDate: '',
+        clientName: '',
+        clientEmail: '',
+        clientPhone: '',
+        streetAddress: '',
+        city: '',
+        state: '',
+        zipcode: '',
+        stage: '',
+        projectType: '',
+        carrier: '',
+        //assignedUser: '',
+        catReference: '',
+        lossType: '',
+        scope: '',
+        claimNumber: '0',
+        policyExpiration: '',
+        policyStart: '',
+        yearBuilt: 0,
+        //office: ''
+    });
 
-        const projectType: string[] = [
-            'Residential',
-            'Commercial',
-            'Industrial',
-        ];
+    // LISTS FOR FIELDS
 
-        const lossType: LossTypeArray[] = [ 
+    const projectType: string[] = [
+        'Residential',
+        'Commercial',
+        'Industrial',
+    ];
+
+    const lossType: LossTypeArray[] = [ 
         {label: 'Fire', key: 'FIRE'},
         {label: 'Water', key: 'WATER'},
         {label: 'Wind', key: 'WIND'},
         {label: 'Mold', key: 'MOLD'},
         {label: 'Chemical', key: 'CHEMICAL'},
         {label: 'Structural', key: 'STRUCTURAL'},
-        ];
+    ];
 
-        const scope: string[] = [
-            'MITIGATION',
-            'CONTENTS',
-            'RECONSTRUCTION'
-        ];
-    
-        const projStage: ProjectStageArray[] = [
-            {label: 'Pending Sale', key:'PENDING_SALE'},
-            {label: 'Pre-Production', key:'PRE_PRODUCTION'},
-            {label: 'Estimation', key:'ESTIMATION'},
-            {label: 'Mitigation', key:'MITIGATION'},
-            {label: 'Reconstruction', key:'RECONSTRUCTION'},
-            {label: 'Pending Invoice', key:'PENDING_INVOICE'},
-            {label: 'Accounts Recievable', key:'ACCOUNTS_RECEIVABLE'},
-            {label: 'Complete', key:'COMPLETE'},
-        ];
+    const scope: string[] = [
+        'MITIGATION',
+        'CONTENTS',
+        'RECONSTRUCTION'
+    ];
 
-        const progress: Record<number, number> = {
-            1: 20,
-            2: 40,
-            3: 60,
-            4: 80,
-            5: 100
+    const projStage: string[] = [
+        'PENDING_SALE',
+        'PRE_PRODUCTION',
+        'ESTIMATION',
+        'MITIGATION',
+        'RECONSTRUCTION',
+        'PENDING_INVOICE',
+        'ACCOUNTS_RECEIVABLE',
+        'COMPLETE',
+    ];
+
+    const insurers: InsurerArray[] = [
+        {label: 'State Farm', key: 'State Farm'},
+        {label: 'Berkshire Hathaway', key: 'Berkshire Hathaway'},
+        {label: 'Progressive', key: 'Progressive'},
+        {label: 'Allstate', key: 'Allstate'},
+        {label: 'Liberty Mutual', key: 'Liberty Mutual'},
+        {label: 'Travelers', key: 'Travelers'},
+        {label: 'USAA', key: 'USAA'},
+        {label: 'Chubb', key: 'Chubb'},
+        {label: 'Nationwide Insurance', key: 'Nationwide Insurance'},
+        {label: 'Farmers Insurance', key: 'Farmers Insurance'},
+        {label: 'American Family Insurance', key: 'American Family Insurance'},
+        {label: 'The Hartford', key: 'The Hartford'},
+        {label: 'Fairfax Financial', key: 'Fairfax Financial'},
+        {label: 'CNA', key: 'CNA'},
+        {label: 'Erie Insurance', key: 'Erie Insurance'},
+    ]
+
+    // LOGIC
+
+    const validateStage = (): boolean => {
+            switch(stage) {
+                case 0:
+                    if (!formData.lossType) {
+                        setErrors({ message: "Please select a loss type", field: 'lossType'});
+                        return false;
+                    };
+                    if (!formData.lossDate) {
+                        setErrors({ message: "Please enter the date of loss", field: 'lossDate'});
+                        return false;
+                    };
+                    break;
+                case 1:
+                    if (!formData.streetAddress) {
+                        setErrors({ message: 'Please enter a street address', field: 'streetAddress'});
+                        return false;
+                    }
+                    if (!formData.city) {
+                        setErrors({ message: 'Please enter a city', field: 'city'});
+                        return false;
+                    }
+                    if (!formData.state) {
+                        setErrors({ message: 'Please enter a state', field: 'state'});
+                        return false;
+                    }
+                    if (!formData.zipcode) {
+                        setErrors({ message: 'Please enter a zip code', field: 'zipcode'});
+                        return false;
+                    }
+                    break;
+                case 2:
+                    if (ownProperty) {
+                        if (!localForm.firstName) {
+                            setErrors({ message: "Please enter the client's first name", field: 'firstName'});
+                            return false;
+                        }
+                        if (!localForm.lastName) {
+                            setErrors({ message: "Please enter the client's last name", field: 'lastName'});
+                            return false;
+                        }
+                        if (!validatePhonenumber(formData.clientPhone)) {
+                            setErrors({ message: 'Please enter a valid phone number', field: 'clientPhone'});
+                            return false;
+                        }
+                        if (!validateEmail(formData.clientEmail)) {
+                            setErrors({ message: 'Please enter a valid email', field: 'clientEmail'});
+                            return false;
+                        }
+                    }
+                    break;
+                case 3:
+                    if (formData.projectType == '') {
+                        setErrors({ message: 'Please select a property type', field: 'projectType'});
+                        return false;
+                    }
+                    break;
+                case 4:
+                    break;
+                case 5:
+                    if (policyInfo) {
+                        if (formData.carrier == '') {
+                            setErrors({ message: 'Please select an insurance carrier', field: 'carrier'});
+                            return false;
+                        }
+                        if (validateDate(formData.policyStart)) {
+                            setErrors({ message: 'Please enter a valid policy start date', field: 'policyStart'});
+                            return false;
+                        }
+                        if (validateDate(formData.policyExpiration)) {
+                            setErrors({ message: 'Please enter a valid policy expiration date', field: 'policyExpiration'});
+                            return false;
+                        } // TODO add something here to make sure the start date is not after the expiration date
+                    }
+                    break;
+                case 6:
+                    if (claim) {
+                        if (!formData.claimNumber) {
+                            setErrors({ message: 'Please enter a claim number', field: 'claimNumber'});
+                            return false;
+                        }
+                    }
+                    break;
+                case 7:
+                    if (catastrophe) {
+                        if (!formData.catReference) {
+                            setErrors({ message: 'Please enter the catastrophe name', field: 'catReference'});
+                            return false;
+                        }
+                    }
+                    break;
+                case 8:
+                    if (!formData.stage) {
+                        setErrors({ message: 'Please select a stage, this will default to pending sale once projects have been more developed', field: 'stage'});
+                        return false;
+                    }
+                    if (formData.scope == '') {
+                        setErrors({ message: 'Please select the scope, this will change later in development', field: 'scope'});
+                        return false;
+                    }
+                }
+            return true;
         };
 
-        const steps = [
-            {
-                stage: 0,
-                id: 'loss',
-                title: 'What happened?',
-                component: () => (
-                    <div className="space-y-4">
-                        <div>What happened?</div>
-                        <div>
-                            <Autocomplete
-                                allowsCustomValue={true}
-                                className=""
-                                defaultItems={lossType}
-                                label='Select the loss type'
-                                variant="bordered"
-                                color="primary"
-                                onSelectionChange={(id) => setFormData({...formData, lossType: id.toString()})}
-                            >
-                                {(item) => <AutocompleteItem key={item.key}>{item.label}</AutocompleteItem>}
-                            </Autocomplete>
-                        </div>
-                        <div>
+        const handleInputChange = (
+            e: React.ChangeEvent<HTMLInputElement> | boolean, name?: string
+        ): void => {
+            if (typeof e === 'boolean' && name) {
+
+                setFormData(prev => ({ ...prev, [name]: e}));
+
+            } else if (e instanceof Object && 'target' in e) {
+
+                const { name, value, type, checked } = e.target as HTMLInputElement;
+                setFormData(prev => ({ ...prev, [name]: type === 'checkbox' 
+                    ? checked 
+                    : value }));
+
+                if (name === 'firstName' || name === 'lastName') {
+                    setLocalForm(prev => {
+                        const newLocal = { ...prev, [name]: value };
+                        setFormData(prevForm => ({
+                            ...prevForm,
+                            clientName: `${name === 'firstName' 
+                                ? value 
+                                : newLocal.firstName} ${name === 'lastName' 
+                                    ? value 
+                                    : newLocal.lastName}`.trim()
+                        }));
+                        return newLocal;
+                    });
+                    
+                    setErrors(prev => {
+                        if (prev?.field === name) {
+                            return null;
+                        }
+                        return prev;
+                    });
+                } else {
+                if (name === 'lossType') {
+                }
+            }
+            setErrors(null);
+        }};
+
+    const animate = (stage: number, direction: string) => {
+        if (view !== 'visible') return;
+
+        setView(direction === 'next' ? 'exit-left' : 'exit-right');
+
+        setTimeout(() => {
+            setStage(stage);
+            setView(direction === 'next' ? 'entering-right' : 'entering-left');
+
+            setTimeout(() => {
+                setView('visible');
+            }, 250)
+        }, 250)
+    };
+
+    const handleNext = (stage: number) => animate(stage, 'next');
+    const handlePrev = (stage: number) => animate(stage, 'prev');
+
+    const getAnimationClasses = () => {
+        switch (view) {
+            case 'exit-left':
+                return '-translate-x-1/2 scale-90 opacity-0';
+            case 'exit-right':
+                return 'translate-x-1/2 scale-90 opacity-0';
+            case 'entering-left':
+                return '-translate-x-1/2 opacity-0';
+            case 'entering-right':
+                return 'translate-x-1/2 opacity-0';
+            case 'visible':
+                return 'translate-x-0 scale-100 opacity-100';
+            default:
+                return '';
+        }
+    };
+
+    // STEPS FOR FORM
+
+    const steps = [
+        {
+            stage: 0,
+            id: 'loss',
+            title: 'What happened?',
+            component: () => (
+                <div className="space-y-4">
+                    <div>What happened?</div>
+                    <div>
+                        <Autocomplete
+                            allowsCustomValue={true}
+                            className=""
+                            defaultItems={lossType}
+                            label='Select the loss type'
+                            variant="bordered"
+                            color="primary"
+                            onSelectionChange={(id) => setFormData({...formData, lossType: id.toString()})}
+                        >
+                            {(item) => <AutocompleteItem key={item.key}>{item.label}</AutocompleteItem>}
+                        </Autocomplete>
+                    </div>
+                    <div>
+                        <Input 
+                            className="w-1/2 h-[50px] text-black"
+                            classNames={{
+                                label: 'text-black'
+                            }}
+                            radius='md'
+                            label='Date of loss'
+                            type="lossDate"
+                            id="lossDate"
+                            name="lossDate"
+                            variant="bordered"
+                            color="primary"
+                            value={formData.lossDate}
+                            errorMessage='Please enter a valid loss date'
+                            description='Format: MM/DD/YYYY'
+                            onChange={handleInputChange}
+                            // TODO onKeyDown={}
+                            isInvalid={errors === null ? false : errors.field === 'lossType' ? true : false}
+                        />
+                    </div>
+                    <div className="pt-2 space-x-2">
+                        <Button as={Link} href="/dashboard/ridgeline" >Back</Button>
+                        <Button onPress={() => handleNext(1)}>Next</Button>
+                    </div>
+                </div>
+            )
+        },
+        {
+            stage: 1,
+            id: 'location',
+            title: 'Where did the loss occurr?',
+            component: () => (
+                <div className="space-y-4">
+                    <div>Where did the loss occurr?</div>
+                    <div className="space-y-4" >
+                        <Input 
+                            className="w-full h-[50px] text-black shadow-md"
+                            classNames={{
+                                label: 'text-black'
+                            }}
+                            radius='md'
+                            label='Street Address'
+                            type="input"
+                            id="streetAddress"
+                            name="streetAddress"
+                            variant="bordered"
+                            color="primary"
+                            value={formData.streetAddress}
+                            errorMessage='Please enter a street address'
+                            // TODO onChange={}
+                            // TODO onKeyDown={}
+                            // TODO isInvald={}
+                        />
+                        <div className="flex gap-2">
                             <Input 
-                                className="w-1/2 h-[50px] text-black"
+                                className="w-1/3 h-[50px] text-black shadow-md"
                                 classNames={{
                                     label: 'text-black'
                                 }}
                                 radius='md'
-                                label='Date of loss'
-                                type="text"
-                                id="lossDate"
-                                name="lossDate"
+                                label='City'
+                                type="input"
+                                id="city"
+                                name="city"
                                 variant="bordered"
                                 color="primary"
-                                value={formData.lossDate}
-                                errorMessage='Please enter a valid loss date'
-                                description='Format: MM/DD/YYYY'
+                                value={formData.city}
+                                errorMessage='Please enter a city'
+                                // TODO onChange={}
+                                // TODO onKeyDown={}
+                                // TODO isInvald={}
+                            />
+                            <Input 
+                                className="w-1/3 h-[50px] text-black shadow-md"
+                                classNames={{
+                                    label: 'text-black'
+                                }}
+                                radius='md'
+                                label='State'
+                                type="input"
+                                id="state"
+                                name="state"
+                                variant="bordered"
+                                color="primary"
+                                value={formData.state}
+                                errorMessage='Please enter a state'
+                                // TODO onChange={}
+                                // TODO onKeyDown={}
+                                // TODO isInvald={}
+                            />
+                            <Input 
+                                className="w-1/3 h-[50px] text-black shadow-md"
+                                classNames={{
+                                    label: 'text-black'
+                                }}
+                                radius='md'
+                                label='Zipcode'
+                                type="input"
+                                id="zipcode"
+                                name="zipcode"
+                                variant="bordered"
+                                color="primary"
+                                value={formData.zipcode}
+                                errorMessage='Please enter a zipcode'
                                 // TODO onChange={}
                                 // TODO onKeyDown={}
                                 // TODO isInvald={}
                             />
                         </div>
-                        <div className="pt-2 space-x-2">
-                            <Button as={Link} href="/dashboard/ridgeline" >Back</Button>
-                            <Button onPress={() => setStage(1)}>Next</Button>
-                        </div>
                     </div>
-                )
-            },
-            {
-                stage: 1,
-                id: 'location',
-                title: 'Where did the loss occurr?',
-                component: () => (
-                    <div className="space-y-4">
-                        <div>Where did the loss occurr?</div>
-                        <div className="space-y-4" >
+                    <div className="pt-2 space-x-2">
+                        <Button onPress={() => handlePrev(0)}>Back</Button>
+                        <Button onPress={() => handleNext(2)}>Next</Button>
+                    </div>
+                </div>
+            )
+        },
+        {
+            stage: 2,
+            id: 'ownerInfo',
+            title: 'Does the customer own the property?',
+            component: () => (
+                <div className="space-y-2">
+                    <div>Does the customer own the property?</div>
+                    <div>
+                        <Button isDisabled>No</Button>
+                        <Button onPress={() => setOwnProperty(true)}>Yes</Button>
+                    </div>
+                    {ownProperty ? (
+                        <div className="space-y-2">
+                            <div className="flex space-x-2">
+                                <Input 
+                                    className="w-1/2 h-[50px] text-black shadow-md"
+                                    classNames={{
+                                        label: 'text-black'
+                                    }}
+                                    radius='md'
+                                    label='First name'
+                                    type="input"
+                                    id="firstName"
+                                    name="firstName"
+                                    variant="bordered"
+                                    color="primary"
+                                    value={localForm.firstName}
+                                    errorMessage='Please enter your first name'
+                                    // TODO onChange={}
+                                    // TODO onKeyDown={}
+                                    // TODO isInvald={}
+                                />
+                                <Input 
+                                    className="w-1/2 h-[50px] text-black shadow-md"
+                                    classNames={{
+                                        label: 'text-black'
+                                    }}
+                                    radius='md'
+                                    label='Last name'
+                                    type="input"
+                                    id="lastName"
+                                    name="lastName"
+                                    variant="bordered"
+                                    color="primary"
+                                    value={localForm.lastName}
+                                    errorMessage='Please enter your last name'
+                                    // TODO onChange={}
+                                    // TODO onKeyDown={}
+                                    // TODO isInvald={}
+                                />
+                            </div>
                             <Input 
                                 className="w-full h-[50px] text-black shadow-md"
                                 classNames={{
                                     label: 'text-black'
                                 }}
                                 radius='md'
-                                label='Street Address'
-                                type="text"
-                                id="streetAddress"
-                                name="streetAddress"
+                                label='Phone number'
+                                type="input"
+                                id="clientPhone"
+                                name="clientPhone"
                                 variant="bordered"
                                 color="primary"
-                                value={formData.streetAddress}
-                                errorMessage='Please enter a street address'
+                                value={formData.clientPhone}
+                                errorMessage='Please enter your phone number'
                                 // TODO onChange={}
                                 // TODO onKeyDown={}
                                 // TODO isInvald={}
                             />
-                            <div className="flex gap-2">
-                                <Input 
-                                    className="w-1/3 h-[50px] text-black shadow-md"
-                                    classNames={{
-                                        label: 'text-black'
-                                    }}
-                                    radius='md'
-                                    label='City'
-                                    type="text"
-                                    id="city"
-                                    name="city"
-                                    variant="bordered"
-                                    color="primary"
-                                    value={formData.city}
-                                    errorMessage='Please enter a city'
-                                    // TODO onChange={}
-                                    // TODO onKeyDown={}
-                                    // TODO isInvald={}
-                                />
-                                <Input 
-                                    className="w-1/3 h-[50px] text-black shadow-md"
-                                    classNames={{
-                                        label: 'text-black'
-                                    }}
-                                    radius='md'
-                                    label='State'
-                                    type="text"
-                                    id="state"
-                                    name="state"
-                                    variant="bordered"
-                                    color="primary"
-                                    value={formData.state}
-                                    errorMessage='Please enter a state'
-                                    // TODO onChange={}
-                                    // TODO onKeyDown={}
-                                    // TODO isInvald={}
-                                />
-                                <Input 
-                                    className="w-1/3 h-[50px] text-black shadow-md"
-                                    classNames={{
-                                        label: 'text-black'
-                                    }}
-                                    radius='md'
-                                    label='Zipcode'
-                                    type="text"
-                                    id="zipcode"
-                                    name="zipcode"
-                                    variant="bordered"
-                                    color="primary"
-                                    value={formData.zipcode}
-                                    errorMessage='Please enter a zipcode'
-                                    // TODO onChange={}
-                                    // TODO onKeyDown={}
-                                    // TODO isInvald={}
-                                />
-                            </div>
+                            <Input 
+                                className="w-full h-[50px] text-black shadow-md"
+                                classNames={{
+                                    label: 'text-black'
+                                }}
+                                radius='md'
+                                label='Email'
+                                type="input"
+                                id="clientEmail"
+                                name="clientEmail"
+                                variant="bordered"
+                                color="primary"
+                                value={formData.clientEmail}
+                                errorMessage='Please enter your email'
+                                // TODO onChange={}
+                                // TODO onKeyDown={}
+                                // TODO isInvald={}
+                            />
                         </div>
-                        <div className="pt-2 space-x-2">
-                            <Button onPress={() => setStage(0)}>Back</Button>
-                            <Button onPress={() => setStage(2)}>Next</Button>
-                        </div>
+                        ): (
+                            <></>
+                        )
+                    }
+                    <div className="pt-2 space-x-2">
+                        <Button onPress={() => handlePrev(1)}>Back</Button>
+                        <Button onPress={() => handleNext(3)}>Next</Button>
                     </div>
-                )
-            },
-            {
-                stage: 2,
-                id: 'ownerInfo',
-                title: 'Does the customer own the property?',
-                component: () => (
-                    <div className="space-y-2">
-                        <div>Does the customer own the property?</div>
-                        <div>
-                            <Button isDisabled>No</Button>
-                            <Button onPress={() => setOwnProperty(true)}>Yes</Button>
-                        </div>
-                        {ownProperty ? (
-                            <div className="space-y-2">
+                </div>
+            )
+        },
+        {
+            stage: 3,
+            id: 'propertyType',
+            title: 'What is the type of property?',
+            component: () => (
+                <div>
+                    <div>What is the type of property?</div>
+                    <div>
+                    <CheckboxGroup
+                    className="gap-1"
+                    label='Select scope'
+                    orientation="horizontal"
+                    errorMessage='Please select the property type'
+                    //isInvalid={errors === null ? false : errors.field === 'scope' ? true : false}
+                >
+                    {projectType.map((type: string) => (
+                        <CustomCheckbox
+                        key={type}
+                        value={type}
+                        //isSelected={selectedValuesScope.has(scope)}
+                        //onChange={(isSelected) => handleCheckChangeScope(scope, isSelected)}
+                    >
+                            {type}
+                        </CustomCheckbox>
+                    ))}
+                </CheckboxGroup>
+                    </div>
+                    <div className="pt-2 space-x-2">
+                        <Button onPress={() => handlePrev(2)}>Back</Button>
+                        <Button onPress={() => handleNext(5)}>Next</Button>
+                    </div>
+                </div>
+            )
+        },
+        {
+            stage: 4, //TODO FIGURE OUT --------------------------------
+            id: 'insuranceUsage',
+            title: 'Are you using insurance?',
+            component: () => (
+                <div>
+                    <div>Are you using insurance? LEAVE THIS OFF AND SKIP THIS STAGE</div>
+                    How did you get here?
+                    <div>Residential</div>
+                    <div>Commercial</div>
+                    <div>Industrial</div>
+                    <Button onPress={() => handlePrev(3)}>Back</Button>
+                </div>
+            )
+        },
+        {
+            stage: 5,
+            id: 'policyInfo',
+            title: 'Do you have your policy information?',
+            component: () => (
+                <div className="space-y-4">
+                    <div>Do you have your policy information?</div>
+                    <div className="space-y-4 space-x-2">
+                        <Button isDisabled>No</Button>
+                        <Button onPress={() => setPolicyInfo(true)}>Yes</Button>
+                    </div>
+                    <div>
+                        {policyInfo ? (
+                            <div className="space-y-4">
+                                <Autocomplete
+                                    allowsCustomValue={true}
+                                    className=""
+                                    defaultItems={insurers}
+                                    label='Select the insurance carrier'
+                                    variant="bordered"
+                                    color="primary"
+                                    onSelectionChange={(id) => setFormData({...formData, carrier: id.toString()})}
+                                >
+                            {(item) => <AutocompleteItem key={item.key}>{item.label}</AutocompleteItem>}
+                        </Autocomplete>
                                 <div className="flex space-x-2">
                                     <Input 
-                                        className="w-1/2 h-[50px] text-black shadow-md"
+                                        className="w-1/2 h-[50px] text-black"
                                         classNames={{
                                             label: 'text-black'
                                         }}
                                         radius='md'
-                                        label='First name'
-                                        type="text"
-                                        id="firstName"
-                                        name="firstName"
+                                        label='Policy start date'
+                                        type="input"
+                                        id="policyStart"
+                                        name="policyStart"
                                         variant="bordered"
                                         color="primary"
-                                        value={localForm.firstName}
-                                        errorMessage='Please enter your first name'
+                                        value={formData.policyStart}
+                                        errorMessage='Please enter a valid start date'
+                                        description='Format: MM/DD/YYYY'
                                         // TODO onChange={}
                                         // TODO onKeyDown={}
                                         // TODO isInvald={}
                                     />
                                     <Input 
-                                        className="w-1/2 h-[50px] text-black shadow-md"
+                                        className="w-1/2 h-[50px] text-black"
                                         classNames={{
                                             label: 'text-black'
                                         }}
                                         radius='md'
-                                        label='Last name'
-                                        type="text"
-                                        id="lastName"
-                                        name="lastName"
+                                        label='Policy end date'
+                                        type="input"
+                                        id="policyExpiration"
+                                        name="policyExpiration"
                                         variant="bordered"
                                         color="primary"
-                                        value={localForm.lastName}
-                                        errorMessage='Please enter your last name'
+                                        value={formData.policyExpiration}
+                                        errorMessage='Please enter a valid expiration date'
+                                        description='Format: MM/DD/YYYY'
                                         // TODO onChange={}
                                         // TODO onKeyDown={}
                                         // TODO isInvald={}
                                     />
                                 </div>
-                                <Input 
-                                    className="w-full h-[50px] text-black shadow-md"
-                                    classNames={{
-                                        label: 'text-black'
-                                    }}
-                                    radius='md'
-                                    label='Phone number'
-                                    type="text"
-                                    id="clientPhone"
-                                    name="clientPhone"
-                                    variant="bordered"
-                                    color="primary"
-                                    value={formData.clientPhone}
-                                    errorMessage='Please enter your phone number'
-                                    // TODO onChange={}
-                                    // TODO onKeyDown={}
-                                    // TODO isInvald={}
-                                />
-                                <Input 
-                                    className="w-full h-[50px] text-black shadow-md"
-                                    classNames={{
-                                        label: 'text-black'
-                                    }}
-                                    radius='md'
-                                    label='Email'
-                                    type="text"
-                                    id="clientEmail"
-                                    name="clientEmail"
-                                    variant="bordered"
-                                    color="primary"
-                                    value={formData.clientEmail}
-                                    errorMessage='Please enter your email'
-                                    // TODO onChange={}
-                                    // TODO onKeyDown={}
-                                    // TODO isInvald={}
-                                />
                             </div>
-                            ): (
+                        )
+                        :(
+                            <></>
+                        )}
+                        
+                    </div>
+                    <div className="pt-2 space-x-2">
+                        <Button onPress={() => handlePrev(3)}>Back</Button>
+                        <Button onPress={() => handleNext(6)}>Next</Button>
+                    </div>
+                </div>
+            )
+        },
+        {
+            stage: 6,
+            id: 'claimInfo',
+            title: 'Have you filed a claim?',
+            component: () => (
+                <div className="space-y-4">
+                    <div>Have you filed a claim?</div>
+                        <div className="space-y-4 space-x-2">
+                            <Button isDisabled>No</Button>
+                            <Button onPress={() => setClaim(true)}>Yes</Button>
+                        </div>
+                    <div>
+                        {claim ? (
+                            <Input 
+                                className="w-1/2 h-[50px] text-black"
+                                classNames={{
+                                    label: 'text-black'
+                                }}
+                                radius='md'
+                                label='Claim number'
+                                type="claimNumber"
+                                id="claimNumber"
+                                name="claimNumber"
+                                variant="bordered"
+                                color="primary"
+                                value={formData.claimNumber}
+                                errorMessage='Please enter a valid claimNumber'
+                                onChange={handleInputChange}
+                                // TODO onKeyDown={}
+                                isInvalid={errors === null ? false : errors.field === 'claimNumber' ? true : false}
+                            />
+                        ) : (
+                            <></>
+                        )}
+                    </div>
+                    <div className="pt-2 space-x-2">
+                        <Button onPress={() => handlePrev(5)}>Back</Button>
+                        <Button onPress={() => handleNext(7)}>Next</Button>
+                    </div>
+                </div>
+            )
+        },
+        {
+            stage: 7,
+            id: 'catReference',
+            title: 'Was this due to a catastrophe?',
+            component: () => (
+                <div className="space-y-4">
+                    <div>Was this due to a catastrophe?</div>
+                        <div className="space-y-4 space-x-2">
+                            <Button isDisabled>No</Button>
+                            <Button onPress={() => setCatastrophe(true)}>Yes</Button>
+                        </div>
+                        <div>
+                            {catastrophe ? (
+                                <div>
+                                    <Input 
+                                        className="w-full h-[50px] text-black"
+                                        classNames={{
+                                            label: 'text-black'
+                                        }}
+                                        radius='md'
+                                        label='Enter catastrophe'
+                                        type="catReference"
+                                        id="catReference"
+                                        name="catReference"
+                                        variant="bordered"
+                                        color="primary"
+                                        value={formData.catReference}
+                                        errorMessage='Please enter a valid catastrophe?'
+                                        onChange={handleInputChange}
+                                        // TODO onKeyDown={}
+                                        isInvalid={errors === null ? false : errors.field === 'catReference' ? true : false}
+                                    />
+                                </div>
+                            ) : (
                                 <></>
-                            )
-                        }
-                        <div className="pt-2 space-x-2">
-                            <Button onPress={() => setStage(1)}>Back</Button>
-                            <Button onPress={() => setStage(3)}>Next</Button>
+                            )}
                         </div>
+                    <div className="pt-2 space-x-2">
+                        <Button onPress={() => handlePrev(6)}>Back</Button>
+                        <Button onPress={() => handleNext(8)}>Next</Button>
                     </div>
-                )
-            },
-            {
-                stage: 3,
-                id: 'propertyType',
-                title: 'What is the type of property?',
-                component: () => (
+                </div>
+            )
+        },
+        {
+            stage: 8,
+            id: 'developmentFields',
+            title: 'Development fields',
+            component: () => (
+                <div>
+                    <div>Development fields for manipulation and testing of data</div>
+                    <Dropdown>
+                    <DropdownTrigger>
+                        <Button color="success">
+                            {formData.stage || "Select stage"}
+                        </Button>
+                    </DropdownTrigger>
+                    <DropdownMenu
+                    className=" border-2 border-recovernavy rounded-md"
+                        //style={{background: '#09090b', border: '5px solid #090f21', borderRadius: '5px'}}
+                        //onAction={(key) => handleStageChange(key.toString())}
+                    >
+                        {projStage.map((stage: string) => (
+                            <DropdownItem
+                                key={stage}
+                            >
+                                {stage}
+                            </DropdownItem>
+                        ))}
+                    </DropdownMenu>
+                </Dropdown>
                     <div>
-                        <div>What is the type of property?</div>
-                        <div>Residential</div>
-                        <div>Commercial</div>
-                        <div>Industrial</div>
+                    <CheckboxGroup
+                        className="gap-1"
+                        label='Select scope'
+                        orientation="horizontal"
+                        errorMessage='Please select the scope'
+                        isInvalid={errors === null ? false : errors.field === 'scope' ? true : false}
+                    >
+                        {scope.map((scope: string) => (
+                            <CustomCheckbox
+                            key={scope}
+                            value={scope}
+                            //isSelected={selectedValuesScope.has(scope)}
+                            //onChange={(isSelected) => handleCheckChangeScope(scope, isSelected)}
+                        >
+                                {scope}
+                            </CustomCheckbox>
+                        ))}
+                    </CheckboxGroup>
                     </div>
-                )
-            },
-            {
-                stage: 4,
-                id: 'insuranceUsage',
-                title: 'Are you using insurance?',
-                component: () => (
-                    <div>
-                        <div>Are you using insurance? LEAVE THIS OFF AND SKIP THIS STAGE</div>
-                        <div>Residential</div>
-                        <div>Commercial</div>
-                        <div>Industrial</div>
+                    {/* After this we will send the data but use the 200 response for assigning users (use daves assign users component) */}
+                    <div className="pt-2 space-x-2">
+                        <Button onPress={() => handlePrev(7)}>Back</Button>
+                        <Button onPress={() => handleNext(0)}>To start</Button>
                     </div>
-                )
-            },
-            {
-                stage: 5,
-                id: 'policyInfo',
-                title: 'Do you have your policy information?',
-                component: () => (
-                    <div>
-                        <div>Do you have your policy information?</div>
-                        <div>No (Disabled)</div>
-                        <div>Yes</div>
-                        <div>If yes
-                            <div>Carrier</div>
-                            <div>Policy Start Date</div>
-                            <div>Policy End Date</div>
-                        </div>
-                    </div>
-                )
-            },
-            {
-                stage: 6,
-                id: 'claimInfo',
-                title: 'Have you filed a claim?',
-                component: () => (
-                    <div>
-                        <div>Have you filed a claim?</div>
-                        <div>No (Disabled)</div>
-                        <div>Yes</div>
-                        <div>If yes
-                            <div>Claim number</div>
-                        </div>
-                    </div>
-                )
-            },
-            {
-                stage: 7,
-                id: 'catReference',
-                title: 'Was this due to a catastrophe?',
-                component: () => (
-                    <div>
-                        <div>Was this due to a catastrophe?</div>
-                        <div>No</div>
-                        <div>Yes</div>
-                        <div>If yes
-                            <div>Cat reference</div>
-                        </div>
-                    </div>
-                )
-            },
-            {
-                stage: 8,
-                id: 'developmentFields',
-                title: 'Development fields',
-                component: () => (
-                    <div>
-                        <div>Development fields for manipulation and testing of data</div>
-                        <div>Set stage</div>
-                        <div>Set scope</div>
-                        After this we will send the data but use the 200 response for assigning users (use daves assign users component)
-                    </div>
-                )
-            },
-        ];
-
-
-
+                </div>
+            )
+        },
+    ];
 
     return (
-        <div className="flex flex-col justify-center items-center min-h-full">
-            {steps[stage].component()}
+    
+        <div className="flex justify-center items-center h-full -mt-12 overflow-hidden">
+            <div
+                className={`
+                    transition-all
+                    duration-250
+                    ease-in-out
+                    ${getAnimationClasses()}
+                `}
+            >
+                {steps[stage].component()}
+            </div>
         </div>
     )
 }
