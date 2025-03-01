@@ -25,7 +25,7 @@ export const projectsApi = {
 
   async getAllProjects(): Promise<ShortProject[]> {
     try {
-      const response = await apiClient.get('/projects/get-all');
+      const response = await apiClient.get('/projects');
       console.log('DATA RESPONSE.DATA',response.data.projects);
       return response.data.projects; // Extract the data from the axios response
       

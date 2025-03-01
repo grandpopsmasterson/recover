@@ -68,12 +68,12 @@ const UserDropdown = memo(() => {
     };
 
     return (
-    <Dropdown placement="bottom-end">
+    <Dropdown>
         <DropdownTrigger>
-            <svg fill="none" height="36" viewBox="0 0 32 32" width="36">
+            <svg fill="none" height="32" viewBox="0 0 24 24" width="32">
                 <path
                     d="M4 6H20M4 12H20M4 18H20" 
-                    stroke="#7828c8" 
+                    stroke="background" 
                     strokeWidth="2" 
                     strokeLinecap="round" 
                     strokeLinejoin="round"
@@ -113,51 +113,42 @@ export default function DashboardNavBar() {
     const isActive = useCallback((path:string) => pathname === path, [pathname]);
 
     return (
-        <div className="w-full bg-recovernavy">
-            <Navbar maxWidth="full">
+        <Navbar maxWidth="full" className="bg-recovernavy">
+            <NavbarContent justify="start">
                 <NavbarBrand>                
                     <NextLink href="/#" passHref>
                         <div className="grid grid-cols-2"
                             onClick={() => router.push('/')}
                         >
                             <RecoverLogo />
-                            <p className="font-bold text-inherit text-white pt-2">RECOVER</p>
+                            <p className="font-sans text-white pt-2">RECOVER</p>
                         </div>
                     </NextLink>
                 </NavbarBrand>
 
                 <NavbarContent className="hidden sm:flex gap-4" justify="center">
                     <NavbarItem>
-                        <NavLink href="/dashboard" isActive={isActive('/dashboard')}>
+                        <Link href="/dashboard" className="text-white font-sans">
                             Dashboard 
-                        </NavLink>
+                        </Link>
                     </NavbarItem>
                 </NavbarContent>
-
-            <NavbarContent as="div" justify="end">
-                <div>
-                <Button 
-                    onPress={() => router.push('/tech-dash')} 
-                    color="secondary"
-                    className="mr-4"
-                    >
+            </NavbarContent>
+            <NavbarContent justify="end">
+                <NavbarItem>
+                    <Link className="text-white font-sans" href="/tech-dash">
                         Technician View
-                    </Button>
-                    </div>
-                    <div>
-                    <Button 
-                        onPress={() => router.push('./create-project')} 
-                        color="secondary"
-                        className="mr-4"
-                        >
+                    </Link>
+                </NavbarItem>
+                <NavbarItem>
+                    <Button as={Link} color="default" href="./create-project" variant="flat">
                         Create Project
                     </Button>
-                </div>
-                </NavbarContent>
-                <NavbarContent className="flex items-center h-full" justify="end">
-                <UserDropdown />
+                </NavbarItem>
+                <NavbarItem className="self-center">
+                    <UserDropdown />
+                </NavbarItem> 
             </NavbarContent>
         </Navbar>
-    </div>
     )
 }

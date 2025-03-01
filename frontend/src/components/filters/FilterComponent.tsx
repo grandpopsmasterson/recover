@@ -42,118 +42,120 @@ export default function FilterComponent({
     
 
     return (
-        <div>
-            <div className="h-full w-[20rem] pt-2 flex">
-                <Autocomplete
-                    onSelectionChange={(value) => handleSelectionChange(value as string)}
-                    inputValue={inputValue}
-                    onInputChange={(value) => setInputValue(value)}
-                    aria-label="Select an employee"
-                    className='p-4'
-                    classNames={{
-                        base: "max-w-xs",
-                        listboxWrapper: "max-h-[320px]",
-                        selectorButton: "text-default-500",
-                    }}
-                    inputProps={{
-                        classNames: {
-                            input: "ml-1",
-                            inputWrapper: "h-[48px]",
-                        },
-                    }}
-                    listboxProps={{
-                        hideSelectedIcon: true,
-                        itemClasses: {
-                            base: [
-                                "rounded-medium",
-                                "text-black",
-                                "transition-opacity",
-                                "data-[hover=true]:text-purple-500",
-                                "dark:data-[hover=true]:bg-default-50",
-                                "data-[pressed=true]:opacity-70",
-                                "data-[hover=true]:bg-default-200",
-                                "data-[selectable=true]:focus:bg-default-100",
-                                "data-[focus-visible=true]:ring-default-500",
-                            ],
-                        },
-                    }}
-                    placeholder="Enter filters"
-                    popoverProps={{
-                        offset: 10,
-                        classNames: {
-                            base: "rounded-large",
-                            content: "p-1 border-small border-default-100 bg-background",
-                        },
-                    }}
-                    radius="full"
-                    startContent={<SearchIcon className="text-default-400" size={20} strokeWidth={2.5} />}
-                    variant="bordered"
-                >
-                    <AutocompleteSection showDivider title='Group'>
-                        {filters
-                            .filter(item => item.group === 'Group')
-                            .map((item) => (
-                                <AutocompleteItem 
-                                    key={item.name} 
-                                    textValue={item.name}
-                                >
-                                    <div className="flex justify-between items-center">
-                                        <div className="flex gap-2 items-center">
-                                            <div className="flex flex-col">
-                                                <span className="text-small">{item.name}</span>
+        <div className="w-full">
+            <div className="flex items-center justify-between bg-white p-4 rounded-lg shadow">
+                {/* Left side group - Search and filters */}
+                <div className="flex items-center gap-4 bg-white flex-grow">
+                    <Autocomplete
+                        onSelectionChange={(value) => handleSelectionChange(value as string)}
+                        inputValue={inputValue}
+                        onInputChange={(value) => setInputValue(value)}
+                        aria-label="Select an employee"
+                        classNames={{
+                            base: "max-w-xs",
+                            listboxWrapper: "max-h-[320px]",
+                            selectorButton: "text-default-500",
+                        }}
+                        inputProps={{
+                            classNames: {
+                                input: "ml-1",
+                                inputWrapper: "h-[48px]",
+                            },
+                        }}
+                        listboxProps={{
+                            hideSelectedIcon: true,
+                            itemClasses: {
+                                base: [
+                                    "rounded-medium",
+                                    "text-black",
+                                    "transition-opacity",
+                                    "data-[hover=true]:text-purple-500",
+                                    "dark:data-[hover=true]:bg-default-50",
+                                    "data-[pressed=true]:opacity-70",
+                                    "data-[hover=true]:bg-default-200",
+                                    "data-[selectable=true]:focus:bg-default-100",
+                                    "data-[focus-visible=true]:ring-default-500",
+                                ],
+                            },
+                        }}
+                        placeholder="Enter filters"
+                        popoverProps={{
+                            offset: 10,
+                            classNames: {
+                                base: "rounded-large",
+                                content: "p-1 border-small border-default-100"
+                            },
+                        }}
+                        radius="full"
+                        startContent={<SearchIcon className="text-default-400" size={20} strokeWidth={2.5} />}
+                        variant="bordered"
+                    >
+                        <AutocompleteSection showDivider title='Group'>
+                            {filters
+                                .filter(item => item.group === 'Group')
+                                .map((item) => (
+                                    <AutocompleteItem 
+                                        key={item.name} 
+                                        textValue={item.name}
+                                    >
+                                        <div className="flex justify-between items-center">
+                                            <div className="flex gap-2 items-center">
+                                                <div className="flex flex-col">
+                                                    <span className="text-small">{item.name}</span>
+                                                </div>
                                             </div>
                                         </div>
-                                    </div>
-                                </AutocompleteItem>
-                            ))}
-                    </AutocompleteSection>
-                    
-                    <AutocompleteSection showDivider title='Values'>
-                        {filters
-                            .filter(item => item.group !== 'Group')
-                            .map((item) => (
-                                <AutocompleteItem 
-                                    key={item.name} 
-                                    textValue={item.name}
-                                >
-                                    <div className="flex justify-between items-center">
-                                        <div className="flex gap-2 items-center">
-                                            <div className="flex flex-col">
-                                                <span className="text-small">{item.name}</span>
-                                                <span className="text-xs">{item.group}</span>
+                                    </AutocompleteItem>
+                                ))}
+                        </AutocompleteSection>
+                        
+                        <AutocompleteSection showDivider title='Values'>
+                            {filters
+                                .filter(item => item.group !== 'Group')
+                                .map((item) => (
+                                    <AutocompleteItem 
+                                        key={item.name} 
+                                        textValue={item.name}
+                                    >
+                                        <div className="flex justify-between items-center">
+                                            <div className="flex gap-2 items-center">
+                                                <div className="flex flex-col">
+                                                    <span className="text-small">{item.name}</span>
+                                                    <span className="text-xs">{item.group}</span>
+                                                </div>
                                             </div>
                                         </div>
-                                    </div>
-                                </AutocompleteItem>
-                            ))}
-                    </AutocompleteSection>
-                </Autocomplete>
-
-                <div className='space-x-2 space-y-2'>
-                    {selectedFilters.map((filter) => (
-                        <Chip key={filter} onClose={() => removeFilter(filter)}>{filter}</Chip>
-                    ))}
+                                    </AutocompleteItem>
+                                ))}
+                        </AutocompleteSection>
+                    </Autocomplete>
+    
+                    <div className="flex flex-wrap gap-2">
+                        {selectedFilters.map((filter) => (
+                            <Chip key={filter} onClose={() => removeFilter(filter)}>{filter}</Chip>
+                        ))}
+                    </div>
                 </div>
-
-                <div>
+    
+                {/* Right side group - Display type buttons */}
+                <div className="flex gap-2">
                     <Button 
-                        className='p-1 m-0 gap-0 !min-w-0 w-[25px] h-[25px] bg-red-400 rounded-md' 
+                        className="p-1 m-0 gap-0 min-w-0 h-8 aspect-3:4 rounded-md hover:bg-slate-700" 
+                        color="primary"
                         onPress={() => setDisplayType('ListCard')}
                     >
                         <ListCardDisplay />
                     </Button>
-                </div>
-                <div>
                     <Button 
-                        className='p-1 m-0 gap-0 !min-w-0 w-[25px] h-[25px] bg-red-400 rounded-md' 
+                        className="p-1 m-0 gap-0 min-w-0 h-8 aspect-3:4 rounded-md hover:bg-slate-700" 
+                        color="primary"
                         onPress={() => setDisplayType('Card')}
                     >
                         <CardDisplay />
                     </Button>
-                </div>
-                <div>
                     <Button 
-                        className='p-1 m-0 gap-0 !min-w-0 w-[25px] h-[25px] bg-red-400 rounded-md' 
+                        className="p-1/2 pl-1 gap-0 min-w-0 h-8 aspect-3:4 rounded-md hover:bg-slate-700" 
+                        color="primary"
                         onPress={() => setDisplayType('List')}
                     >
                         <ListDisplay />

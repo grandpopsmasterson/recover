@@ -13,10 +13,11 @@ export interface User {
 }
 
 interface AssignUserBtnProps {
-  projectId: string; // Pass projectId from parent component
+  projectId: string;
+  className?: string; // Pass projectId from parent component
 }
 
-const AssignUserBtn: React.FC<AssignUserBtnProps> = ({ projectId }) => {
+const AssignUserBtn: React.FC<AssignUserBtnProps> = ({ projectId, className = '' }) => {
   const [users, setUsers] = useState<User[]>([]);
   const [isOpen, setIsOpen] = useState(false);
   const [loading, setLoading] = useState<boolean>(false);
@@ -67,12 +68,9 @@ const AssignUserBtn: React.FC<AssignUserBtnProps> = ({ projectId }) => {
   return (
     <>
       {error && <div className="text-red-500">{error}</div>}
-      {loading && <div>Loading...</div>}
+      {/* {loading && <div>Loading...</div>} */}
       <Select
-        classNames={{
-          base: "max-w-xs",
-          trigger: "min-h-12 py-2",
-        }}
+        className={`${className}`}
         isOpen={isOpen}
         onOpenChange={(open: boolean) => {
           setIsOpen(open);
@@ -82,9 +80,8 @@ const AssignUserBtn: React.FC<AssignUserBtnProps> = ({ projectId }) => {
         }}
         onSelectionChange={handleSelectionChange} // Directly pass the selected keys
         isMultiline={true}
-        label="Assigned to"
         labelPlacement="outside"
-        placeholder="Select a user"
+        placeholder="Assign a user"
         items={users}
         renderValue={(items) => {
             return (
@@ -110,7 +107,7 @@ const AssignUserBtn: React.FC<AssignUserBtnProps> = ({ projectId }) => {
           </SelectItem>
         )}
       </Select>
-      <Button onPress={() => handleSubmit([])}>Assign Users</Button> 
+      {/* <Button onPress={() => handleSubmit([])}>Assign Users</Button>  */}
     </>
   );
 };

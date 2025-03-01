@@ -67,6 +67,10 @@ public class ProjectService {
         
         return projectMapper.toShortDto(project);
     }
+    public Project findById(Long projectId){
+        return projectRepository.findById(projectId)
+        .orElseThrow(() -> new ResourceNotFoundException("Project not found with id: " + projectId));
+    }
     
     public List<ProjectBucketDto> getGroupedProjects(String groupBy) {
         List<Project> projects = projectRepository.findAll();
