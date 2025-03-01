@@ -25,21 +25,21 @@ const ProjectGroupCard: React.FC<ListBucket> = ({
 
   return (
 
-    <div className="grid columns-1 gap-2 bg-white w-3/4"> 
+    <div className="grid columns-1 gap-2 bg-white w-full"> 
 
-      <div className="border-black rounded-lg p-4 ">
+      <div className="border-black rounded-lg p-4 shadow-md">
 
         {/* card title + icons section */}
-        <div className="grid grid-cols-[auto_auto_1fr] items-center gap-4 w-2/5">
+        <div className="grid grid-cols-[auto_auto_1fr] items-center gap-4 w-1/3">
           <div className={`text-lg font-semibold text-${getStatusColor()}`}>{name}</div>
-          <p className='text-md text-slate-500'>{total}</p>
-          <div className={`flex h-7 items-center border-2 px-4 rounded-full gap-1 w-full border-${getStatusColor()}`}>
+          <p className='text-[15px] text-slate-700'>{total}</p>
+          <div className={`flex h-7 items-center mx-auto border-2 px-4 rounded-full gap-1 border-${getStatusColor()}`}>
             <Warning />
-            <p className="text-md">{yellowTotal}</p>
+            <p className="text-[15px]">{yellowTotal}</p>
             <CircleX />
-            <p className="text-md">{redTotal}</p>
+            <p className="text-[15px]">{redTotal}</p>
             <CircleCheck />
-            <p className="text-md">{greenTotal}</p>
+            <p className="text-[15px]">{greenTotal}</p>
         </div>
 
         </div>

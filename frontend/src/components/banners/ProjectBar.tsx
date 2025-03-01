@@ -1,10 +1,12 @@
-import { LongProject } from '@/types/project'
 import React from 'react'
+import { LongProject, ShortProject } from '@/types/project'
+import { Plus } from 'lucide-react'
 import { Image } from '@heroui/react'
 import { useParams } from 'next/navigation'
 import AssignUserBtn from '../buttons/AssignButton'
+import PhotoStack from '../buttons/PhotoStack'
 
-export const ProjectBar = ({clientName, clientEmail, clientPhone, houseImage, zipcode, streetAddress, city, state, stage, projectType }: LongProject) => {
+export const ProjectBar = ({clientName, houseImage, streetAddress, city, state, stage }: LongProject) => {
 
     const params = useParams();
         const projectId = params.id as string;
@@ -13,60 +15,55 @@ export const ProjectBar = ({clientName, clientEmail, clientPhone, houseImage, zi
             return <div>Loading...</div>;
         }
 
-    const stageProcess = () => {
-        switch (stage) {
-            case "PENDING_SALE":
-                return (<span className="text-gray-400 text-sm">PENDING SALE</span>)
-                break;
-            default:
-                return (<span className="text-gray-400 text-sm">Error</span>)
-        }
-    }
+    
+    
 
     const defaultImage = '/house1.png';
+    const thumbnailStyles = "aspect-[1] object-cover"
 
     return (
-        <div className="grid grid-cols-4 grid-rows-3 gap-4  w-full py-4 pl-4 pr-8" style={{ height: '240px',  gridTemplateRows: '2fr 1.5fr 2fr' , backgroundColor: '#090f21'}}>
-                        <div className=" col-span-1 flex justify-center items-center" style={{ gridRow: '1/4'}}>
-                            <Image
-                                alt='house picture'
-                                className="rounded-lg -z-5"
-                                src={houseImage || defaultImage}
-                                width={350}
-                            />
-                        </div>
-                        <div className="col-span-1 row-span-1 w-full h-auto">
-                            <p className="text-gray-400">{streetAddress}</p>
-                            <p className="text-gray-400">{`${city}, ${state} ${zipcode}`}</p>
-                        </div>
-
-
-                        {/* Spacing Div -- possibly flags
-                        <div className="flex justify-center">
-                        <div className="bg-[#090F21] " style={{width: '75%'}}></div>
-                        </div> */}
-
-                        <div className="col-span-1 row-span-1">
-                            {stageProcess()}
-                            <p className="text-purple-500 font-semibold mt-2">{projectType}</p>
-                        </div>
-
-                        <div className="!col-start-4 col-span-1 row-start-1 flex flex-col justify-center items-center">
-                            <button className="bg-purple-500 font-semibold w-3/4 h-full text-2xl px-2 rounded-xl hover:bg-purple-700 ease-in-out transition-all duration-200">
-                                Continue progress
-                            </button>
-                            <AssignUserBtn projectId={projectId} />
-                        </div>
-
-                        <div className='col-start-2 row-start-2' >
-                            <p className="text-gray-400">{clientName}</p>
-                            <p className="text-gray-400">{clientPhone}</p>    
-                            <p className="text-gray-400">{clientEmail}</p>    
-                        </div>
-                        {/* Spacing Empty Divs */}
-                        <div className='col-span-1 row-start-3' />
-                        <div className='col-span-1 row-start-3' />
-
+        <div className="grid grid-cols-[25vw,25vw,auto] gap-4 p-6 bg-white max-w-full m-4 shadow-[0_5px_15px_rgba(0,0,0,0.08)] border-1 rounded-2xl relative">
+            {/* first column, house photos grid */}
+            <div className="grid grid-cols-2 gap-4">
+                <div className="col-start-1">
+                    <Image
+                        alt="house picture"
+                        className="aspect-[3/2] object-cover"
+                        src={houseImage || defaultImage}
+                    />
+                </div>
+                <div className="col-start-2 pr-6">
+                    <div className="grid grid-cols-2 gap-3">
+                        <Image
+                            className={thumbnailStyles}
+                            alt="house picture"
+                            src={houseImage || defaultImage}
+                        />
+                        <PhotoStack 
+                            className={thumbnailStyles}
+                            count={12} 
+                            navigationPath="./photos"
+                        />
+                        <button className="col-span-2 border-blue-400 border-1 w-full py-3 font-sans rounded-xl hover:bg-blue-200 transition-all duration-200">
+                            See Photos
+                        </button>
                     </div>
+                </div>
+            </div>
+            <div className="text-h1 font-thin">
+                <span className="text-h1">{streetAddress}</span><br />
+                <span className="text-h2">{clientName}</span>
+            </div>
+
+            <div className="col-start-3 flex flex-row gap-5 items-start">
+            
+                <AssignUserBtn projectId={projectId} className="w-1/2"/>
+                <button className="border-1 border-blue-400 text-gray-500 shadow-sm rounded-xl px-6 py-2 font-sans ">
+                    Continue progress
+                </button>
+                
+                
+            </div>
+        </div>
     )
 }

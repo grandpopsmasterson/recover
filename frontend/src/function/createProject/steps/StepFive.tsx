@@ -2,7 +2,7 @@ import { StepFiveProps } from "@/types/createProject";
 import { Button, Dropdown, DropdownItem, DropdownMenu, DropdownTrigger } from "@heroui/react";
 
 
-export default function StepFive({projStage, formData, handleStageChange}: StepFiveProps) {
+export default function StepFive({projectStage, formData, handleStageChange}: StepFiveProps) {
     
     return (
         <div>
@@ -17,7 +17,7 @@ export default function StepFive({projStage, formData, handleStageChange}: StepF
                         style={{background: '#09090b', border: '5px solid #090f21', borderRadius: '5px'}}
                         onAction={(key) => handleStageChange(key.toString())}
                     >
-                        {projStage.map((stage: string) => (
+                        {projectStage.map((stage: string) => (
                             <DropdownItem
                                 key={stage}
                             >

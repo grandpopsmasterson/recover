@@ -1,11 +1,13 @@
 export interface SignupRequest {
-    email: string;
-    username: string;
-    firstName: string;
-    lastName: string;
-    password: string;
-    companyId?: string; // number?
-    userType: string;
+    user: {
+        email: string;
+        username: string;
+        firstName: string;
+        lastName: string;
+        password: string;
+        companyId?: string; // number?
+        globalRole: string;
+    }
 }
 
 export interface SignupResponse { 
@@ -39,6 +41,6 @@ export interface StepThreeProps {
     handleInputChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
     handleRoleChange: (role: string) => void;
     errors: SignUpError | null;
-    userType: string[];
+    globalRole: string[];
     handleKeyDown: (e: React.KeyboardEvent<HTMLInputElement>) => void;
 }
