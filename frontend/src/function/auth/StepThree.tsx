@@ -2,7 +2,7 @@ import React from 'react';
 import { Input, Dropdown, DropdownTrigger, DropdownMenu, DropdownItem, Button } from "@heroui/react";
 import type { StepThreeProps } from '../../types/signup';
 
-export default function StepThree({formData, handleInputChange, handleRoleChange, errors, userType, handleKeyDown}: StepThreeProps) {
+export default function StepThree({formData, handleInputChange, handleRoleChange, errors, globalRole, handleKeyDown}: StepThreeProps) {
 
     return (
     <div>
@@ -21,7 +21,7 @@ export default function StepThree({formData, handleInputChange, handleRoleChange
                 name='firstName'
                 variant='bordered'
                 color='primary'
-                value={formData.firstName}
+                value={formData.user.firstName}
                 onChange={handleInputChange}
                 onKeyDown={handleKeyDown}
                 errorMessage="Please enter your first name"
@@ -39,7 +39,7 @@ export default function StepThree({formData, handleInputChange, handleRoleChange
                 name='lastName'
                 variant='bordered'
                 color='primary'
-                value={formData.lastName}
+                value={formData.user.lastName}
                 onChange={handleInputChange}
                 onKeyDown={handleKeyDown}
                 errorMessage='Please enter your last name'
@@ -71,7 +71,7 @@ export default function StepThree({formData, handleInputChange, handleRoleChange
             <Dropdown className='bg-slate-500'>
                 <DropdownTrigger>
                     <Button color='primary' variant='bordered' className='rounded-md w-1/2 border-white text-white hover:bg-slate-500'> 
-                        {formData.userType || "Viewer"}
+                        {formData.user.globalRole || "Viewer"}
                     </Button>
                 </DropdownTrigger>
                 <DropdownMenu
@@ -87,7 +87,7 @@ export default function StepThree({formData, handleInputChange, handleRoleChange
                 }}
                 onAction={(key) => handleRoleChange(key.toString())}
                 >
-                    {userType.map((role: string) => (
+                    {globalRole.map((role: string) => (
                         <DropdownItem
                             key={role}
                         >

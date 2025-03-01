@@ -29,7 +29,7 @@ export default function StepTwo({ formData, handleInputChange, errors, handleKey
                     name='username'
                     variant='bordered'
                     color='primary'
-                    value={formData.username}
+                    value={formData.user.username}
                     onChange={handleInputChange}
                     onKeyDown={handleKeyDown}
                     errorMessage={errors?.message}
@@ -50,7 +50,7 @@ export default function StepTwo({ formData, handleInputChange, errors, handleKey
                 name='password'
                 variant='bordered'
                 color='primary'
-                value={formData.password}
+                value={formData.user.password}
                 onChange={handleInputChange}
                 errorMessage={errors?.message}
                 onKeyDown={handleKeyDown}

@@ -82,6 +82,6 @@ export interface StepFourProps {
 
 export interface StepFiveProps {
     formData: CreateProject
-    projStage: string[];
+    projectStage: string[];
     handleStageChange: (projectStage: string) => void;
 }

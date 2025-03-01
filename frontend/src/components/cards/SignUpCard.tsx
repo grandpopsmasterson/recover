@@ -40,7 +40,7 @@ const StepOne: React.FC<StepOneProps> =({
             name='email'
             color='primary'
             variant='bordered'
-            value={formData.email}
+            value={formData.user.email}
             errorMessage='Please enter a valid email. Format: example@recover.com'
             onChange={handleInputChange}
             onKeyDown={handleKeyDown}
@@ -59,16 +59,18 @@ export default function SignUpCard() {
     const [confirmPassword, setConfirmPassword] = useState<string>('');
 
     const [formData, setFormData] = useState<SignupRequest>({
-        email: '',
-        username: '',
-        firstName: '',
-        lastName: '',
-        password: '',
-        companyId: '',
-        userType: 'Viewer',
-    });
+        user: {
+          email: '',
+          username: '',
+          firstName: '',
+          lastName: '',
+          password: '',
+          companyId: '',
+          globalRole: 'Viewer',
+        },
+      });
 
-    const userType: string[] = [
+    const globalRole: string[] = [
         'Technician',
         'Manager',
         'Client',
@@ -91,7 +93,7 @@ export default function SignUpCard() {
         //console.log('validate stage call with stage: ', stage)
         switch (stage) {
             case 1:
-                if (!validateEmail(formData.email)) {
+                if (!validateEmail(formData.user.email)) {
                     setErrors({ message: 'Please enter a valid email address', field: 'email'});
                     return false;
                 }
@@ -101,15 +103,15 @@ export default function SignUpCard() {
                 // }
                 return true;
             case 2:
-                if (formData.username.length < 5) {
+                if (formData.user.username.length < 5) {
                     setErrors({message: 'Username must be at least 5 characters long', field: 'username'});
                     return false;
                 }
-                if (!validatePassword(formData.password)) {
+                if (!validatePassword(formData.user.password)) {
                     setErrors({ message: 'Password must be at least 8 characters with 1 uppercase, 1 lowercase, and 1 number', field: 'password'});
                     return false;
                 }
-                if (formData.password !== confirmPassword) {
+                if (formData.user.password !== confirmPassword) {
                     setErrors({ message: 'Passwords do not match', field: 'confirmPassword'});
                     return false;
                 }
@@ -119,11 +121,11 @@ export default function SignUpCard() {
                 // }
                 return true;
             case 3:
-                    if (!formData.firstName) {
+                    if (!formData.user.firstName) {
                         setErrors({ message: 'Please enter your first name', field: 'firstName'});
                         return false;
                     }
-                    if (formData.lastName.length < 1) {
+                    if (formData.user.lastName.length < 1) {
                         setErrors({ message: 'Please enter your last name', field: 'lastName'});
                         return false;
                     }
@@ -153,28 +155,44 @@ export default function SignUpCard() {
     }, []);
 
     const handleInputChange = (
-        e: React.ChangeEvent<HTMLInputElement> | boolean, name?: string
-    ): void => {
+        e: React.ChangeEvent<HTMLInputElement> | boolean,
+        name?: string
+      ): void => {
         if (typeof e === 'boolean' && name) {
-            setFormData(prev => ({ ...prev, [name]: e }));
+            setFormData((prev) => ({
+              ...prev,
+              user: {
+                ...prev.user,
+                [name]: e,
+              },
+            }));
         } else if (e instanceof Object && 'target' in e) {
-            const { name, value, type, checked } = e.target as HTMLInputElement;
+          const { name, value, type, checked } = e.target as HTMLInputElement;
+          setFormData((prev) => ({
+            ...prev,
+            user: {
+              ...prev.user,
+              [name]: type === 'checkbox' ? checked : value,
+            },
+          }));
+          if (name !== 'confirmPassword') {
             setFormData(prev => ({ ...prev, [name]: type === 'checkbox' ? checked : value }));
-            if (name === 'confirmPassword') {
-                setConfirmPassword(value)
-                setErrors(prev => {
-                    if (prev?.field === 'confirmPassword') {
-                        return null;
-                    }
-                    return prev;
-                    });
-                }
-            if (name === 'confirmPassword' && value !== formData.password) {
-                setErrors({
-                    field: 'confirmPassword',
-                    message: 'Passwords do not match'
-                });
-            }
+          }
+          if (name === 'confirmPassword') {
+            setConfirmPassword(value)
+            setErrors(prev => {
+              if (prev?.field === 'confirmPassword') {
+                return null;
+              }
+              return prev;
+            });
+          }
+          if (name === 'confirmPassword' && value !== formData.user.password) {
+            setErrors({
+              field: 'confirmPassword',
+              message: 'Passwords do not match'
+            });
+          }
         }
         setErrors(null);
     };
@@ -183,20 +201,19 @@ export default function SignUpCard() {
         return value.toUpperCase();
     }
 
-    const handleRoleChange = (userType: string): void => {
+    const handleRoleChange = (globalRole: string): void => {
         setFormData(prev => ({
             ...prev,
-            userType: makeUpper(userType)
-            
-        })); console.log(formData.userType)
+            globalRole: globalRole
+
+        })); console.log(formData.user.globalRole)
         setErrors(null);
     }
     
     //const isProcessing = useRef(false);
 
     const handleNext = () => {
-        
-    
+
         console.log("🚀 Button clicked!");
         
         if (validateStage(stage)) {
@@ -233,7 +250,6 @@ export default function SignUpCard() {
                 return;
             }
         }
-
             if (validateStage(stage)) {
             
             try {
@@ -283,7 +299,7 @@ export default function SignUpCard() {
                     handleRoleChange={handleRoleChange}
                     handleKeyDown={handleKeyDown}
                     errors={errors}
-                    userType={userType}
+                    globalRole={globalRole}
                     />
                 </Suspense>
                 );
