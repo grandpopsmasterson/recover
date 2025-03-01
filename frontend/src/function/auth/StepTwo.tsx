@@ -20,14 +20,15 @@ export default function StepTwo({ formData, handleInputChange, errors, handleKey
                     required
                     className='w-full text-white'
                     classNames={{
-                        label: 'text-white'
+                        label: 'text-white',
+                        errorMessage: 'font-semibold'
                     }}
                     label='Username'
                     type='username'
                     id='username'
                     name='username'
                     variant='bordered'
-                    color='secondary'
+                    color='primary'
                     value={formData.username}
                     onChange={handleInputChange}
                     onKeyDown={handleKeyDown}
@@ -40,14 +41,15 @@ export default function StepTwo({ formData, handleInputChange, errors, handleKey
                 <Input 
                 className='w-full text-white' 
                 classNames={{
-                    label: 'text-white'
+                    label: 'text-white',
+                    errorMessage: 'font-semibold'
                 }}
                 label='Password' 
                 type={isVisible ? 'text' : 'password'}
                 id='password'
                 name='password'
                 variant='bordered'
-                color='secondary'
+                color='primary'
                 value={formData.password}
                 onChange={handleInputChange}
                 errorMessage={errors?.message}
@@ -74,14 +76,15 @@ export default function StepTwo({ formData, handleInputChange, errors, handleKey
                 <Input 
                     className='w-full text-white' 
                     classNames={{
-                        label: 'text-white'
+                        label: 'text-white',
+                        errorMessage: 'font-semibold'
                     }}
                     label='Password Confirmation' 
                     type={isVisibleConf ? "text" : "password"}
                     id='confirmPassword'
                     name='confirmPassword'
                     variant='bordered'
-                    color='secondary'
+                    color='primary'
                     value={confirmPassword}
                     onChange={handleInputChange}
                     onKeyDown={handleKeyDown}

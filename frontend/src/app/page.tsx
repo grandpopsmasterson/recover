@@ -1,7 +1,7 @@
 import HomeNavBar from '@/components/ui/HomeNavBar';
 import * as React from "react";
 
-import { HeroUIProvider } from '@heroui/react';
+
 
 export default function RootPage() {
   return (

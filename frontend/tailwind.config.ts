@@ -14,9 +14,9 @@ export default {
   theme: {
   	extend: {
   		colors: {
-  			background: 'hsl(var(--background))',
-  			foreground: 'hsl(var(--foreground))',
-  			recovernavy: '#15154e',
+  			background: '(var(--background))',
+  			foreground: '(var(--foreground))',
+  			recovernavy: '#044379', 
   			card: {
   				DEFAULT: 'hsl(var(--card))',
   				foreground: 'hsl(var(--card-foreground))'

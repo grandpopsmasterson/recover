@@ -27,6 +27,7 @@ const AssignUserBtn: React.FC<AssignUserBtnProps> = ({ projectId }) => {
     try {
       const data: User[] = await projectsApi.getAllUsers();
       setUsers(data);
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
       setError(error.message);
     } finally {

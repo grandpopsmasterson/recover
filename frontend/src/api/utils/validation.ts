@@ -1,4 +1,5 @@
 export const validateEmail = (email: string): boolean => {
+    // example@email.format
     const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,15}$/i;
     return emailRegex.test(email);
 };
@@ -19,4 +20,10 @@ export const validatePhonenumber = (phonenumber: string): boolean => {
     // 10 digits, no +1 at start, any format
     const phoneRegex = /^(?:\(\d{3}\)|\d{3})[-.\s]?\d{3}[-.\s]?\d{4}$/;
     return phoneRegex.test(phonenumber);
+}
+
+export const validateDate = (date:string): boolean => {
+    // mm/dd/yyyy
+    const dateRegex = /^(0[1-9]|1[0-2])\/(0[1-9]|[12]\d|3[01])\/([12]\d{3})$/;
+    return dateRegex.test(date)
 }

@@ -4,6 +4,9 @@
 
 :root {
 
+  --background: #f7f2ee;
+  --foreground: #f7f2ee;
+
   /* Fluid Typography Scale - Larger */
   --fluid-small: clamp(0.75rem, 0.25vw + 0.625rem, 1rem);
   --fluid-p1: clamp(1rem, 0.5vw + 0.875rem, 1.5rem);

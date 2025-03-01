@@ -5,17 +5,16 @@ import { Card, CardHeader, CardBody, Input, CardFooter, Button } from "@heroui/r
 import { RecoverLogo } from "@/components/ui/icons/RecoverLogo";
 import { LoginCredentials } from "@/types/login";
 import { loginApi } from "@/api/features/authApi";
+import { LoginError } from "@/types/auth";
 
-interface LoginError {
-    message: string;
-    field: string;
-}
+
 
 export default function LogInCard() {
 
     const [isLoading, setIsLoading] = useState(false);
     const router = useRouter();
     const [error, setError] = useState<LoginError | null>(null);
+    const [serverError, setServerError] = useState<string>('')
     const [loginData, setLoginData] = useState<LoginCredentials>({
         usernameOrEmail:'',
         password: '',
@@ -36,6 +35,7 @@ export default function LogInCard() {
         e.preventDefault();
         if (validateInput()) {
         setError(null);
+        setServerError('')
         setIsLoading(true);
 
         try {
@@ -43,7 +43,6 @@ export default function LogInCard() {
                 usernameOrEmail: loginData.usernameOrEmail,
                 password: loginData.password
             });
-            const { token, username } = response.data;
                 // Clear sensitive data
                 setLoginData({ usernameOrEmail: '', password: '' });
                 
@@ -53,21 +52,9 @@ export default function LogInCard() {
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         } catch (error: any) {
             //apiClient logs the errors
-            const errorMessage = error.response?.data?.message || 'An error occurred during login';
-            
-            switch (error.response?.status) {
-                case 401:
-                    setError({ message: 'Invalid email, username or password', field: 'server'});
-                    break;
-                case 403:
-                    setError({ message: 'Account is locked or disabled', field: 'server'});
-                    break;
-                case 429:
-                    setError({ message: 'Too many login attempts, please try again later.', field: 'server'});
-                    break;
-                default:
-                    setError({ message: errorMessage, field: 'server' });
-            }
+            if (error instanceof Error) {
+                setServerError(error.message)
+            };
         } finally {
             setIsLoading(false);
         }
@@ -89,6 +76,7 @@ export default function LogInCard() {
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
             const { name, value } = e.target;
             setLoginData(prev => ({ ...prev, [name]: value}));
+            setServerError('')
             if (error) setError(null);
         };
 
@@ -107,8 +95,8 @@ export default function LogInCard() {
                     <h1 className="text-white">Login</h1>
                 </div>
             </CardHeader>
-            <CardBody>
-                    <div>
+            <CardBody className="space-y-6">
+                    <div >
                         <Input
                             variant="bordered"
                             className='w-full text-white'
@@ -123,10 +111,10 @@ export default function LogInCard() {
                             value={loginData.usernameOrEmail}
                             onChange={handleInputChange}
                             errorMessage='Enter a valid email or username'
-                            isInvalid={error === null ? false : error.field == 'usernameOrEmail' ? true : false}
+                            isInvalid={serverError !== '' ? true : error === null ? false : error.field == 'usernameOrEmail' ? true : false}
                         />
                     </div> 
-                    <br/>
+                    
                     <div>
                         <Input 
                             variant="bordered"
@@ -142,21 +130,22 @@ export default function LogInCard() {
                             value={loginData.password}
                             onChange={handleInputChange}
                             errorMessage='Enter a valid password'
-                            isInvalid={error === null ? false : error.field == 'password' ? true : false}
+                            isInvalid={serverError !== '' ? true : error === null ? false : error.field == 'password' ? true : false}
                         />
-                    </div> <br/>
+                    </div>
                     <Button 
                         variant="bordered" 
                         color="secondary" 
-                        className="border-white font-bold !text-white hover:bg-secondary" 
+                        className="border-white font-bold text-white hover:bg-white hover:text-recovernavy" 
                         type="submit"
                         >
                         {isLoading ? 'Logging in...' : 'Log In'}
                     </Button>
             </CardBody>
-            <CardFooter className="flex justify-center">
+            <CardFooter className="flex flex-col justify-center">
+                <small className="text-red-500 text-[18px]">{serverError}</small>
                 <div className='flex justify-center pt-4'>
-                    <small className="text-white">Don&apos;t have an account? <a className='text-purple-500 underline' href='./signup'>Sign up</a></small>
+                    <small className="text-white">Don&apos;t have an account? <a className='text-gray-400 underline' href='./signup'>Sign up</a></small>
                 </div>
             </CardFooter>
         </Card>
