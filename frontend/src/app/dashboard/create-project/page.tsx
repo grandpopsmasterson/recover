@@ -5,6 +5,8 @@ import { CreateProject, CreateProjectError, InsurerArray, LossTypeArray, Project
 import { Autocomplete, AutocompleteItem, Button, CheckboxGroup, Dropdown, DropdownItem, DropdownMenu, DropdownTrigger, Input, Link } from "@heroui/react";
 import { CustomCheckbox } from "@/components/ui/CustomCheckbox";
 import { validateDate, validateEmail, validatePhonenumber } from "@/api/utils/validation";
+import { projectsApi } from "@/api/features/projectsApi";
+import { useRouter } from "next/navigation";
 
 export default function CreateProject() {
     // STATE SETTING
@@ -16,6 +18,9 @@ export default function CreateProject() {
     const [policyInfo, setPolicyInfo] = useState<boolean>(false);
     const [claim, setClaim] = useState<boolean>(false);
     const [catastrophe, setCatastrophe] = useState<boolean>(false);
+    //const [typeSelected, setTypeSelected] = useState<string>('')
+
+    const router = useRouter();
 
     const [localForm, setLocalForm] = useState({
         firstName: '',
@@ -164,11 +169,11 @@ export default function CreateProject() {
                             setErrors({ message: 'Please select an insurance carrier', field: 'carrier'});
                             return false;
                         }
-                        if (validateDate(formData.policyStart)) {
+                        if (!validateDate(formData.policyStart)) {
                             setErrors({ message: 'Please enter a valid policy start date', field: 'policyStart'});
                             return false;
                         }
-                        if (validateDate(formData.policyExpiration)) {
+                        if (!validateDate(formData.policyExpiration)) {
                             setErrors({ message: 'Please enter a valid policy expiration date', field: 'policyExpiration'});
                             return false;
                         } // TODO add something here to make sure the start date is not after the expiration date
@@ -199,50 +204,130 @@ export default function CreateProject() {
                         setErrors({ message: 'Please select the scope, this will change later in development', field: 'scope'});
                         return false;
                     }
-                }
-            return true;
+            }
+        return true;
+    };
+
+    const handleInputChange = (
+        e: React.ChangeEvent<HTMLInputElement> | boolean, name?: string
+    ): void => {
+        if (typeof e === 'boolean' && name) {
+
+            setFormData(prev => ({ ...prev, [name]: e}));
+
+        } else if (e instanceof Object && 'target' in e) {
+
+            const { name, value, type, checked } = e.target as HTMLInputElement;
+            setFormData(prev => ({ ...prev, [name]: type === 'checkbox' 
+                ? checked 
+                : value }));
+
+            if (name === 'firstName' || name === 'lastName') {
+                setLocalForm(prev => {
+                    const newLocal = { ...prev, [name]: value };
+                    setFormData(prevForm => ({
+                        ...prevForm,
+                        clientName: `${name === 'firstName' 
+                            ? value 
+                            : newLocal.firstName} ${name === 'lastName' 
+                                ? value 
+                                : newLocal.lastName}`.trim()
+                    }));
+                    return newLocal;
+                });
+                
+                setErrors(prev => {
+                    if (prev?.field === name) {
+                        return null;
+                    }
+                    return prev;
+                });
+            } else {
+            if (name === 'lossType') {
+            }
+        }
+        setErrors(null);
+    }};
+
+    const makeUpper = (value:string) => {
+        return value.toUpperCase();
+    };
+
+    const dateFormatter = (dateString: string) => {
+        if (!validateDate(dateString)) {
+            return dateString;
         };
 
-        const handleInputChange = (
-            e: React.ChangeEvent<HTMLInputElement> | boolean, name?: string
-        ): void => {
-            if (typeof e === 'boolean' && name) {
+        const [month, day, year] = dateString.split('/');
+        return `${year}-${month}-${day}`;
+    }
 
-                setFormData(prev => ({ ...prev, [name]: e}));
+    const handleProjectTypeChange = (projectType: string, isSelected: boolean) => {
+        if (isSelected) {
+            setFormData(prev => ({
+                ...prev,
+                projectType: makeUpper(projectType)
+            }));
+        }
+        setErrors(null);
+    };
 
-            } else if (e instanceof Object && 'target' in e) {
+    const handleProjectScopeChange = (scope: string, isSelected: boolean) => {
+        if (isSelected) {
+            setFormData(prev => ({
+                ...prev,
+                scope: makeUpper(scope)
+            }));
+        }
+        setErrors(null);
+    }
 
-                const { name, value, type, checked } = e.target as HTMLInputElement;
-                setFormData(prev => ({ ...prev, [name]: type === 'checkbox' 
-                    ? checked 
-                    : value }));
+    const handleStageChange = (projStage: string,): void => {
+        setFormData(prev => ({
+            ...prev,
+            stage: projStage
+        }));
+        console.log(projStage);
+        setErrors(null);
+    };
 
-                if (name === 'firstName' || name === 'lastName') {
-                    setLocalForm(prev => {
-                        const newLocal = { ...prev, [name]: value };
-                        setFormData(prevForm => ({
-                            ...prevForm,
-                            clientName: `${name === 'firstName' 
-                                ? value 
-                                : newLocal.firstName} ${name === 'lastName' 
-                                    ? value 
-                                    : newLocal.lastName}`.trim()
-                        }));
-                        return newLocal;
-                    });
-                    
-                    setErrors(prev => {
-                        if (prev?.field === name) {
-                            return null;
-                        }
-                        return prev;
-                    });
-                } else {
-                if (name === 'lossType') {
-                }
+    const handleKeyDown = (event: React.KeyboardEvent<HTMLInputElement>, stage: number) => {
+        if (event.key === 'Enter') {
+            if (stage < 8) {
+                handleNext(stage);
+            } else if (stage === 8) {
+                handleSubmit();
             }
-            setErrors(null);
-        }};
+        }
+    };
+
+    const handleSubmit = async (event?: React.FormEvent) => {
+            if (event){ event.preventDefault(); };
+            if (validateStage()) {
+                setErrors(null);
+                //setIsLoading(true);
+                // eslint-disable-next-line @typescript-eslint/no-unused-vars, @typescript-eslint/no-explicit-any -- need to clean out first and last name from the submission data
+                const {firstName, lastName, ...submissionData} = formData as any;
+                console.log(submissionData); 
+                const apiFormData = {...submissionData};
+                apiFormData.lossDate = dateFormatter(apiFormData.lossDate);
+                apiFormData.policyStart = dateFormatter(apiFormData.policyStart);
+                apiFormData.policyExpiration = dateFormatter(apiFormData.policyExpiration);
+                try {
+                    const response = await projectsApi.createProject(apiFormData);
+                    console.log('Success: ', response);
+                    router.push("/dashboard/ridgeline")
+                    //setIsLoading(false)
+
+                } catch (error) {
+                    console.log('Submission error: ', error)
+                    //setIsLoading(false)
+                    return 
+                }
+            }; 
+        };
+
+    // ANIMATION FUNCTIONS
 
     const animate = (stage: number, direction: string) => {
         if (view !== 'visible') return;
@@ -259,7 +344,11 @@ export default function CreateProject() {
         }, 250)
     };
 
-    const handleNext = (stage: number) => animate(stage, 'next');
+    const handleNext = (stage: number) => {
+        if (validateStage()){
+            animate(stage, 'next');
+        }
+    };
     const handlePrev = (stage: number) => animate(stage, 'prev');
 
     const getAnimationClasses = () => {
@@ -294,10 +383,15 @@ export default function CreateProject() {
                             allowsCustomValue={true}
                             className=""
                             defaultItems={lossType}
+                            type="lossType"
+                            id="lossType"
+                            name="lossType"
+                            value={formData.lossType}
                             label='Select the loss type'
                             variant="bordered"
                             color="primary"
-                            onSelectionChange={(id) => setFormData({...formData, lossType: id.toString()})}
+                            onSelectionChange={(id) => setFormData({...formData, lossType: id?.toString() || ''})}
+                            isInvalid={errors === null ? false : errors.field === 'lossType' ? true : false}
                         >
                             {(item) => <AutocompleteItem key={item.key}>{item.label}</AutocompleteItem>}
                         </Autocomplete>
@@ -319,8 +413,8 @@ export default function CreateProject() {
                             errorMessage='Please enter a valid loss date'
                             description='Format: MM/DD/YYYY'
                             onChange={handleInputChange}
-                            // TODO onKeyDown={}
-                            isInvalid={errors === null ? false : errors.field === 'lossType' ? true : false}
+                            onKeyDown={(e) => handleKeyDown(e, 1)}
+                            isInvalid={errors === null ? false : errors.field === 'lossDate' ? true : false}
                         />
                     </div>
                     <div className="pt-2 space-x-2">
@@ -352,9 +446,9 @@ export default function CreateProject() {
                             color="primary"
                             value={formData.streetAddress}
                             errorMessage='Please enter a street address'
-                            // TODO onChange={}
-                            // TODO onKeyDown={}
-                            // TODO isInvald={}
+                            onChange={handleInputChange}
+                            onKeyDown={(e) => handleKeyDown(e, 2)}
+                            isInvalid={errors === null ? false : errors.field === 'streetAddress' ? true : false}
                         />
                         <div className="flex gap-2">
                             <Input 
@@ -371,9 +465,9 @@ export default function CreateProject() {
                                 color="primary"
                                 value={formData.city}
                                 errorMessage='Please enter a city'
-                                // TODO onChange={}
-                                // TODO onKeyDown={}
-                                // TODO isInvald={}
+                                onChange={handleInputChange}
+                                onKeyDown={(e) => handleKeyDown(e, 2)}
+                                isInvalid={errors === null ? false : errors.field === 'city' ? true : false}
                             />
                             <Input 
                                 className="w-1/3 h-[50px] text-black shadow-md"
@@ -389,9 +483,9 @@ export default function CreateProject() {
                                 color="primary"
                                 value={formData.state}
                                 errorMessage='Please enter a state'
-                                // TODO onChange={}
-                                // TODO onKeyDown={}
-                                // TODO isInvald={}
+                                onChange={handleInputChange}
+                                onKeyDown={(e) => handleKeyDown(e, 2)}
+                                isInvalid={errors === null ? false : errors.field === 'state' ? true : false}
                             />
                             <Input 
                                 className="w-1/3 h-[50px] text-black shadow-md"
@@ -407,9 +501,9 @@ export default function CreateProject() {
                                 color="primary"
                                 value={formData.zipcode}
                                 errorMessage='Please enter a zipcode'
-                                // TODO onChange={}
-                                // TODO onKeyDown={}
-                                // TODO isInvald={}
+                                onChange={handleInputChange}
+                                onKeyDown={(e) => handleKeyDown(e, 2)}
+                                isInvalid={errors === null ? false : errors.field === 'zipcode' ? true : false}
                             />
                         </div>
                     </div>
@@ -448,9 +542,9 @@ export default function CreateProject() {
                                     color="primary"
                                     value={localForm.firstName}
                                     errorMessage='Please enter your first name'
-                                    // TODO onChange={}
-                                    // TODO onKeyDown={}
-                                    // TODO isInvald={}
+                                    onChange={handleInputChange}
+                                    onKeyDown={(e) => handleKeyDown(e, 3)}
+                                    isInvalid={errors === null ? false : errors.field == 'firstName' ? true : false}
                                 />
                                 <Input 
                                     className="w-1/2 h-[50px] text-black shadow-md"
@@ -466,9 +560,9 @@ export default function CreateProject() {
                                     color="primary"
                                     value={localForm.lastName}
                                     errorMessage='Please enter your last name'
-                                    // TODO onChange={}
-                                    // TODO onKeyDown={}
-                                    // TODO isInvald={}
+                                    onChange={handleInputChange}
+                                    onKeyDown={(e) => handleKeyDown(e, 3)}
+                                    isInvalid={errors === null ? false : errors.field == 'lastName' ? true : false}
                                 />
                             </div>
                             <Input 
@@ -485,9 +579,9 @@ export default function CreateProject() {
                                 color="primary"
                                 value={formData.clientPhone}
                                 errorMessage='Please enter your phone number'
-                                // TODO onChange={}
-                                // TODO onKeyDown={}
-                                // TODO isInvald={}
+                                onChange={handleInputChange}
+                                onKeyDown={(e) => handleKeyDown(e, 3)}
+                                isInvalid={errors === null ? false : errors.field == 'clientPhone' ? true : false}
                             />
                             <Input 
                                 className="w-full h-[50px] text-black shadow-md"
@@ -503,9 +597,9 @@ export default function CreateProject() {
                                 color="primary"
                                 value={formData.clientEmail}
                                 errorMessage='Please enter your email'
-                                // TODO onChange={}
-                                // TODO onKeyDown={}
-                                // TODO isInvald={}
+                                onChange={handleInputChange}
+                                onKeyDown={(e) => handleKeyDown(e, 3)}
+                                isInvalid={errors === null ? false : errors.field == 'clientEmail' ? true : false}
                             />
                         </div>
                         ): (
@@ -529,19 +623,19 @@ export default function CreateProject() {
                     <div>
                     <CheckboxGroup
                     className="gap-1"
-                    label='Select scope'
+                    label='Select property type'
                     orientation="horizontal"
                     errorMessage='Please select the property type'
-                    //isInvalid={errors === null ? false : errors.field === 'scope' ? true : false}
+                    isInvalid={errors === null ? false : errors.field === 'projectType' ? true : false}
                 >
                     {projectType.map((type: string) => (
                         <CustomCheckbox
                         key={type}
                         value={type}
-                        //isSelected={selectedValuesScope.has(scope)}
-                        //onChange={(isSelected) => handleCheckChangeScope(scope, isSelected)}
+                        isSelected={formData.projectType === makeUpper(type)}                         
+                        onChange={(isSelected) => handleProjectTypeChange(type, isSelected)}
                     >
-                            {type}
+                            {type.charAt(0).toUpperCase() + type.slice(1).toLowerCase()}
                         </CustomCheckbox>
                     ))}
                 </CheckboxGroup>
@@ -589,7 +683,7 @@ export default function CreateProject() {
                                     label='Select the insurance carrier'
                                     variant="bordered"
                                     color="primary"
-                                    onSelectionChange={(id) => setFormData({...formData, carrier: id.toString()})}
+                                    onSelectionChange={(id) => setFormData({...formData, carrier: id?.toString() || ''})}
                                 >
                             {(item) => <AutocompleteItem key={item.key}>{item.label}</AutocompleteItem>}
                         </Autocomplete>
@@ -609,9 +703,9 @@ export default function CreateProject() {
                                         value={formData.policyStart}
                                         errorMessage='Please enter a valid start date'
                                         description='Format: MM/DD/YYYY'
-                                        // TODO onChange={}
-                                        // TODO onKeyDown={}
-                                        // TODO isInvald={}
+                                        onChange={handleInputChange}
+                                        onKeyDown={(e) => handleKeyDown(e, 6)}
+                                        isInvalid={errors === null ? false : errors.field == 'policyStart' ? true : false}
                                     />
                                     <Input 
                                         className="w-1/2 h-[50px] text-black"
@@ -628,9 +722,9 @@ export default function CreateProject() {
                                         value={formData.policyExpiration}
                                         errorMessage='Please enter a valid expiration date'
                                         description='Format: MM/DD/YYYY'
-                                        // TODO onChange={}
-                                        // TODO onKeyDown={}
-                                        // TODO isInvald={}
+                                        onChange={handleInputChange}
+                                        onKeyDown={(e) => handleKeyDown(e, 6)}
+                                        isInvalid={errors === null ? false : errors.field == 'policyExpiration' ? true : false}
                                     />
                                 </div>
                             </div>
@@ -675,7 +769,7 @@ export default function CreateProject() {
                                 value={formData.claimNumber}
                                 errorMessage='Please enter a valid claimNumber'
                                 onChange={handleInputChange}
-                                // TODO onKeyDown={}
+                                onKeyDown={(e) => handleKeyDown(e, 7)}
                                 isInvalid={errors === null ? false : errors.field === 'claimNumber' ? true : false}
                             />
                         ) : (
@@ -718,7 +812,7 @@ export default function CreateProject() {
                                         value={formData.catReference}
                                         errorMessage='Please enter a valid catastrophe?'
                                         onChange={handleInputChange}
-                                        // TODO onKeyDown={}
+                                        onKeyDown={(e) => handleKeyDown(e, 8)}
                                         isInvalid={errors === null ? false : errors.field === 'catReference' ? true : false}
                                     />
                                 </div>
@@ -743,19 +837,19 @@ export default function CreateProject() {
                     <Dropdown>
                     <DropdownTrigger>
                         <Button color="success">
-                            {formData.stage || "Select stage"}
+                            {formData.stage.replace(/_/g, ' ').toLowerCase().replace(/(^|\s)([a-z])/g, (_, space: string, letter: string) => space + letter.toUpperCase()) || "Select stage"}
                         </Button>
                     </DropdownTrigger>
                     <DropdownMenu
                     className=" border-2 border-recovernavy rounded-md"
                         //style={{background: '#09090b', border: '5px solid #090f21', borderRadius: '5px'}}
-                        //onAction={(key) => handleStageChange(key.toString())}
+                        onAction={(key) => handleStageChange(key.toString())}
                     >
                         {projStage.map((stage: string) => (
                             <DropdownItem
                                 key={stage}
                             >
-                                {stage}
+                                {stage.replace(/_/g, ' ').toLowerCase().replace(/(^|\s)([a-z])/g, (_, space: string, letter: string) => space + letter.toUpperCase())}
                             </DropdownItem>
                         ))}
                     </DropdownMenu>
@@ -772,10 +866,10 @@ export default function CreateProject() {
                             <CustomCheckbox
                             key={scope}
                             value={scope}
-                            //isSelected={selectedValuesScope.has(scope)}
-                            //onChange={(isSelected) => handleCheckChangeScope(scope, isSelected)}
+                            isSelected={formData.scope === makeUpper(scope)}
+                            onChange={(isSelected) => handleProjectScopeChange(scope, isSelected)}
                         >
-                                {scope}
+                                {scope.charAt(0).toUpperCase() + scope.slice(1).toLowerCase()}
                             </CustomCheckbox>
                         ))}
                     </CheckboxGroup>
@@ -783,7 +877,8 @@ export default function CreateProject() {
                     {/* After this we will send the data but use the 200 response for assigning users (use daves assign users component) */}
                     <div className="pt-2 space-x-2">
                         <Button onPress={() => handlePrev(7)}>Back</Button>
-                        <Button onPress={() => handleNext(0)}>To start</Button>
+                        <Button type="submit">Submit</Button>
+                        <Button onPress={() => console.log(formData)}>Log form data</Button>
                     </div>
                 </div>
             )
@@ -793,7 +888,7 @@ export default function CreateProject() {
     return (
     
         <div className="flex justify-center items-center h-full -mt-12 overflow-hidden">
-            <div
+            <form onSubmit={handleSubmit}
                 className={`
                     transition-all
                     duration-250
@@ -802,7 +897,7 @@ export default function CreateProject() {
                 `}
             >
                 {steps[stage].component()}
-            </div>
+            </form>
         </div>
     )
 }
