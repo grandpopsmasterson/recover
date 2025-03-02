@@ -1,6 +1,8 @@
 'use client'
 
+import { SearchIcon } from '@/components/ui/icons/SearchIcon';
 import { Button } from '@heroui/button';
+import { Autocomplete, AutocompleteItem, AutocompleteSection, Divider } from '@heroui/react';
 import { AnimatePresence, motion } from 'framer-motion';
 import Image from 'next/image';
 import React, { useEffect, useRef, useState } from 'react';
@@ -9,9 +11,14 @@ interface Marker {
     id: number;
     position: { x: number; y: number };
     details: {
-        id: number;
-        title: string;
+        id: string;
+        category: string;
+        name: string;
         description: string;
+        dimensions: string;
+        unit: string;
+        price: number;
+        availability: string;
     };
 }
 
@@ -32,25 +39,78 @@ export default function EstimateBuilder() {
     const [position, setPosition] = useState<Position>({ x: 0, y: 0 });
     const [dragStart, setDragStart] = useState<Position>({ x: 0, y: 0 });
     const [boundaries, setBoundaries] = useState<Boundaries>({ maxX: 0, maxY: 0 });
+    const [mouseDownStartX, setMouseDownStartX] = useState<number | null>(null);
+    const [mouseDownStartY, setMouseDownStartY] = useState<number | null>(null);
     
     // Marker state
     const [markers, setMarkers] = useState<Marker[]>([]);
-    const [selectedMarkerId, setSelectedMarkerId] = useState<number | null>(null);
+    const [selectedMarkerId, setSelectedMarkerId] = useState<number[] | null>(null);
     const [isOptionsOpen, setIsOptionsOpen] = useState<boolean>(false);
     const [clickPosition, setClickPosition] = useState<Position>({ x: 0, y: 0 });
+    const [editingMarkerId, setEditingMarkerId] = useState<number | null>(null);
+
+    //Search Materials State
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const [materials, setMaterials] = useState<any[]>([]);
+    const [inputValue, setInputValue] = useState<string>('');
+    const [isloading, setIsLoading] = useState(false); // No need for the actual use of loading yet
+    const [error, setError] = useState<string | null>(null); // Same for errors -- will come in good time
 
     // Refs
     const containerRef = useRef<HTMLDivElement>(null);
-    const imageRef = useRef<HTMLImageElement>(null);
     const imageContainerRef = useRef<HTMLDivElement>(null);
+    const imageRef = useRef<HTMLImageElement>(null);
+    const optionsRef = useRef<HTMLDivElement | null>(null);
+    const anchorRef = useRef<HTMLDivElement | null>(null);
     
-    // Example marker options
-    const options = [
-        { id: 1, title: 'Event 1', description: 'Description for Event 1' },
-        { id: 2, title: 'Event 2', description: 'Description for Event 2' },
-        { id: 3, title: 'Event 3', description: 'Description for Event 3' },
-    ];
+    // Materials logic
+    useEffect(() => {
+        const fetchMaterials = async () => {
+            try{
+                setIsLoading(true);
+                const response = await fetch('/prices.json');
+                if (!response.ok) {
+                    throw new Error (`HTTP error! Status: ${response.status}`);
+                }
+                const text = await response.text();
+                console.log('Raw response: ', text);
+                if (text.trim()) {
+                    const data = JSON.parse(text);
+                    console.log('parsed ---',data)
+                }
+                const data = JSON.parse(text);
+                console.log(response)
 
+                if (data.materials && Array.isArray(data.materials)) {
+                    setMaterials(data.materials);
+                } else if (Array.isArray(data)) {
+                    setMaterials(data);
+                } else {
+                    console.error('unexpected data format: ', data);
+                    setError('Invalid data format in the JSON file');
+                }
+                setIsLoading(false);
+            } catch (err) {
+                setError('Failed to load the materials data');
+                setIsLoading(false);
+                console.error('Error loading materials', err);
+            }
+        } ;
+        fetchMaterials();
+    }, []);
+
+    //Marker Grouping Logic
+    const groupedMarkers = markers.reduce((acc, marker) => {
+        const materialId = marker.details.id;
+        if (!acc[materialId]) {
+            acc[materialId] = { material: marker.details, count: 0, markers: [] };
+        }
+        acc[materialId].count += 1;
+        acc[materialId].markers.push(marker);
+        return acc;
+    }, {} as Record<string, { material: Marker["details"]; count: number; markers: Marker[] }>);
+    
+    // Image variables 
     const panorama = '/default_panorama.jpg';
     const zoomScale = 2; // Define zoom scale as a constant
 
@@ -78,22 +138,34 @@ export default function EstimateBuilder() {
     // Handle mouse down for dragging
     const handleMouseDown = (e: React.MouseEvent<HTMLDivElement>): void => {
         if (!isZoomed) return;
+
+        if (optionsRef.current && optionsRef.current.contains(e.target as Node)) {
+            return;
+        }
+
+        // if (anchorRef.current && anchorRef.current.contains(e.target as Node)) {
+        //     handleEditMarker()
+        // } //TODO REFERENCE OLD CODE TO MAKE THIS WORK ON CLICKING ANCHOR OPEN THE EDIT MENU
+
+        if (isOptionsOpen) {
+            setIsOptionsOpen(false);
+            setEditingMarkerId(null); 
+            //return; //? removed return -- allows users to drag from an open menu state
+        }
         
         // Close any open menus
         setIsOptionsOpen(false);
         setEditingMarkerId(null);
+
+        //set the starting mouse position
+        setMouseDownStartX(e.clientX);
+        setMouseDownStartY(e.clientY);
         
         // Set initial drag position
         setIsDragging(true);
         setDragStart({
         x: e.clientX - position.x,
         y: e.clientY - position.y
-        });
-        
-        // Save start position for distance calculation
-        setDragStartPos({
-        x: e.clientX,
-        y: e.clientY
         });
     };
 
@@ -110,31 +182,27 @@ export default function EstimateBuilder() {
         newY = Math.max(Math.min(newY, boundaries.maxY), -boundaries.maxY);
         
         setPosition({ x: newX, y: newY });
-        
-        // Calculate distance moved for drag detection
-        const dx = e.clientX - dragStartPos.x;
-        const dy = e.clientY - dragStartPos.y;
-        const distance = Math.sqrt(dx * dx + dy * dy);
-        setDragDistance(distance);
     };
-
-    // Track distance moved for click vs drag detection
-    const [dragDistance, setDragDistance] = useState<number>(0);
-    const [dragStartPos, setDragStartPos] = useState<Position>({ x: 0, y: 0 });
     
     // Handle mouse up to end dragging
     const handleMouseUp = (e: React.MouseEvent<HTMLDivElement>): void => {
-        const wasDragging = isDragging;
+        
         setIsDragging(false);
-        
-        // Only trigger click if we didn't drag much (less than 5px)
-        if (isZoomed && dragDistance < 5 && wasDragging === false) {
-        // This was a click, not a drag
-        handlePanoramaClick(e);
+
+        if (isOptionsOpen && optionsRef.current && optionsRef.current.contains(e.target as Node)) {
+            return;
         }
-        
-        // Reset drag distance
-        setDragDistance(0);
+
+        if (mouseDownStartX !== null && mouseDownStartY !== null && isZoomed) {
+            const deltaX = Math.abs(e.clientX - mouseDownStartX);
+            const deltaY = Math.abs(e.clientY - mouseDownStartY);
+
+            if (deltaX < 8 && deltaY < 8) {
+                handlePanoramaClick(e);
+            }
+        }
+        setMouseDownStartX(null);
+        setMouseDownStartY(null);
     };
     
     // Convert screen coordinates to image coordinates
@@ -172,9 +240,6 @@ export default function EstimateBuilder() {
         return { x: percentX, y: percentY };
     };
     
-    // State for marker editing
-    const [editingMarkerId, setEditingMarkerId] = useState<number | null>(null);
-    
     // Handle click to place a marker
     const handlePanoramaClick = (e: React.MouseEvent<HTMLDivElement>): void => {
         // Only allow placing markers when zoomed
@@ -197,12 +262,23 @@ export default function EstimateBuilder() {
     };
 
     // Add a new marker when an option is selected
-    const handleOptionsSelect = (option: typeof options[0]): void => {
+    const handleOptionsSelect = (option: string): void => {
+        //? console.log(option)
+        const selectedMaterial = typeof option === 'string'
+            ? materials.find(material => material.id === option)
+            : option
+
+        if (!selectedMaterial) {
+            console.error('Invalid selection or material not found');
+            setIsOptionsOpen(false);
+            return;
+        }
+
         // If we're editing an existing marker
         if (editingMarkerId !== null) {
         const updatedMarkers = markers.map(marker => 
             marker.id === editingMarkerId 
-            ? { ...marker, details: option }
+            ? { ...marker, details: selectedMaterial }
             : marker
         );
         setMarkers(updatedMarkers);
@@ -215,12 +291,12 @@ export default function EstimateBuilder() {
         const newMarker: Marker = {
             id: Date.now(),
             position: imgCoords,
-            details: option,
+            details: selectedMaterial,
         };
         
         setMarkers([...markers, newMarker]);
         }
-        
+        setInputValue('');
         setIsOptionsOpen(false);
     };
     
@@ -267,7 +343,6 @@ export default function EstimateBuilder() {
             onMouseMove={handleMouseMove}
             onMouseUp={handleMouseUp}
             onMouseLeave={handleMouseUp}
-            onClick={handlePanoramaClick}
             >
             {/* Image with zoom and drag transformation */}
             <div
@@ -297,28 +372,30 @@ export default function EstimateBuilder() {
                 {markers.map((marker) => (
                 <div
                     key={marker.id}
+                    ref={anchorRef}
                     className={`absolute transform -translate-x-1/2 -translate-y-1/2 
-                    z-10 group ${selectedMarkerId === marker.id ? 'z-20' : ''}`}
+                    z-10 group ${selectedMarkerId?.includes(marker.id) ? 'z-20' : ''}`}
                     style={{
                     left: `${marker.position.x}%`,
                     top: `${marker.position.y}%`,
                     }}
-                    onMouseEnter={() => setSelectedMarkerId(marker.id)}
+                    onMouseEnter={() => setSelectedMarkerId([marker.id])}
                     onMouseLeave={() => setSelectedMarkerId(null)}
                 >
                     {/* Marker dot */}
                     <div 
                     className={`w-3 h-3 bg-red-500 rounded-full relative
-                        ${selectedMarkerId === marker.id ? 'ring-2 ring-white scale-125' : ''}`}
+                        ${selectedMarkerId?.includes(marker.id) ? 'ring-2 ring-white scale-125' : ''}`}
                     />
                 </div>
                 ))}
             </div>
             
             {/* Options menu - rendered relative to the viewport */}
-            <AnimatePresence>
+            <AnimatePresence >
                 {isOptionsOpen && (
                 <motion.div
+                ref={optionsRef}
                     initial={{ opacity: 0, scale: 0.9 }}
                     animate={{ opacity: 1, scale: 1 }}
                     exit={{ opacity: 0, scale: 0.9 }}
@@ -328,6 +405,7 @@ export default function EstimateBuilder() {
                     top: `${clickPosition.y}px`,
                     transform: 'translate(10px, 10px)', // Position to bottom right of cursor
                     }}
+                    onClick={(e) => {e.stopPropagation(); e.nativeEvent.stopImmediatePropagation();}}
                 >
                     <div className='space-y-2'>
                     <div className="flex justify-between items-center mb-1">
@@ -336,15 +414,102 @@ export default function EstimateBuilder() {
                         </h3>
                     </div>
                     
-                    {options.map((option) => (
-                        <Button
-                        key={option.id}
-                        onPress={() => handleOptionsSelect(option)}
-                        className='block w-full text-left px-4 py-2 hover:bg-gray-100 rounded-md'
-                        >
-                        {option.title}
-                        </Button>
-                    ))}
+                    <Autocomplete
+                        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                        onSelectionChange={(value: any) => {
+                                handleOptionsSelect(value);
+                                setInputValue('');
+                        }}
+                        inputValue={inputValue}
+                        onInputChange={(value) => setInputValue(value)}
+                        aria-label="Select a material"
+                        className='p-4 '
+                        classNames={{
+                            base: "max-w-xs",
+                            listboxWrapper: "max-h-[320px] bg-white",
+                            selectorButton: "text-default-500",
+                        }}
+                        inputProps={{
+                            classNames: {
+                                input: "ml-1",
+                                inputWrapper: "h-[48px]",
+                            },
+                            onMouseDown: (e: React.MouseEvent) => {
+                                e.stopPropagation();
+                            },
+                            onClick: (e: React.MouseEvent) => {
+                                e.stopPropagation();
+                            },
+                        }}
+                        listboxProps={{
+                            hideSelectedIcon: true,
+                            itemClasses: {
+                                base: [
+                                    "rounded-medium",
+                                    "bg-white",
+                                    'shadow-md',
+                                    "text-black",
+                                    "transition-opacity",
+                                    "data-[hover=true]:text-purple-500",
+                                    "dark:data-[hover=true]:bg-default-50",
+                                    "data-[pressed=true]:opacity-70",
+                                    "data-[hover=true]:bg-default-200",
+                                    "data-[selectable=true]:focus:bg-default-100",
+                                    "data-[focus-visible=true]:ring-default-500",
+                                ],
+                            },
+                            onClick: (e: React.MouseEvent) => {
+                                e.stopPropagation();
+                            },
+                            onMouseDown: (e: React.MouseEvent) => {
+                                e.stopPropagation();
+                            },
+                        }}
+                        placeholder="Enter filters"
+                        popoverProps={{
+                            offset: 10,
+                            classNames: {
+                                base: "rounded-large",
+                                content: "p-1 border-2 border-black bg-white",
+                            },
+                            onClick: (e: React.MouseEvent) => {
+                                e.stopPropagation();
+                            },
+                            onMouseDown: (e: React.MouseEvent) => {
+                                e.stopPropagation();
+                            },
+                        }}
+                        radius="full"
+                        startContent={<SearchIcon className="text-default-400" size={20} strokeWidth={2.5} />}
+                        variant="bordered"
+                    >
+                        <AutocompleteSection>
+                        {materials
+                            .map((item) => (
+                                <AutocompleteItem 
+                                    key={item.id} 
+                                    textValue={item.name}
+                                >
+                                    <div className="flex justify-between items-center">
+                                        <div className="flex gap-2 items-center">
+                                            <div className="flex flex-col">
+                                                <span className="text-small">{item.name}</span>
+                                                <div className='flex'>
+                                                    <span className="text-xs">{item.category}</span>
+                                                    <Divider orientation='vertical'/>
+                                                    <span className="text-xs">${item.price}/{item.unit}</span>
+                                                </div>
+                                                <div>
+                                                    <span className="text-xs">{item.description}</span>
+                                                    <span className="text-xs">{item.availability}</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </AutocompleteItem>
+                            ))}
+                    </AutocompleteSection>
+                    </Autocomplete>
                     
                     {editingMarkerId !== null && (
                         <Button
@@ -365,63 +530,41 @@ export default function EstimateBuilder() {
         </div>
 
         {/* Right panel: Marker details */}
-        <div className='w-1/2 space-y-4 overflow-y-auto'>
-            {markers.length === 0 ? (
-            <div className='p-4 text-gray-500 text-center border rounded-md'>
-                No markers added yet. Zoom in and click on the image to add markers.
-            </div>
-            ) : (
-            markers.map((marker) => (
-                            <div
-                key={marker.id}
-                className={`p-4 border rounded-md transition-shadow ${
-                    selectedMarkerId === marker.id ? 'shadow-lg border-blue-500' : 'hover:shadow-md'
-                }`}
-                onMouseEnter={() => setSelectedMarkerId(marker.id)}
+        <div className='w-1/2 space-y-4 overflow-hidden flex flex-col'>
+        <div className="h-full overflow-y-auto max-h-[80vh] space-y-4 p-4 border rounded-md">
+        {Object.values(groupedMarkers).length === 0 ? (
+        <div className='p-4 text-gray-500 text-center border rounded-md'>
+            No markers added yet. Zoom in and click on the image to add markers.
+        </div>
+    ) : (
+        Object.values(groupedMarkers).map(({ material, count, markers }) => (
+            <div
+                key={material.id}
+                className='p-4 border rounded-md transition-shadow hover:shadow-md'
+                onMouseEnter={() => setSelectedMarkerId(markers.map(m => m.id))}
                 onMouseLeave={() => setSelectedMarkerId(null)}
-                >
+            >
                 <div className="flex justify-between items-start">
                     <div>
-                    <h3 className='font-bold'>{marker.details.title}</h3>
-                    <p className='text-gray-600'>{marker.details.description}</p>
+                        <h3 className='font-bold'>{material.name}</h3>
+                        <p className='text-gray-600'>{material.description}</p>
+                        <p className='text-gray-500 text-sm'>{count !== 0 ? `Amount: ${count}` : ''}</p>
+                        <p className='text-gray-500 text-sm'>Cost: ${count * material.price}</p>
                     </div>
                     <div className="flex space-x-1">
-                    <button
-                        onClick={() => {
-                        if (!containerRef.current) return;
-                        const rect = containerRef.current.getBoundingClientRect();
-                        
-                        // Position the edit menu near the details panel
-                        handleEditMarker(
-                            marker.id, 
-                            rect.right + 600, 
-                            window.scrollY + rect.top
-                        );
-                        }}
-                        className="p-1 text-gray-500 hover:text-blue-500 hover:bg-gray-100 rounded"
-                        title="Edit marker"
-                    >
-                        <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
-                        <path d="M6 10a2 2 0 11-4 0 2 2 0 014 0zM12 10a2 2 0 11-4 0 2 2 0 014 0zM16 12a2 2 0 100-4 2 2 0 000 4z" />
-                        </svg>
-                    </button>
-                    <button
-                        onClick={() => handleRemoveMarker(marker.id)}
-                        className="p-1 text-gray-500 hover:text-red-500 hover:bg-gray-100 rounded"
-                        title="Remove marker"
-                    >
-                        <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
-                        <path fillRule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clipRule="evenodd" />
-                        </svg>
-                    </button>
+                        <button
+                            onClick={() => markers.forEach(m => handleRemoveMarker(m.id))}
+                            className="p-1 text-gray-500 hover:text-red-500 hover:bg-gray-100 rounded"
+                            title="Remove all markers with this material"
+                        >
+                            🗑️
+                        </button>
                     </div>
                 </div>
-                <div className="mt-2 text-xs text-gray-400 flex items-center">
-                    {/* <span>Position: {marker.position.x.toFixed(1)}%, {marker.position.y.toFixed(1)}%</span> */}
-                </div>
-                </div>
-            ))
-            )}
+            </div>
+        ))
+    )}
+        </div>
         </div>
         </div>
     );
