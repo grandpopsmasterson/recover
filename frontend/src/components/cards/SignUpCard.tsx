@@ -65,12 +65,12 @@ export default function SignUpCard() {
             firstName: '',
             lastName: '',
             password: '',
-            companyId: '',
-            globalRole: 'Viewer',
+            companyId: ''
         },
+        globalRole: 'Viewer'
     });
 
-    const globalRole: string[] = [
+    const roles: string[] = [
         'Technician',
         'Manager',
         'Client',
@@ -165,36 +165,37 @@ export default function SignUpCard() {
                     ...prev.user,
                     [name]: e,
                 },
-                }));
-            } else if (e instanceof Object && 'target' in e) {
-            const { name, value, type, checked } = e.target as HTMLInputElement;
-            setFormData((prev) => ({
-                ...prev,
-                user: {
-                ...prev.user,
-                [name]: type === 'checkbox' ? checked : value,
-                },
             }));
-            if (name !== 'confirmPassword') {
-                setFormData(prev => ({ ...prev, [name]: type === 'checkbox' ? checked : value }));
-            }
+        } else if (e instanceof Object && 'target' in e) {
+            const { name, value, type, checked } = e.target as HTMLInputElement;
+            
             if (name === 'confirmPassword') {
-                setConfirmPassword(value)
-                setErrors(prev => {
-                if (prev?.field === 'confirmPassword') {
-                    return null;
+                // Handle confirmPassword separately
+                setConfirmPassword(value);
+                
+                // Check if passwords match
+                if (value !== formData.user.password) {
+                    setErrors({
+                        field: 'confirmPassword',
+                        message: 'Passwords do not match'
+                    });
+                } else if (errors?.field === 'confirmPassword') {
+                    setErrors(null);
                 }
-                return prev;
-                });
-            }
-            if (name === 'confirmPassword' && value !== formData.user.password) {
-                setErrors({
-                field: 'confirmPassword',
-                message: 'Passwords do not match'
-                });
+            } else {
+                // Only update formData for non-confirmPassword fields
+                setFormData(prev => ({
+                    ...prev,
+                    user: {
+                        ...prev.user,
+                        [name]: type === 'checkbox' ? checked : value
+                    }
+                }));
+                
+                // Clear errors
+                setErrors(null);
             }
         }
-        setErrors(null);
     };
 
     const makeUpper = (value: string) => {
@@ -205,8 +206,8 @@ export default function SignUpCard() {
         setFormData(prev => ({
             ...prev,
             globalRole: globalRole
-
-        })); console.log(formData.user.globalRole)
+        }));
+        console.log(formData.globalRole)
         setErrors(null);
     }
     
@@ -243,28 +244,23 @@ export default function SignUpCard() {
     };
     
 
-    const handleSubmit = async (event?: React.FormEvent) => { // event.preventDefault is not a function and never works???
-
-        if (event){ event.preventDefault(); 
-            if (stage !== 3) {
-                return;
-            }
+    const handleSubmit = async (event?: React.FormEvent) => {
+        if (event) { 
+          event.preventDefault(); 
+          if (stage !== 3) return;
         }
-
-            if (validateStage(stage)) {
-            
-            try {
-                const response = await signupApi.signup(formData);
-                console.log('Success: ', response);
-                router.push('./Login');
-            } catch (error) {
-                console.log('Submission error: ', error)
-                return 
+      
+        if (validateStage(stage)) {
+          try {
+            if (!formData.user.companyId) {
+                delete formData.user.companyId;
             }
-        
-        
-            router.push('./login')
-        
+            const response = await signupApi.signup(formData);
+            console.log('Success: ', response);
+            router.push('./login');
+          } catch (error) {
+            console.log('Submission error: ', error)
+          }
         }
     }
 
@@ -300,7 +296,7 @@ export default function SignUpCard() {
                     handleRoleChange={handleRoleChange}
                     handleKeyDown={handleKeyDown}
                     errors={errors}
-                    globalRole={globalRole}
+                    roles={roles}
                     />
                 </Suspense>
                 );

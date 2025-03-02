@@ -2,7 +2,7 @@ import React from 'react';
 import { Input, Dropdown, DropdownTrigger, DropdownMenu, DropdownItem, Button } from "@heroui/react";
 import type { StepThreeProps } from '../../types/signup';
 
-export default function StepThree({formData, handleInputChange, handleRoleChange, errors, globalRole, handleKeyDown}: StepThreeProps) {
+export default function StepThree({formData, handleInputChange, handleRoleChange, roles, errors, handleKeyDown}: StepThreeProps) {
 
     return (
     <div>
@@ -71,7 +71,7 @@ export default function StepThree({formData, handleInputChange, handleRoleChange
             <Dropdown className='bg-slate-500'>
                 <DropdownTrigger>
                     <Button color='primary' variant='bordered' className='rounded-md w-1/2 border-white text-white hover:bg-slate-500'> 
-                        {formData.user.globalRole || "Viewer"}
+                        { formData.globalRole || "Viewer"}
                     </Button>
                 </DropdownTrigger>
                 <DropdownMenu
@@ -87,7 +87,7 @@ export default function StepThree({formData, handleInputChange, handleRoleChange
                 }}
                 onAction={(key) => handleRoleChange(key.toString())}
                 >
-                    {globalRole.map((role: string) => (
+                    {roles.map((role: string) => (
                         <DropdownItem
                             key={role}
                         >

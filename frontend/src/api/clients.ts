@@ -8,6 +8,19 @@ export const apiClient = axios.create(apiConfig);
 // auth api
 export const authClient = axios.create(apiConfig);
 
+authClient.interceptors.request.use(
+  config => {
+    console.log('Request Config:', {
+      url: config.url,
+      method: config.method,
+      baseURL: config.baseURL,
+      headers: config.headers,
+      withCredentials: config.withCredentials
+    });
+    return config;
+  },
+  error => Promise.reject(error)
+);
 
 // third party services
 export const awsClient = axios.create({

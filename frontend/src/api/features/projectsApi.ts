@@ -27,7 +27,7 @@ export const projectsApi = {
     try {
       const response = await apiClient.get('/projects');
       console.log('DATA RESPONSE.DATA',response.data.projects);
-      return response.data.projects; // Extract the data from the axios response
+      return response.data; // Extract the data from the axios response
       
     } catch (error) {
       console.error('Failed to fetch projects:', error);
@@ -57,7 +57,7 @@ export const projectsApi = {
 
   async getAllUsers(): Promise<User[]> {
     try {
-      const response = await apiClient.get('/users/get-all');
+      const response = await apiClient.get('/users');
       return response.data; // Extract the data from the axios response
     } catch (error) {
       console.error('Failed to fetch buckets:', error);

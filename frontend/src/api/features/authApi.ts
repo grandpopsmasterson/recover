@@ -6,22 +6,19 @@ import { ErrorCode } from "@/types/api";
 import { getLoginErrorMessage } from "../utils/error";
 
 export const loginApi = {
-    async login(credentials: LoginCredentials) {
+    async login(payload: LoginCredentials) {
         try {
-            const response = await authClient.post<LoginResponse>('/auth/login', credentials);
+            const response = await authClient.post<LoginResponse>('/auth/login', payload);
             
-            // Extract token from response body
             const token = response.data.token;
             if (token) {
                 localStorage.setItem(`token`, `${token}`);
             }
-            
             return response;
         } catch (error) {
             if (axios.isAxiosError(error)) {
                 const statusCode = error.response?.status as ErrorCode;
                 const errorMessage = getLoginErrorMessage(statusCode);
-
                 throw new Error(errorMessage);
             }
             throw Error;
@@ -30,9 +27,9 @@ export const loginApi = {
 };
 
 export const signupApi = {
-    async signup(signupData: SignupRequest) {
+    async signup(payload: SignupRequest) {
         try {
-            const response = await authClient.post<SignupResponse>('/auth/signup', signupData);
+            const response = await authClient.post<SignupResponse>('/auth/signup', payload);
             return response;
         } catch (error) {
             if (axios.isAxiosError(error)) {

@@ -1,15 +1,19 @@
 'use client'
 import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Card, CardHeader, CardBody, Input, CardFooter, Button } from "@heroui/react";
 import { RecoverLogo } from "@/components/ui/icons/RecoverLogo";
 import { LoginCredentials } from "@/types/login";
 import { loginApi } from "@/api/features/authApi";
 import { LoginError } from "@/types/auth";
+import { EyeFilledIcon, EyeSlashFilledIcon } from "../ui/icons/eyePasswordIcon";
 
 
 
 export default function LogInCard() {
+
+    const [isVisible, setIsVisible] = React.useState<boolean>(false);
+    const toggleVisibility = (): void => setIsVisible(!isVisible);
 
     const [isLoading, setIsLoading] = useState(false);
     const router = useRouter();
@@ -31,33 +35,26 @@ export default function LogInCard() {
     }, [router]);
 
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-
         e.preventDefault();
-        if (validateInput()) {
         setError(null);
-        setServerError('')
+        setServerError('');   
+        if (!validateInput()) return;
         setIsLoading(true);
-
         try {
             const response = await loginApi.login({
                 usernameOrEmail: loginData.usernameOrEmail,
                 password: loginData.password
             });
-                // Clear sensitive data
-                setLoginData({ usernameOrEmail: '', password: '' });
-                
-            console.log(response);
+            setLoginData({ usernameOrEmail: '', password: '' });
             router.push('/dashboard');
-
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        } catch (error: any) {
-            //apiClient logs the errors
+        } catch (error) {
             if (error instanceof Error) {
-                setServerError(error.message)
-            };
+                setServerError(error.message);
+            } else {
+                setServerError('Login failed. Please try again.');
+            }
         } finally {
             setIsLoading(false);
-        }
         }
     }
 
@@ -123,7 +120,7 @@ export default function LogInCard() {
                                 label: '!text-white'
                             }} 
                             label='Password' 
-                            type='password'
+                            type={isVisible ? 'text' : 'password'}
                             id='password'
                             name='password'
                             color="secondary"
@@ -131,6 +128,20 @@ export default function LogInCard() {
                             onChange={handleInputChange}
                             errorMessage='Enter a valid password'
                             isInvalid={serverError !== '' ? true : error === null ? false : error.field == 'password' ? true : false}
+                            endContent={
+                                <button
+                                aria-label="toggle password visibility"
+                                className="focus:outline-none"
+                                type="button"
+                                onClick={toggleVisibility}
+                                >
+                                {isVisible ? (
+                                    <EyeFilledIcon className="mb-[.4rem] text-2xl text-default-400 pointer-events-none" />
+                                ) : (
+                                    <EyeSlashFilledIcon className="mb-[.4rem] text-2xl text-default-400 pointer-events-none" />
+                                )}
+                                </button>
+                            }
                         />
                     </div>
                     <Button 

@@ -1,45 +1,51 @@
-import { GroupedProjects } from "@/types/project";
+import { GroupedProjects, ShortProject } from "@/types/project";
 import { buildQueryParams, determineGroupBy } from "../utils/filterFunctions";
 import { AxiosError } from "axios";
 import { apiClient } from "../clients";
 import qs from "qs";
 
 export const filterApi = {
-    async getGroupedProjects(filters: string[]): Promise<GroupedProjects[]> {
-        //if (filters.length === 0){ return {} }; unsure if this is necessary due to later changes in api calls
-
+    
+    async group(filters: string[]): Promise<Record<string, { count: number, projects: ShortProject[] }>> {
+    
         const groupBy = determineGroupBy(filters);
-        const query = buildQueryParams(filters);
-
+        
+        const ransackParams = buildQueryParams(filters);
+        
         try {
-            const { data } = await apiClient.get<GroupedProjects[]>('projects/grouped', {
-                params: { groupBy, ...query, },
-                paramsSerializer: (params) => qs.stringify(params, { arrayFormat: 'repeat' }),
+            const { data } = await apiClient.get('projects/group', {
+                params: { 
+                group_by: groupBy,
+                q: ransackParams
+                },
+                paramsSerializer: (params) => qs.stringify(params, { arrayFormat: 'brackets' })
             });
-            console.log(data);
+            
             return data;
         } catch (error) {
             if (error instanceof AxiosError) {
-                throw new Error(`Failed to fetch projects: ${error.response?.data?.message || error.message}`);
+                throw new Error(`Failed to fetch grouped projects: ${error.response?.data?.error || error.message}`);
             }
             throw error;
         }
     },
-
-    async getMultiQuery(filters: string[]): Promise<GroupedProjects[]> {
-        const groupBy = determineGroupBy(filters);
-        const query = buildQueryParams(filters);
-
+  
+    async search(filters: string[]): Promise<ShortProject[]> {
+        const ransackParams = buildQueryParams(filters);
+        
         try {
-            const { data } = await apiClient.get<GroupedProjects[]>('/projects/multi-query-filter', { //TODO ADD PROPER ENDPOINT
-                params: { groupBy, ...query, },
-                paramsSerializer: (params) => qs.stringify(params, { arrayFormat: 'repeat' }),
+            const { data } = await apiClient.get('/projects/search', {
+                params: { 
+                q: ransackParams
+                },
+                paramsSerializer: (params) => qs.stringify(params, { arrayFormat: 'brackets' })
             });
-            console.log(data);
+            
             return data;
         } catch (error) {
             if (error instanceof AxiosError) {
-                throw new Error(`Failed to fetch projects by query: ${error.response?.data?.message || error.message}`);
+                const errorMessage = error.response?.data?.message || error.response?.data?.error || error.message;
+                throw new Error(`Failed to search projects: ${errorMessage}`);
             }
             throw error;
         }
