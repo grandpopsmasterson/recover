@@ -6,7 +6,7 @@ export interface SignupState {
         firstName: string;
         lastName: string;
         companyId?: string;
-        userType: string;
+        globalRole: string;
     };
     status: 'idle' | 'loading' | 'succeeded'  | 'failed';
     error: string | null;
@@ -21,7 +21,7 @@ export interface UserDetails {
     firstName: string;
     lastName: string;
     companyId?: string;
-    userType: string;
+    globalRole: string;
     token: string;
 }
 

@@ -74,8 +74,8 @@ const Ridgeline = () => {
     }
 
     return (
-        <div className="container mx-auto px-4 py-8">
-            <div className="flex justify-between w-full bg-recovernavy rounded-bl-lg rounded-br-lg mb-4">
+        <div className="container mx-auto space-y-2 px-4 py-8">
+            <div className="flex justify-between w-full rounded-br-lg">
                 <FilterComponent 
                     setDisplayType={setDisplayType} 
                     selectedFilters={selectedFilters} 

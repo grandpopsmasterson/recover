@@ -14,9 +14,9 @@ export default {
 	theme: {
 		extend: {
 			colors: {
-				background: '(var(--background))',
+				background: '#F7F7F7',
 				foreground: '(var(--foreground))',
-				recovernavy: '#044379', 
+				recovernavy: '#184475',
 				card: {
 					DEFAULT: 'hsl(var(--card))',
 					foreground: 'hsl(var(--card-foreground))'
@@ -26,10 +26,18 @@ export default {
 					foreground: 'hsl(var(--popover-foreground))'
 				},
 				primary: {
-					DEFAULT: 'hsl(var(--primary))',
+					DEFAULT: '#184475',
 					foreground: 'hsl(var(--primary-foreground))'
 				},
 				secondary: {
+					DEFAULT: '#c9e2e7',
+					foreground: 'hsl(var(--secondary-foreground))'
+				},
+				primaryCN: {
+					DEFAULT: 'hsl(var(--primary))',
+					foreground: 'hsl(var(--primary-foreground))'
+				},
+				secondaryCN: {
 					DEFAULT: 'hsl(var(--secondary))',
 					foreground: 'hsl(var(--secondary-foreground))'
 				},
@@ -56,7 +64,7 @@ export default {
 					'5': 'hsl(var(--chart-5))'
 				},
 				sidebar: {
-					DEFAULT: 'hsl(var(--sidebar-background))',
+					DEFAULT: '#F7F7F7',
 					foreground: 'hsl(var(--sidebar-foreground))',
 					primary: 'hsl(var(--sidebar-primary))',
 					'primary-foreground': 'hsl(var(--sidebar-primary-foreground))',
@@ -70,9 +78,16 @@ export default {
 				lg: 'var(--radius)',
 				md: 'calc(var(--radius) - 2px)',
 				sm: 'calc(var(--radius) - 4px)'
-			}
-		}
-	},
+			},
+		fontWeight: {
+		light: '300',
+		normal: '400',
+		medium: '500',
+		semibold: '600',
+		bold: '700',
+		extrabold: '800',
+		},
+	}},
 	plugins: [heroui(), require("tailwindcss-animate")],
 } satisfies Config;
 

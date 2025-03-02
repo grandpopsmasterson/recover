@@ -14,12 +14,12 @@ export interface ShortProject {
       shortName: string;
       profileImageUrl: string;
       projectRole: string;
-      isAvailable: boolean;
+      available: boolean;
   }[];
   stage: string;  // Changed from projectStage
   city?: string;  // Optional since not in backend
   state?: string; // Optional since not in backend
-  houseImage?: string; // Optional
+  houseImageUrl?: string; // Optional
 }
 
 export interface LongProject {
@@ -42,9 +42,9 @@ export interface LongProject {
       shortName: string;
       profileImageUrl: string | null;
       projectRole: string;
-      isAvailable: boolean;
+      available: boolean;
   }[];
-  houseImage?: string;
+  houseImageUrl?: string;
 }
 
 export interface AssignedRoles {
@@ -52,7 +52,7 @@ export interface AssignedRoles {
   shortName: string;
   profileImageUrl: string;
   projectRole: string;
-  isAvailable: boolean;
+  available: boolean;
 }
 
 export interface Project {

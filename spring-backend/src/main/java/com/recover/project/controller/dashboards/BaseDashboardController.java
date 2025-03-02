@@ -4,36 +4,25 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.recover.project.utils.constants.Constants;
 import com.recover.project.dto.project.ProjectBucketDto;
 import com.recover.project.dto.project.ProjectListDto;
-import com.recover.project.dto.project.ShortProjectDto;
 import com.recover.project.dto.user.ShortUser;
-import com.recover.project.model.Project;
-import com.recover.project.model.enums.ProjectRole;
-import com.recover.project.service.authorization.AuthenticationService;
-import com.recover.project.service.authorization.UserService;
 import com.recover.project.service.project.ProjectService;
 import com.recover.project.utils.exceptions.ResourceNotFoundException;
-import com.recover.project.utils.exceptions.UnauthorizedException;
 
 import lombok.RequiredArgsConstructor;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 @RestController
 @RequiredArgsConstructor
 public class BaseDashboardController {
     private final ProjectService projectService;
-    private final UserService userService;
-    private final AuthenticationService authenticationService;
 
    @GetMapping("/projects/get-all")
     public ResponseEntity<?> getAllProjects() {

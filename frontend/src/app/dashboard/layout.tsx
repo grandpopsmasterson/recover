@@ -1,7 +1,7 @@
 'use client';
 
 import { Breadcrumbs } from '@/components/breadcrumbs/Breadcrumbs';
-import { AppSidebar } from '@/components/shadcn/components/app-sidebar';
+import { AppSidebar } from '@/components/shadcn/components/sidebar/app-sidebar';
 import { Separator } from '@/components/shadcn/ui/separator';
 import { 
     SidebarInset, 
@@ -20,7 +20,7 @@ export default function DashboardLayout({
             <SidebarProvider>
                 <AppSidebar />
                 <SidebarInset>
-                    <header className="flex flex-col gap-2 transition-[width,height] ease-linear">            
+                    <header className="flex flex-col gap-2 transition-[width,height] ease-linear">
                         <div className="relative flex items-center gap-2 px-4">   
                             <SidebarTrigger className="-ml-1" />
                             <Separator orientation="vertical" className="mr-2 h-4" />  
