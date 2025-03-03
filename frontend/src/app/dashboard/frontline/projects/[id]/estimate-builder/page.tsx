@@ -1,38 +1,17 @@
 'use client'
 
 import { SearchIcon } from '@/components/ui/icons/SearchIcon';
+import { Boundaries, Marker, Position } from '@/types/estimateBuilder';
 import { Button } from '@heroui/button';
-import { Autocomplete, AutocompleteItem, AutocompleteSection, Divider } from '@heroui/react';
+import { Autocomplete, AutocompleteItem, AutocompleteSection, Divider, Tab, Tabs } from '@heroui/react';
 import { AnimatePresence, motion } from 'framer-motion';
 import Image from 'next/image';
 import React, { useEffect, useRef, useState } from 'react';
 
-interface Marker {
-    id: number;
-    position: { x: number; y: number };
-    details: {
-        id: string;
-        category: string;
-        name: string;
-        description: string;
-        dimensions: string;
-        unit: string;
-        price: number;
-        availability: string;
-    };
-}
 
-interface Position {
-    x: number;
-    y: number;
-}
-
-interface Boundaries {
-    maxX: number;
-    maxY: number;
-}
 
 export default function EstimateBuilder() {
+// STATE
     // Zoom and drag state
     const [isZoomed, setIsZoomed] = useState<boolean>(false);
     const [isDragging, setIsDragging] = useState<boolean>(false);
@@ -61,8 +40,9 @@ export default function EstimateBuilder() {
     const imageContainerRef = useRef<HTMLDivElement>(null);
     const imageRef = useRef<HTMLImageElement>(null);
     const optionsRef = useRef<HTMLDivElement | null>(null);
-    const anchorRef = useRef<HTMLDivElement | null>(null);
+    const anchorRef = useRef<{ [key: number]: HTMLElement }>({});
     
+//USE EFFECT HOOKS
     // Materials logic
     useEffect(() => {
         const fetchMaterials = async () => {
@@ -73,13 +53,13 @@ export default function EstimateBuilder() {
                     throw new Error (`HTTP error! Status: ${response.status}`);
                 }
                 const text = await response.text();
-                console.log('Raw response: ', text);
-                if (text.trim()) {
-                    const data = JSON.parse(text);
-                    console.log('parsed ---',data)
-                }
+                //console.log('Raw response: ', text);
+                // if (text.trim()) {
+                //     const data = JSON.parse(text);
+                //     console.log('parsed ---',data)
+                // }
                 const data = JSON.parse(text);
-                console.log(response)
+                //console.log(response)
 
                 if (data.materials && Array.isArray(data.materials)) {
                     setMaterials(data.materials);
@@ -99,6 +79,20 @@ export default function EstimateBuilder() {
         fetchMaterials();
     }, []);
 
+    // Calculate boundaries for dragging when zoomed
+    useEffect(() => {
+        if (isZoomed && containerRef.current && imageRef.current) {
+        const containerWidth = containerRef.current.offsetWidth;
+        const containerHeight = containerRef.current.offsetHeight;
+        
+        // Set the boundaries for dragging when zoomed
+        const maxX = containerWidth / 2;
+        const maxY = containerHeight / 2;
+        
+        setBoundaries({ maxX, maxY });
+        }
+    }, [isZoomed]);
+
     //Marker Grouping Logic
     const groupedMarkers = markers.reduce((acc, marker) => {
         const materialId = marker.details.id;
@@ -114,20 +108,7 @@ export default function EstimateBuilder() {
     const panorama = '/default_panorama.jpg';
     const zoomScale = 2; // Define zoom scale as a constant
 
-    // Calculate boundaries for dragging when zoomed
-    useEffect(() => {
-        if (isZoomed && containerRef.current && imageRef.current) {
-        const containerWidth = containerRef.current.offsetWidth;
-        const containerHeight = containerRef.current.offsetHeight;
-        
-        // Set the boundaries for dragging when zoomed
-        const maxX = containerWidth / 2;
-        const maxY = containerHeight / 2;
-        
-        setBoundaries({ maxX, maxY });
-        }
-    }, [isZoomed]);
-
+    
     // Toggle zoom while preserving marker positions
     const toggleZoom = (): void => {
         setIsZoomed(!isZoomed);
@@ -142,11 +123,23 @@ export default function EstimateBuilder() {
         if (optionsRef.current && optionsRef.current.contains(e.target as Node)) {
             return;
         }
+        
+        if (anchorRef.current) {
+            const clickedMarkerEntry = Object.entries(anchorRef.current).find(
+                ([, element]) => element instanceof HTMLElement && element.contains(e.target as Node)
+            );
+            if (clickedMarkerEntry) {
+                const markerId = Number(clickedMarkerEntry[0]);
+                const clickedMarker = markers.find(m => m.id === markerId);
 
-        // if (anchorRef.current && anchorRef.current.contains(e.target as Node)) {
-        //     handleEditMarker()
-        // } //TODO REFERENCE OLD CODE TO MAKE THIS WORK ON CLICKING ANCHOR OPEN THE EDIT MENU
+                if(clickedMarker?.position) {
+                    handleEditMarker(markerId, clickedMarker.position.x, clickedMarker.position.y, e);
+                    return;
+                }
+            }
+        }
 
+        
         if (isOptionsOpen) {
             setIsOptionsOpen(false);
             setEditingMarkerId(null); 
@@ -200,6 +193,7 @@ export default function EstimateBuilder() {
             if (deltaX < 8 && deltaY < 8) {
                 handlePanoramaClick(e);
             }
+            //console.log(markers);
         }
         setMouseDownStartX(null);
         setMouseDownStartY(null);
@@ -211,33 +205,28 @@ export default function EstimateBuilder() {
         
         const rect = containerRef.current.getBoundingClientRect();
         
-        // Get position relative to container
+        // console.log('Container rect:', rect);
+        // console.log('Screen coords:', screenX, screenY);
+        
+        // Calculate base position relative to container
         let relativeX = screenX - rect.left;
         let relativeY = screenY - rect.top;
         
         if (isZoomed) {
-        // Calculate actual image coordinates when zoomed
-        // First get coordinates relative to center
-        const centerX = rect.width / 2;
-        const centerY = rect.height / 2;
-        
-        // Adjust for current pan position
-        const adjustedX = relativeX - centerX - position.x;
-        const adjustedY = relativeY - centerY - position.y;
-        
-        // Scale back to original image coordinates
-        const scaledX = adjustedX / zoomScale + centerX;
-        const scaledY = adjustedY / zoomScale + centerY;
-        
-        relativeX = scaledX;
-        relativeY = scaledY;
+            const centerX = rect.width / 2;
+            const centerY = rect.height / 2;
+            
+            // Adjust by the current pan position 
+            relativeX = (relativeX - centerX - position.x) / zoomScale + centerX;
+            relativeY = (relativeY - centerY - position.y) / zoomScale + centerY;
         }
-        
-        // Convert to percentages
         const percentX = (relativeX / rect.width) * 100;
         const percentY = (relativeY / rect.height) * 100;
         
-        return { x: percentX, y: percentY };
+        return { 
+            x: Math.max(0, Math.min(100, percentX)),
+            y: Math.max(0, Math.min(100, percentY))
+        };
     };
     
     // Handle click to place a marker
@@ -263,42 +252,79 @@ export default function EstimateBuilder() {
 
     // Add a new marker when an option is selected
     const handleOptionsSelect = (option: string): void => {
-        //? console.log(option)
         const selectedMaterial = typeof option === 'string'
             ? materials.find(material => material.id === option)
-            : option
-
+            : option;
+        
         if (!selectedMaterial) {
             console.error('Invalid selection or material not found');
             setIsOptionsOpen(false);
             return;
         }
-
+        
         // If we're editing an existing marker
         if (editingMarkerId !== null) {
-        const updatedMarkers = markers.map(marker => 
-            marker.id === editingMarkerId 
-            ? { ...marker, details: selectedMaterial }
-            : marker
-        );
-        setMarkers(updatedMarkers);
-        setEditingMarkerId(null);
+            const updatedMarkers = markers.map(marker => 
+                marker.id === editingMarkerId 
+                ? { ...marker, details: selectedMaterial }
+                : marker
+            );
+            setMarkers(updatedMarkers);
+            setEditingMarkerId(null);
         } else {
         // Creating a new marker
         // Convert screen position to image coordinates
         const imgCoords = screenToImageCoords(clickPosition.x, clickPosition.y);
         
+        // Ensure coordinates are valid (for debugging)
+        // console.log('New marker coords:', imgCoords);
+        
         const newMarker: Marker = {
             id: Date.now(),
-            position: imgCoords,
+            position: {
+                x: imgCoords.x, // Ensure within bounds
+                y: imgCoords.y
+            },
             details: selectedMaterial,
         };
         
-        setMarkers([...markers, newMarker]);
+        // Use a callback form of setState to ensure proper state update
+        setMarkers(prevMarkers => [...prevMarkers, newMarker]);
         }
+        
         setInputValue('');
         setIsOptionsOpen(false);
     };
+
+    //Modify marker position
+    // const getMarkerPosition = (marker: Marker): {left: string, top: string} => {
+    //     if (!imageDimensions) {
+    //         return {left: `${marker.position.x}%`, top: `${marker.position.y}%`};
+    //     }
+    //     const { naturalWidth, naturalHeight} = imageDimensions;
+    //     const containerWidth = containerRef.current?.offsetWidth || 0;
+    //     const containerHeight = containerRef.current?.offsetHeight || 0;
+
+    //     const containerRatio = containerWidth / containerHeight;
+    //     const imageRatio = naturalWidth / naturalHeight;
+
+    //     let xPos, yPos;
+
+    //     if (containerRatio > imageRatio) {
+    //         const visibleHeight = (naturalWidth / containerWidth) * containerHeight;
+    //         const yOffset = (naturalHeight - visibleHeight) / 2;
+
+    //         xPos = marker.position.x;
+    //         yPos = ((marker.position.y / 100 * naturalHeight - yOffset) / visibleHeight) * 100;
+    //     } else {
+    //         const visibleWidth = (naturalHeight / containerHeight) * containerWidth;
+    //         const xOffset = (naturalWidth - visibleWidth) / 2;
+
+    //         xPos = ((marker.position.x / 100 * naturalWidth - xOffset) / visibleWidth) * 100;
+    //         yPos = marker.position.y;
+    //     }
+    //     return { left: `${xPos}%`, top: `${yPos}&`};
+    // }
     
     // Remove a marker
     const handleRemoveMarker = (id: number, event?: React.MouseEvent): void => {
@@ -313,19 +339,26 @@ export default function EstimateBuilder() {
     };
     
     // Open edit menu for a marker
-    const handleEditMarker = (id: number, screenX: number, screenY: number, event?: React.MouseEvent): void => {
+    const handleEditMarker = (id: number, x: number, y: number, event?: React.MouseEvent): void => {
         if (event) {
         event.stopPropagation(); // Prevent opening the options menu
+        } else {
+            if (containerRef.current) {
+                const rect = containerRef.current.getBoundingClientRect();
+                const screenX = ( x / 100 ) * rect.width + rect.left;
+                const screenY = ( y / 100 ) * rect.height + rect.top;
+                setClickPosition({ x: screenX, y: screenY });
+            }
         }
         setEditingMarkerId(id);
-        setClickPosition({ x: screenX, y: screenY });
         setIsOptionsOpen(true);
+        console.log(id)
     };
 
     return (
         <div className='flex h-full overflow-hidden p-4 gap-4'>
         {/* Left panel: Panorama viewer */}
-        <div className='w-1/2 relative flex flex-col overflow-auto'>
+        <div className='w-3/5 relative flex flex-col overflow-auto py-1'>
             {/* Zoom toggle button */}
             <Button
             onPress={toggleZoom}
@@ -347,6 +380,7 @@ export default function EstimateBuilder() {
             {/* Image with zoom and drag transformation */}
             <div
                 ref={imageContainerRef}
+                className=''
                 style={{
                 transform: isZoomed 
                     ? `scale(${zoomScale}) translate(${position.x / zoomScale}px, ${position.y / zoomScale}px)` 
@@ -362,8 +396,8 @@ export default function EstimateBuilder() {
                 ref={imageRef}
                 src={panorama}
                 alt='Panorama'
-                fill
-                style={{ objectFit: 'cover' }}
+                fill={true}
+                //style={{ width: '100%', height: 'auto'}}
                 className='pointer-events-none'
                 priority
                 />
@@ -372,12 +406,21 @@ export default function EstimateBuilder() {
                 {markers.map((marker) => (
                 <div
                     key={marker.id}
-                    ref={anchorRef}
+                    ref={(element) => {
+                        if (!anchorRef.current) {
+                            anchorRef.current = {};
+                        }
+                        if (element) {
+                            anchorRef.current[marker.id] = element;
+                        } else {
+                            delete anchorRef.current[marker.id] // idk about this one cheif
+                        }
+                    }}
                     className={`absolute transform -translate-x-1/2 -translate-y-1/2 
                     z-10 group ${selectedMarkerId?.includes(marker.id) ? 'z-20' : ''}`}
                     style={{
-                    left: `${marker.position.x}%`,
-                    top: `${marker.position.y}%`,
+                        top: `${marker.position.y}%`,
+                        left: `${marker.position.x}%`
                     }}
                     onMouseEnter={() => setSelectedMarkerId([marker.id])}
                     onMouseLeave={() => setSelectedMarkerId(null)}
@@ -530,40 +573,159 @@ export default function EstimateBuilder() {
         </div>
 
         {/* Right panel: Marker details */}
-        <div className='w-1/2 space-y-4 overflow-hidden flex flex-col'>
-        <div className="h-full overflow-y-auto max-h-[80vh] space-y-4 p-4 border rounded-md">
-        {Object.values(groupedMarkers).length === 0 ? (
-        <div className='p-4 text-gray-500 text-center border rounded-md'>
-            No markers added yet. Zoom in and click on the image to add markers.
-        </div>
-    ) : (
-        Object.values(groupedMarkers).map(({ material, count, markers }) => (
-            <div
-                key={material.id}
-                className='p-4 border rounded-md transition-shadow hover:shadow-md'
-                onMouseEnter={() => setSelectedMarkerId(markers.map(m => m.id))}
-                onMouseLeave={() => setSelectedMarkerId(null)}
+        <div className='w-2/5 space-y-4  flex flex-col'>
+        <div className="h-full  max-h-[80vh] space-y-4 p-1 border-2 ">
+            <Tabs aria-label='options' size='lg' className='w-full h-12 -mt-2' variant='light' radius='none'
+                classNames={{
+                    tabList: 'w-full h-12',
+                    cursor: 'bg-blue-500 rounded-sm h-10',
+                    tabContent: 'group-data-[selected=true]:text-white',
+                    tab: 'rounded-md py-2 '
+                }}
             >
-                <div className="flex justify-between items-start">
-                    <div>
-                        <h3 className='font-bold'>{material.name}</h3>
-                        <p className='text-gray-600'>{material.description}</p>
-                        <p className='text-gray-500 text-sm'>{count !== 0 ? `Amount: ${count}` : ''}</p>
-                        <p className='text-gray-500 text-sm'>Cost: ${count * material.price}</p>
+                <Tab key='estimate' title='Estimate' className='overflow-hidden'>
+                    <div className='overflow-y-auto h-full max-h-[70vh]'>
+                        {Object.values(groupedMarkers).length === 0 ? (
+                            <div className='p-4 text-gray-500 text-center border rounded-md'>
+                                No markers added yet. Zoom in and click on the image to add markers.
+                            </div>
+                        ) : (
+                        Object.values(groupedMarkers).map(({ material, count, markers }) => (
+                            <div
+                                key={material.id}
+                                className='p-2 shadow-lg border rounded-md transition-shadow hover:bg-gray-300'
+                                onMouseEnter={() => setSelectedMarkerId(markers.map(m => m.id))}
+                                onMouseLeave={() => setSelectedMarkerId(null)}
+                            >
+                                <div className="flex justify-between items-start">
+                                    <div>
+                                        <h3 className='font-bold'>{material.name}</h3>
+                                        <p className='text-gray-600'>{material.description}</p>
+                                        <p className='text-gray-500 text-sm'>{count !== 0 ? `Amount: ${count}` : ''}</p>
+                                        <p className='text-gray-500 text-sm'>Cost: ${count * material.price}</p>
+                                    </div>
+                                    <div className="flex space-x-1">
+                                        <button
+                                            onClick={() => markers.forEach(m => handleRemoveMarker(m.id))}
+                                            className="p-1 text-gray-500 hover:text-red-500 hover:bg-gray-100 rounded"
+                                            title="Remove all markers with this material"
+                                        >
+                                            🗑️
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                            ))
+                        )}
                     </div>
-                    <div className="flex space-x-1">
-                        <button
-                            onClick={() => markers.forEach(m => handleRemoveMarker(m.id))}
-                            className="p-1 text-gray-500 hover:text-red-500 hover:bg-gray-100 rounded"
-                            title="Remove all markers with this material"
-                        >
-                            🗑️
-                        </button>
-                    </div>
-                </div>
-            </div>
-        ))
-    )}
+                </Tab>
+                <Tab key='FloorPlan' title='Floor Plan' >
+                    <Tabs aria-label='floors' className='w-full' size='sm' radius='md'
+                    classNames={{
+                    tabList: 'w-full p-0 rounded-md',
+                    cursor: 'bg-blue-500 h-10 rounded-md',
+                    tabContent: 'group-data-[selected=true]:text-white rounded-md',
+                    tab: 'rounded-md'
+                }}>
+                        <Tab key='floor1' title='First Floor' className='max-h-65' >
+                            <div className='flex flex-wrap gap-2 overflow-y-auto h-full'>
+                                <div className='bg-secondary p-0.5 rounded-sm text-center'>
+                                    <Image
+                                        ref={imageRef}
+                                        src={panorama}
+                                        alt='Panorama'
+                                        width={300}
+                                        height={75}
+                                        className='pointer-events-none rounded-sm'
+                                        priority
+                                    />
+                                    Room 1
+                                </div>
+                                <div className='bg-secondary p-0.5 rounded-sm text-center'>
+                                    <Image
+                                        ref={imageRef}
+                                        src={panorama}
+                                        alt='Panorama'
+                                        width={300}
+                                        height={75}
+                                        className='pointer-events-none rounded-sm'
+                                        priority
+                                    />
+                                    Room 2
+                                </div>
+                                <div className='bg-secondary p-0.5 rounded-sm text-center'>
+                                    <Image
+                                        ref={imageRef}
+                                        src={panorama}
+                                        alt='Panorama'
+                                        width={300}
+                                        height={75}
+                                        className='pointer-events-none rounded-sm'
+                                        priority
+                                    />
+                                    Room 3
+                                </div>
+                                <div className='bg-secondary p-0.5 rounded-sm text-center'>
+                                    <Image
+                                        ref={imageRef}
+                                        src={panorama}
+                                        alt='Panorama'
+                                        width={300}
+                                        height={75}
+                                        className='pointer-events-none rounded-sm'
+                                        priority
+                                    />
+                                    Room 4
+                                </div>
+                                <div className='bg-secondary p-0.5 rounded-sm text-center'>
+                                    <Image
+                                        ref={imageRef}
+                                        src={panorama}
+                                        alt='Panorama'
+                                        width={300}
+                                        height={75}
+                                        className='pointer-events-none rounded-sm'
+                                        priority
+                                    />
+                                    Room 5
+                                </div>
+                            </div>
+                        </Tab>
+                        <Tab key='floor2' title='Second Floor'>
+                        <div className='flex flex-wrap gap-2 overflow-y-auto h-full'>
+                                <div className='bg-secondary p-0.5 rounded-sm text-center'>
+                                    <Image
+                                        ref={imageRef}
+                                        src={panorama}
+                                        alt='Panorama'
+                                        width={300}
+                                        height={75}
+                                        className='pointer-events-none rounded-sm'
+                                        priority
+                                    />
+                                    Kitchen
+                                </div>
+                                <div className='bg-secondary p-0.5 rounded-sm text-center'>
+                                    <Image
+                                        ref={imageRef}
+                                        src={panorama}
+                                        alt='Panorama'
+                                        width={300}
+                                        height={75}
+                                        className='pointer-events-none rounded-sm'
+                                        priority
+                                    />
+                                    Bathroom
+                                </div>
+                            </div>
+                        </Tab>
+                    </Tabs>
+                    </Tab>
+            </Tabs>
+        </div>
+        <div>
+            <Button className='w-1/2'>Save</Button>
+            <Button className='w-1/2' color='success'>Continue</Button>
         </div>
         </div>
         </div>
