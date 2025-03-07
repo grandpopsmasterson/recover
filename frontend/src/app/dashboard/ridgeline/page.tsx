@@ -11,77 +11,78 @@ import { useFilterPersistence } from '@/hooks/filters/useFilterPersistence'
 import ProjectGroupCard from '@/components/cards/ProjectGroupCard'
 
 const Ridgeline = () => {
-    // State management
+    // State 
     const [displayType, setDisplayType] = useState<'ListCard'|'List'|'Card'>('ListCard');
     const [projects, setProjects] = useState<ShortProject[]>([]);
     const [groupedProjects, setGroupedProjects] = useState<GroupedProjects[]>([]);
-    const [isLoading, setIsLoading] = useState<boolean>(false);
-    const [error, setError] = useState<string | null>(null);
+    const [isTokenReady, setIsTokenReady] = useState(false);
+    const [isLoading, setIsLoading] = useState(false);
+    const [error, setError] = useState<any>(null);
     
-    // Filter management
+    // Filters
     const { selectedFilters, setSelectedFilters, isInitialized } = useFilterPersistence();
     const [pendingSelection, setPendingSelection] = useState<string | null>(null);
     const [pendingRemoval, setPendingRemoval] = useState<string | null>(null);
     const [inputValue, setInputValue] = useState<string>('');
-
-    // Fetch projects based on filters
-    const fetchProjects = async (filterList: string[]) => {
-        setIsLoading(true);
-        setError(null);
-        
-        try {
-            // Case 1: No filters selected
-            if (filterList.length === 0) {
-                const data = await projectsApi.getAllProjects(); 
-                setProjects(data);
-                setDisplayType('List');
-                return;
-            }
-            
-            // Case 2: Determine if we should group or just search
-            const hasGroupFilter = filterList.some(f => 
-                filters.find(ff => ff.name === f)?.group === 'Group'
-            );
-            
-            if (hasGroupFilter) {
-                // Group the projects
-                const data = await filterApi.group(filterList);
-                
-                // Transform the data to match expected format
-                const formattedGroups = Object.entries(data).map(([key, value]) => ({
-                    groupKey: key,
-                    count: value.count,
-                    projects: value.projects
-                }));
-                
-                setGroupedProjects(formattedGroups);
-                setDisplayType('ListCard');
-            } else {
-                // Search with filters
-                const data = await filterApi.search(filterList);
-                setProjects(data);
-                setDisplayType('List');
-            }
-        } catch (error) {
-            setError(error instanceof Error ? error.message : 'An error occurred');
-            console.error('Error fetching projects:', error);
-        } finally {
-            setIsLoading(false);
-        }
-    }
-
-    // Fetch projects when filters change (with debounce)
+    
     useEffect(() => {
-        if (!isInitialized) return;
-        
-        const debounceTimeout = setTimeout(() => {
-            fetchProjects(selectedFilters);
-        }, 300);
-        
-        return () => clearTimeout(debounceTimeout);
-    }, [selectedFilters, isInitialized]);
+        // Token readiness check
+        const checkTokenReady = () => {
+            const token = localStorage.getItem('token');
+            console.group('Token Readiness Check');
+            console.log('Token present:', !!token);
+            console.log('Token length:', token ? token.length : 0);
+            setIsTokenReady(!!token);
+            console.groupEnd();
+        };
+    
+        // Initial token check
+        checkTokenReady();
+    
+        // Listen for storage changes
+        const handleStorageChange = (e: StorageEvent) => {
+            console.group('Storage Event');
+            console.log('Event key:', e.key);
+            console.log('New value:', e.newValue);
+            console.log('Old value:', e.oldValue);
+            
+            if (e.key === 'token') {
+                checkTokenReady();
+            }
+            console.groupEnd();
+        };
+    
+        window.addEventListener('storage', handleStorageChange);
+    
+        // Fetch projects when conditions are met
+        if (isInitialized && isTokenReady) {
+            console.group('Project Fetch Conditions');
+            console.log('Initialized:', isInitialized);
+            console.log('Token Ready:', isTokenReady);
+            console.log('Selected Filters:', selectedFilters);
+    
+            const debounceTimeout = setTimeout(() => {
+                console.log('Initiating fetch projects');
+                fetchProjects(selectedFilters);
+            }, 300);
+    
+            // Cleanup function
+            return () => {
+                clearTimeout(debounceTimeout);
+                window.removeEventListener('storage', handleStorageChange);
+                console.log('Cleanup: Debounce timeout cleared');
+                console.groupEnd();
+            };
+        }
+    
+        // Cleanup for storage listener if conditions aren't met
+        return () => {
+            window.removeEventListener('storage', handleStorageChange);
+            console.log('Cleanup: Storage listener removed');
+        };
+    }, [isInitialized, isTokenReady, selectedFilters]);
 
-    // Handle pending filter selection
+    
     useEffect(() => {
         if (pendingSelection && !selectedFilters.includes(pendingSelection)) {
             setSelectedFilters([...selectedFilters, pendingSelection]);
@@ -90,8 +91,47 @@ const Ridgeline = () => {
         }
     }, [pendingSelection, selectedFilters, setSelectedFilters]);
 
-    // Show loading state while initializing
-    if (!isInitialized) {
+
+    const fetchProjects = async (filterList: string[]) => {
+        setIsLoading(true);
+        setError(null);
+        
+        try {
+            if (filterList.length === 0) {
+                const data = await projectsApi.getAllProjects(); 
+                setProjects(data);
+                setDisplayType('List');
+                return;
+            }
+            const hasGroupFilter = filterList.some(f => 
+                filters.find(ff => ff.name === f)?.group === 'Group'
+            );
+            
+            if (hasGroupFilter) {
+                const groupedData = await filterApi.group(filterList);
+                const formattedGroups = Object.entries(groupedData).map(([key, value]) => ({
+                    groupKey: key,
+                    count: value.count,
+                    projects: value.projects
+                }));
+                
+                setGroupedProjects(formattedGroups);
+                setDisplayType('ListCard');
+            } else {
+                // Regular search with filters
+                const data = await filterApi.search(filterList);
+                setProjects(data);
+                setDisplayType('List');
+            }
+        } catch (err) {
+            console.error('Error fetching projects:', err);
+            setError(err);
+        } finally {
+            setIsLoading(false);
+        }
+    };
+
+    if (!isInitialized || !isTokenReady) {
         return <div className="flex items-center justify-center h-screen">Loading...</div>;
     }
 

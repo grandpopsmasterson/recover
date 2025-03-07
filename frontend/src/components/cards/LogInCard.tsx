@@ -4,7 +4,7 @@ import React, { useEffect, useState } from "react";
 import { Card, CardHeader, CardBody, Input, CardFooter, Button } from "@heroui/react";
 import { RecoverLogo } from "@/components/ui/icons/RecoverLogo";
 import { LoginCredentials } from "@/types/login";
-import { loginApi } from "@/api/features/authApi";
+import { authApi } from "@/api/features/authApi";
 import { LoginError } from "@/types/auth";
 import { EyeFilledIcon, EyeSlashFilledIcon } from "../ui/icons/eyePasswordIcon";
 
@@ -14,7 +14,6 @@ export default function LogInCard() {
 
     const [isVisible, setIsVisible] = React.useState<boolean>(false);
     const toggleVisibility = (): void => setIsVisible(!isVisible);
-
     const [isLoading, setIsLoading] = useState(false);
     const router = useRouter();
     const [error, setError] = useState<LoginError | null>(null);
@@ -34,6 +33,7 @@ export default function LogInCard() {
         }
     }, [router]);
 
+
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         setError(null);
@@ -41,12 +41,18 @@ export default function LogInCard() {
         if (!validateInput()) return;
         setIsLoading(true);
         try {
-            const response = await loginApi.login({
+            const response = await authApi.login({
                 usernameOrEmail: loginData.usernameOrEmail,
                 password: loginData.password
             });
             setLoginData({ usernameOrEmail: '', password: '' });
-            router.push('/dashboard');
+            
+            const token = localStorage.getItem('token');
+            if (token) {
+                router.push('/dashboard');
+            } else {
+                setServerError('Authentication failed. Please try again.');
+            }
         } catch (error) {
             if (error instanceof Error) {
                 setServerError(error.message);

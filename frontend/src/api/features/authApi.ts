@@ -1,89 +1,53 @@
+import { apiService } from '@/api/service/apiService';
 import { LoginCredentials, LoginResponse } from "@/types/login";
-import { authClient } from "../clients";
 import { SignupRequest, SignupResponse } from "@/types/signup";
-import axios from "axios";
-import { ErrorCode } from "@/types/api";
-import { getLoginErrorMessage } from "../utils/error";
+import TokenManager from '@/api/utils/token';
 
-export const loginApi = {
-    async login(payload: LoginCredentials) {
+export const authApi = {
+    async login(credentials: LoginCredentials): Promise<LoginResponse> {
         try {
-            const response = await authClient.post<LoginResponse>('/auth/login', payload);
+            // With our improved apiService, this will correctly extract the response
+            // regardless of whether it's nested or not
+            const response = await apiService.post<LoginResponse>('/auth/login', credentials);
             
-            const token = response.data.token;
-            if (token) {
-                localStorage.setItem(`token`, `${token}`);
+            // Log the response for debugging
+            console.log('Login response:', response);
+            
+            // Check if we have a token in the response
+            if (response && response.token) {
+                // Store the token
+                TokenManager.setToken(response.token);
+                return response;
+            } else {
+                console.error('No token found in response:', response);
+                throw new Error('Authentication failed: No token received');
             }
-            return response;
         } catch (error) {
-            if (axios.isAxiosError(error)) {
-                const statusCode = error.response?.status as ErrorCode;
-                const errorMessage = getLoginErrorMessage(statusCode);
-                throw new Error(errorMessage);
-            }
-            throw Error;
+            console.error('Login error:', error);
+            throw error;
         }
-    }
-};
+    },
 
-export const signupApi = {
-    async signup(payload: SignupRequest) {
-        try {
-            const response = await authClient.post<SignupResponse>('/auth/signup', payload);
-            return response;
-        } catch (error) {
-            if (axios.isAxiosError(error)) {
-                console.error('Signup failed:', {
-                    status: error.response?.status,
-                    data: error.response?.data
-                });
-            }
-            throw error;
-        }
+    async signup(payload: SignupRequest): Promise<SignupResponse> {
+        return apiService.post<SignupResponse>('/auth/signup', payload);
     },
-    async checkEmailAvailability(email: string) {
-        try {
-            const response = await authClient.post<{ available: boolean }>('/auth/check-email', { email });
-            return response.data.available;
-        } catch (error) {
-            if (axios.isAxiosError(error)) {
-                console.error('Email check failed:', {
-                    status: error.response?.status,
-                    data: error.response?.data
-                });
-            }
-            throw error;
-        }
-    },
-    async checkUsernameAvailability(username: string) {
-        try {
-            const response = await authClient.post<{ available: boolean }>(`/auth/check-username/`, { username });
-            return response.data.available;
-        } catch (error) {
-            if (axios.isAxiosError(error)) {
-            console.error('Username check failed:', {
-                status: error.response?.status,
-                data: error.response?.data
-                });
-            }
-            throw error;
-        }
-    },
-};
 
-export const logoutApi = {
-    async logout() {
+    async checkEmailAvailability(email: string): Promise<boolean> {
+        const response = await apiService.post<{ available: boolean }>('/auth/check-email', { email });
+        return response.available;
+    },
+
+    async checkUsernameAvailability(username: string): Promise<boolean> {
+        const response = await apiService.post<{ available: boolean }>('/auth/check-username', { username });
+        return response.available;
+    },
+
+    async logout(): Promise<void> {
         try {
-            await authClient.post('/auth/logout');
-            localStorage.removeItem('token');
-            localStorage.removeItem('user');
-            return true;
-        } catch (error) {
-            console.error('Logout failed', error);
-            // Clean up local storage even if server logout fails
-            localStorage.removeItem('token');
-            localStorage.removeItem('user');
-            throw error;
+        await apiService.post('/auth/logout', {});
+        } finally {
+        TokenManager.clearAuth();
+        localStorage.removeItem('user');
         }
     }
 };

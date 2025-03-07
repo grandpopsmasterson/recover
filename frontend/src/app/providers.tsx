@@ -10,7 +10,7 @@ export function Providers({children}: { children: React.ReactNode }) {
           defaultTheme='light'
           forcedTheme='light'
         >
-            {children}
+          {children}
         </ThemeProvider>
     </HeroUIProvider>
   )
