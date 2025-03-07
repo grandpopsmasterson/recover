@@ -1,0 +1,173 @@
+npm install @reduxjs/toolkit react-redux
+
+in main page.tsx -- import { configureStore } from '@reduxjs/toolkit';
+in main page.tsx -- import { Provider } from 'react-redux'; -- wrap the provider tag around the main app in page.tsx <Provider store={store}><Provider/>
+
+const store = configureStore({
+    reducer: {}
+})
+
+now store is combined with app
+
+slices add state to redux
+slices represent each piece of state -> lots of slices
+.ts files since no components will be created
+
+import { createSlice } from "@reduxjs/toolkit"
+
+slices in redux combine the functionality of actions and reducers to make redux implementataions simpler and more efficent
+
+const initialState = {
+    value: <value>
+}
+
+const functionNameSlice = createSlice({
+    name: <name>, // this is the name of this piece of state
+    initial state,
+    reducers: {
+        functionality will be added here
+    }
+});
+
+export const { <add all actions created in reducers> } = functionNameSlice.actions;
+export default functionNameSlice.reducer; // this extracts the reducer from the function and makes it the default export for the slice file
+
+//// EXAMPLE FOR CART COUNT MANAGEMENT
+import { createSlice } from "@reduxjs/toolkit";
+
+const initialState = {
+    value: 0
+};
+
+const cartCountSlice = createSlice({
+    name: "cartCount",
+    initialState,
+    reducers: {
+        increment: (state) => {
+            state.value += 1
+        },
+        decrement: (state) => {
+            state.value -= 1
+        },
+        incrementByAmount: (state, action) => {
+            state.value += action.payload // payload is the argument that is stored for the action -- incrementByAmount(5) -> the 5 is the payload that is carried through the action
+        },
+        
+    }
+});
+
+export const { increment, decrement, incrementByAmount } = cartCountSlice.actions
+export default cartCountSlice.reducer
+
+then in the page.tsx, import the reducer
+import functionNameReducer from '<location>'
+
+then in the reducer we add what we created
+const store = configureStore({
+    reducer: {
+        functionName: functionNameReducer
+    }
+})
+
+import from the react redux useDispatch to be able to change the state management from propdrilling to global state
+
+import useDispatch from 'react-redux'
+
+then import all the reducer functions from the slice file
+
+import { <all reducers> } from "functionNameSlice.ts"
+
+then inside the component, we create a dispatch variable
+
+let dispatch = useDispatch(); // this allows us to dispatch the actions that we have created in the slice file
+
+then we can replace all of the original state handlers that we want to store globally with the redux dispatch state actions
+
+// EXAMPLE FROM cartCount
+for the button on click, instead of
+
+onClick={() => setCartCount(cartCount + 1)}
+
+we can use 
+
+onClick={() => dispatch(increment())}
+
+for specifying the payload for an action within a slice, we will need to have the state set locally so the vatiable is stored, and then we pull from that
+to set the payload for the action
+
+onClick={() => dispatch(incrementByAmount(incrementAmount))} --> the incrementAmount is from the local state const [incrementAmount, setIncrementAmount] = useState(0);
+we pass this in to be able to pull from the user action and then update the state globally from the action
+
+now for using this state elsewhere, we need to import a function from react redux that allows us to pull a piece of state
+import { useSelector } from "react-redux"
+
+then we create a variable that stores the specific vatiable
+
+let <state variable name> = useSelector(state => state.<state name>.value);
+
+then add the variable to where it needs to be placed, and it will update and re render when the value is changed 
+
+to add more state, create a new slice file and create a similar block of code.
+
+//EXAMPLE LOGGEDINSLICE
+
+import { createSlice } from "@reduxjs/toolkit"
+
+const initialState = {
+    value: false
+};
+
+const loggedInSlice = createSlice({
+    name: "loggedIn",
+    initialState,
+    reducers: {
+        setTrue: (state) => {
+            state.value = true
+        },
+        setFalse: (state) => {
+            state.value = false
+        }
+    }
+});
+
+export const { setTrue, setFalse } = loggedInSlice.actions;
+export default loggedInSlice.reducer;
+
+then
+
+import loggedInReducer from "location..."
+
+and update your store to look like this on the main page.tsx
+
+const store = configureStore({
+    reducer: {
+        cartCount: cartCountReducer,
+        loggedIn: loggedInReducer
+    }
+})
+
+/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\ REACT REDUX DOCUMENTATION NOTES /\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\
+
+
+// when creating actions , we create them like this -- this is an action object
+const addTodoAction = {
+    type: 'todos/todoAdded',
+    payload: 'Buy milk'
+}
+
+the type field should be a string that provides a descriptive name for the action. We follow the concept "domain/eventName", as seen in the above EXAMPLE
+
+an action creator is a dunction that creates and returns an object. This is so the action objects dont have to be hand written every time
+
+const addTodo = text => {
+    return {
+        type: 'todos/todoAdded',
+        payload: text
+    }
+}
+
+Reduceers are functions that recieves the current state and an action object and decides how to update the state if necessary.
+this essentially returns the new state (state, action) => newState. They are essentially event listeners which handle events based on the recieved action (event) type
+Reducers should only calculate the new state based on the state and action arguments. They can not directly modify the state, rather perform immutable updates
+They must be pure, no async functions, no random calculations, or other 'side effects'??
+

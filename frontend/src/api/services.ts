@@ -1,4 +1,6 @@
-import { awsClient } from './clients'
+import { awsClient } from './clients';
+import { mapsClient } from './clients';
+import { matterportClient } from './clients';
 
 export class AWSService {
   constructor(private client = awsClient) {}
@@ -12,9 +14,6 @@ export class AWSService {
   }
 }
 
-// src/lib/api/services/maps.service.ts
-import { mapsClient } from './clients';
-
 export class GoogleMapsService {
   constructor(private client = mapsClient) {}
 
@@ -27,9 +26,6 @@ export class GoogleMapsService {
     });
   }
 }
-
-// src/lib/api/services/matterport.service.ts
-import { matterportClient } from './clients';
 
 export class MatterportService {
   constructor(private client = matterportClient) {}

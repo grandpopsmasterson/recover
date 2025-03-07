@@ -1,3 +1,4 @@
+import { Estimate } from "./estimateBuilder";
 
 export interface ProjectRoleRequest {
   userId: bigint;
@@ -16,9 +17,9 @@ export interface ShortProject {
       projectRole: string;
       available: boolean;
   }[];
-  stage: string;  // Changed from projectStage
-  city?: string;  // Optional since not in backend
-  state?: string; // Optional since not in backend
+  stage: string;
+  city: string; 
+  state: string; 
   houseImageUrl?: string; // Optional
 }
 
@@ -35,7 +36,7 @@ export interface LongProject {
   state: string;
   zipcode: string;
   stage: string;
-  projectType: 'RESIDENTIAL' | 'COMMERCIAL';
+  projectType: 'RESIDENTIAL' | 'COMMERCIAL' | 'INDUSTRIAL';
   carrier: string;
   assignedRoles: {
       id: number;
@@ -45,6 +46,14 @@ export interface LongProject {
       available: boolean;
   }[];
   houseImageUrl?: string;
+}
+
+
+export interface ProjectState {
+  projects: LongProject[];
+  currentProject: LongProject | null;
+  loading: boolean;
+  error: string | null;
 }
 
 export interface AssignedRoles {
@@ -82,11 +91,15 @@ export interface FilterError {
 
 export interface GroupedProjects {
   groupKey: string;
-  projects:ShortProject[];
+  projects:LongProject[];
   count: number;
 };
 
-
+export interface GroupedProjectState {
+  groupedProjects: GroupedProjects[];
+  loading: boolean;
+  error: string | null;
+}
 
 export const filters = [
   {name: 'Stage', group: 'Group'},

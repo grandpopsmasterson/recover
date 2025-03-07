@@ -14,26 +14,26 @@ export const projectsApi = {
     }
   },
 
-  async updateProject(projectId: string, request: CreateProject): Promise<ShortProject> {
-    try {
-      return await apiClient.put(`/projects/${projectId}`, request);
-    } catch (error) {
-      console.error('Failed to update project:', error);
-      throw error;
-    }
-  },
+  // async updateProject(projectId: string, request: CreateProject): Promise<ShortProject> {
+  //   try {
+  //     return await apiClient.put(`/projects/${projectId}`, request);
+  //   } catch (error) {
+  //     console.error('Failed to update project:', error);
+  //     throw error;
+  //   }
+  // },
 
-  async getAllProjects(): Promise<ShortProject[]> {
-    try {
-      const response = await apiClient.get('/projects');
-      console.log('DATA RESPONSE.DATA',response.data.projects);
-      return response.data.projects; // Extract the data from the axios response
+  // async getAllProjects(): Promise<ShortProject[]> {
+  //   try {
+  //     const response = await apiClient.get('/projects');
+  //     console.log('DATA RESPONSE.DATA',response.data.projects);
+  //     return response.data.projects; // Extract the data from the axios response
       
-    } catch (error) {
-      console.error('Failed to fetch projects:', error);
-      throw error;
-    }
-  },
+  //   } catch (error) {
+  //     console.error('Failed to fetch projects:', error);
+  //     throw error;
+  //   }
+  // },
 
   async getProject(projectId: string): Promise<LongProject> {
     try {
