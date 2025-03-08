@@ -1,30 +1,59 @@
-import { Estimate } from "./estimateBuilder";
+import { Estimate } from "./estimate";
 
+// Define string literal types for better type safety
+export type ProjectStage = 
+  'pending sale' | 
+  'work in progress' | 
+  'Acct Receivable' | 
+  'Needs Approval' | 
+  'Complete' | 
+  'Mitigation';
+
+export type ProjectScope = 
+  'Mitigation' | 
+  'Contents' | 
+  'Reconstruction';
+
+export type ProjectType = 'RESIDENTIAL' | 'COMMERCIAL' | 'INDUSTRIAL';
+
+export type ProjectFlag = 
+  'Urgent' | 
+  'Action Needed' | 
+  'Up to Date';
+
+export type ProjectStatus = 'active' | 'archived';
+
+// Reusable interface for assigned roles
+export interface AssignedRole {
+  id: number;
+  shortName: string;
+  profileImageUrl: string | null;
+  projectRole: string;
+  available: boolean;
+}
+
+// Project Role Request
 export interface ProjectRoleRequest {
   userId: bigint;
   projectId?: bigint;
   projectRole: string;
 }
 
+// Short Project Representation
 export interface ShortProject {
   id: bigint;
   streetAddress: string;
   clientName: string;
-  assignedRoles: {
-      id: number;
-      shortName: string;
-      profileImageUrl: string;
-      projectRole: string;
-      available: boolean;
-  }[];
-  stage: string;
+  assignedRoles: AssignedRole[];
+  stage: ProjectStage;
   city: string; 
   state: string; 
-  houseImageUrl?: string; // Optional
+  houseImageUrl?: string;
 }
 
+// Detailed Project Interface
 export interface LongProject {
-  id: number;
+  id: bigint;
   projectName: string | null;
   clientName: string;
   clientEmail: string;
@@ -35,70 +64,76 @@ export interface LongProject {
   city: string;
   state: string;
   zipcode: string;
-  stage: string;
-  projectType: 'RESIDENTIAL' | 'COMMERCIAL' | 'INDUSTRIAL';
+  stage: ProjectStage;
+  projectType: ProjectType;
   carrier: string;
-  assignedRoles: {
-      id: number;
-      shortName: string;
-      profileImageUrl: string | null;
-      projectRole: string;
-      available: boolean;
-  }[];
+  assignedRoles: AssignedRole[];
   houseImageUrl?: string;
 }
 
-
-export interface ProjectState {
-  projects: LongProject[];
-  currentProject: LongProject | null;
-  loading: boolean;
-  error: string | null;
-}
-
-export interface AssignedRoles {
-  id: bigint;
-  shortName: string;
-  profileImageUrl: string;
-  projectRole: string;
-  available: boolean;
-}
-
-export interface Project {
-    id: string;
-    name: string;
-    description: string;
-    status: 'active' | 'archived';
-    createdAt: string;
-  }
-
+// Bucket Interface for Project Grouping
 export interface ListBucket {
-  // id: bigint; not needed - id is for individual projects?
   name: string;
   total: number;
-  redTotal: number | 0;
-  yellowTotal: number | 0;
-  greenTotal: number | 0;
-  revenue: number | 25000;
+  redTotal: number;
+  yellowTotal: number;
+  greenTotal: number;
+  revenue: number;
 }
 
+// Filtered Project Details
 export type DetailsProps = Pick<LongProject, 'lossDate' | 'startDate'>;
 
+// Error Handling
 export interface FilterError {
   message: string;
   field?: string;
 }
 
+// Grouped Projects
 export interface GroupedProjects {
   groupKey: string;
-  projects:LongProject[];
+  projects: LongProject[];
   count: number;
-};
+}
 
 export interface GroupedProjectState {
   groupedProjects: GroupedProjects[];
   loading: boolean;
   error: string | null;
+}
+
+// Project State for Redux
+export interface ProjectState {
+  projects: ShortProject[];
+  currentProject: LongProject | null;
+  loading: boolean;
+  error: string | null;
+  overview: {
+    data: ShortProject | null;
+    loading: boolean;
+    error: string | null;
+  };
+  estimates?: {
+    data: Estimate[];
+    loading: boolean;
+    error: string | null;
+  };
+  workOrders?: {
+    data: WorkOrder[];
+    loading: boolean;
+    error: string | null;
+  };
+  timeline?: {
+    data: Timeline[];
+    loading: boolean;
+    error: string | null;
+  };
+  flags?: {
+    data: Flag[];
+    loading: boolean;
+    error: string | null;
+  };
 }
 
 export const filters = [
@@ -122,6 +157,23 @@ export const filters = [
   {name: 'Reconstruction', group: 'Project Scope'},
   {name: 'Urgent', group: 'Flags' },
   {name: 'Action Needed', group: 'Flags' },
-  {name: 'Up to Date', group: 'Flags' },
-  {name: 'Invoice', group: 'Group' }
-]
+  {name: 'Up to Date', group: 'Flags' }
+] as const;
+
+
+export interface Timeline {
+  id: bigint;
+  materialCode: string;
+  count: number;
+}
+export interface WorkOrder {
+  id: bigint;
+  contractor: AssignedRole[];
+  area: string;
+}
+export interface Flag {
+  id: bigint;
+  projectId: bigint;
+  issueType: string;
+  severity: string;
+}

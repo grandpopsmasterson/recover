@@ -1,5 +1,5 @@
 'use client'
-import { useEffect, useState } from 'react'
+import { useContext, useEffect, useState } from 'react'
 import { useParams } from 'next/navigation'
 import { projectsApi } from '@/api/features/projectsApi'
 import { LongProject } from '@/types/project'
@@ -8,8 +8,11 @@ import MultiPage from '@/function/project/multi-page'
 import { ProjectBar } from '@/components/banners/ProjectBar'
 import { Skeleton } from '@/components/shadcn/ui/skeleton'
 import { Alert, AlertDescription } from '@/components/shadcn/ui/alert'
+import { useSelector } from 'react-redux'
 
 export default function ProjectDetailPage() {
+    const projectContext = useContext(ProjectContext);
+    const ShortProject = useSelector(selectShortProject);
     const params = useParams()
     const [project, setProject] = useState<LongProject | null>(null)
     const [isLoading, setIsLoading] = useState(true)

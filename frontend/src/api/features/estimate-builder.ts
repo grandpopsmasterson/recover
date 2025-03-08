@@ -1,4 +1,4 @@
-import { Marker, Materials, RoomCard } from "@/types/estimateBuilder";
+import { Marker, Materials, RoomCard } from "@/types/estimate";
 import { apiClient } from "../clients";
 
 

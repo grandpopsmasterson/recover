@@ -1,7 +1,7 @@
 'use client'
 
 import { SearchIcon } from '@/components/ui/icons/SearchIcon';
-import { Boundaries, Marker, Position } from '@/types/estimateBuilder';
+import { Boundaries, Marker, Position } from '@/types/estimate';
 import { Button } from '@heroui/button';
 import { Autocomplete, AutocompleteItem, AutocompleteSection, Divider, Tab, Tabs } from '@heroui/react';
 import { AnimatePresence, motion } from 'framer-motion';
