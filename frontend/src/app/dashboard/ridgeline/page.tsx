@@ -1,10 +1,10 @@
-// DashboardPage.tsx
 'use client'
 
 import React, { useEffect, useState } from 'react'
 import FilterComponent from '@/components/filters/FilterComponent'
 import ProjectCardBuckets from '@/components/cards/ProjectCardBuckets'
-import { FilterError } from '@/types/project'
+import { FilterError, GroupedProjects, ShortProject, filters } from '@/types/project'
+import { filterApi } from '@/api/features/filterApi'
 import ListView from '@/components/ui/ListView'
 import { useFilterPersistence } from '@/hooks/filters/useFilterPersistence'
 import ProjectGroupCard from '@/components/cards/ProjectGroupCard'
@@ -14,6 +14,7 @@ import { getGroupedProjectsThunk, getMultiQueryThunk } from '@/store/thunk/group
 
 
 const Ridgeline = () => {
+    // State 
     const [displayType, setDisplayType] = useState<'ListCard'|'List'|'Card'>('ListCard');
     const { selectedFilters, setSelectedFilters, isInitialized } = useFilterPersistence();
     const [isLoading, setIsLoading] = useState<boolean>(false);
@@ -59,6 +60,7 @@ const Ridgeline = () => {
             }
     }, [selectedFilters, isInitialized, dispatch]);
 
+    
     useEffect(() => {
         if (pendingSelection && !selectedFilters.includes(pendingSelection)) {
             setSelectedFilters([...selectedFilters, pendingSelection]);
@@ -67,13 +69,9 @@ const Ridgeline = () => {
         }
     }, [pendingSelection, selectedFilters, setSelectedFilters]);
 
-    // Show loading state while initializing
-    if (!isInitialized) {
-        return <div>Loading...</div>;
-    }
-
     return (
-        <div className="container mx-auto space-y-2 px-4 py-8">
+        <div className="container mx-auto space-y-4 px-4 py-8">
+            {/* Filter section */}
             <div className="flex justify-between w-full rounded-br-lg">
                 <FilterComponent 
                     setDisplayType={setDisplayType} 
@@ -116,7 +114,7 @@ const Ridgeline = () => {
                 )}
             </div>
         </div>
-    )
+    );
 }
 
-export default Ridgeline
+export default Ridgeline;

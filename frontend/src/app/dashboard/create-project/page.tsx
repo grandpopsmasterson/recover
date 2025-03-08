@@ -1,7 +1,7 @@
 'use client'
 
 import { useState } from "react";
-import { CreateProject, CreateProjectError, InsurerArray, LossTypeArray, ProjectStageArray } from "@/types/createProject";
+import { type CreateProject, CreateProjectError, InsurerArray, LossTypeArray, ProjectStageArray } from "@/types/createProject";
 import { Autocomplete, AutocompleteItem, Button, CheckboxGroup, Dropdown, DropdownItem, DropdownMenu, DropdownTrigger, Input, Link } from "@heroui/react";
 import { CustomCheckbox } from "@/components/ui/CustomCheckbox";
 import { validateDate, validateEmail, validatePhonenumber } from "@/api/utils/validation";
