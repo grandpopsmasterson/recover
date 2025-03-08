@@ -1,65 +1,66 @@
-// DashboardPage.tsx
 'use client'
 
 import React, { useEffect, useState } from 'react'
 import FilterComponent from '@/components/filters/FilterComponent'
 import ProjectCardBuckets from '@/components/cards/ProjectCardBuckets'
-import { FilterError, GroupedProjects, ShortProject } from '@/types/project'
+import { FilterError, GroupedProjects, ShortProject, filters } from '@/types/project'
 import { filterApi } from '@/api/features/filterApi'
 import ListView from '@/components/ui/ListView'
-import { projectsApi } from '@/api/features/projectsApi'
 import { useFilterPersistence } from '@/hooks/filters/useFilterPersistence'
 import ProjectGroupCard from '@/components/cards/ProjectGroupCard'
+import { useAppDispatch, useAppSelector } from '@/hooks/hooks'
+import { fetchProjectsThunk } from '@/store/thunk/projectThunk'
+import { getGroupedProjectsThunk, getMultiQueryThunk } from '@/store/thunk/groupedProjectThunk'
+
 
 const Ridgeline = () => {
+    // State 
     const [displayType, setDisplayType] = useState<'ListCard'|'List'|'Card'>('ListCard');
-    const [project, setProject] = useState<ShortProject[]>([]);
     const { selectedFilters, setSelectedFilters, isInitialized } = useFilterPersistence();
-    
-    const [groupedProjects, setGroupedProjects] = useState<GroupedProjects[]>([]);
     const [isLoading, setIsLoading] = useState<boolean>(false);
     const [error, setError] = useState<FilterError|string|null>(null);
     const [pendingSelection, setPendingSelection] = useState<string | null>(null);
     const [pendingRemoval, setPendingRemoval] = useState<string | null>(null);
     const [inputValue, setInputValue] = useState<string>('');
 
-    const fetchProjects = async (filter: string[]) => {
-        setIsLoading(true);
-        setError(null);
-        try {
-            if (filter.length === 0) {
-                const data: ShortProject[] = await projectsApi.getAllProjects(); 
-                setProject(data);
-                setDisplayType('List');
-                return;
-            } else if (filter.length === 1) {
-                const data: GroupedProjects[] = await filterApi.getGroupedProjects(filter);
-                setGroupedProjects(data);
-                setDisplayType('ListCard');
-                return;
-            } else if (filter.length >= 1) {
-                const data: GroupedProjects[] = await filterApi.getMultiQuery(filter);
-                setGroupedProjects(data);
-                setDisplayType('List');
-            }
-        } catch (error) {
-            setError(error instanceof Error ? error.message : 'An error occurred');
-            console.error('Error fetching projects: ', error);
-        } finally {
-            setIsLoading(false);
-        }
-    }
+    // Pulling from global store
+    const project = useAppSelector(state => state.projects.projects);
+    const groupedProjects = useAppSelector(state => state.groupedProject);
+    const dispatch = useAppDispatch();
 
     // Only fetch projects after filters are initialized from localStorage
     useEffect(() => {
-        if (isInitialized) {
-            const debounceTimeout = setTimeout(() => {
-                fetchProjects(selectedFilters);
-            }, 300);
-            return () => clearTimeout(debounceTimeout);
-        }
-    }, [selectedFilters, isInitialized]);
+            const fetchProjects = async (filter: string[]) => {
+                setIsLoading(true);
+                setError(null);
+                try {
+                    if (filter.length === 0) {
+                        await dispatch(fetchProjectsThunk())
+                        setDisplayType('List');
+                    } else if (filter.length === 1) {
+                        await dispatch(getGroupedProjectsThunk(filter));
+                        setDisplayType('ListCard');
+                    } else if (filter.length >= 1) {
+                        await dispatch(getMultiQueryThunk(filter));
+                        setDisplayType('List');
+                    }
+                } catch (error) {
+                    setError(error instanceof Error ? error.message : 'An error occurred');
+                    console.error('Error fetching projects: ', error);
+                } finally {
+                    setIsLoading(false);
+                }
+            }
+            if (isInitialized) {
 
+                const debounceTimeout = setTimeout(() => {
+                    fetchProjects(selectedFilters);
+                }, 300);
+                return () => clearTimeout(debounceTimeout);
+            }
+    }, [selectedFilters, isInitialized, dispatch]);
+
+    
     useEffect(() => {
         if (pendingSelection && !selectedFilters.includes(pendingSelection)) {
             setSelectedFilters([...selectedFilters, pendingSelection]);
@@ -68,13 +69,9 @@ const Ridgeline = () => {
         }
     }, [pendingSelection, selectedFilters, setSelectedFilters]);
 
-    // Show loading state while initializing
-    if (!isInitialized) {
-        return <div>Loading...</div>;
-    }
-
     return (
-        <div className="container mx-auto space-y-2 px-4 py-8">
+        <div className="container mx-auto space-y-4 px-4 py-8">
+            {/* Filter section */}
             <div className="flex justify-between w-full rounded-br-lg">
                 <FilterComponent 
                     setDisplayType={setDisplayType} 
@@ -88,7 +85,7 @@ const Ridgeline = () => {
                 />
             </div>
             <div className='space-y-2'>
-                {displayType === 'ListCard' && groupedProjects.map((projects) => (
+                {displayType === 'ListCard' && groupedProjects.groupedProjects.map((projects) => (
                     <ProjectGroupCard 
                         key={projects.groupKey} 
                         name={projects.groupKey} 
@@ -99,7 +96,7 @@ const Ridgeline = () => {
                         revenue={68354} 
                     />
                 ))}
-                {displayType === 'Card' && groupedProjects.map((projects) => (
+                {displayType === 'Card' && groupedProjects.groupedProjects.map((projects) => (
                     <ProjectCardBuckets 
                         key={projects.groupKey} 
                         projects={projects.projects} 
@@ -117,7 +114,7 @@ const Ridgeline = () => {
                 )}
             </div>
         </div>
-    )
+    );
 }
 
-export default Ridgeline
+export default Ridgeline;

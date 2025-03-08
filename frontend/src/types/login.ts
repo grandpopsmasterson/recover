@@ -4,6 +4,7 @@ export type LoginCredentials = {
 }
 
 export type LoginResponse = {
+    data: any;
     token: string;
     type: string;
     username: string;

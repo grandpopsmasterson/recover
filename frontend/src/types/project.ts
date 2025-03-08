@@ -1,29 +1,59 @@
+import { Estimate } from "./estimate";
 
+// Define string literal types for better type safety
+export type ProjectStage = 
+  'pending sale' | 
+  'work in progress' | 
+  'Acct Receivable' | 
+  'Needs Approval' | 
+  'Complete' | 
+  'Mitigation';
+
+export type ProjectScope = 
+  'Mitigation' | 
+  'Contents' | 
+  'Reconstruction';
+
+export type ProjectType = 'RESIDENTIAL' | 'COMMERCIAL' | 'INDUSTRIAL';
+
+export type ProjectFlag = 
+  'Urgent' | 
+  'Action Needed' | 
+  'Up to Date';
+
+export type ProjectStatus = 'active' | 'archived';
+
+// Reusable interface for assigned roles
+export interface AssignedRole {
+  id: number;
+  shortName: string;
+  profileImageUrl: string | null;
+  projectRole: string;
+  available: boolean;
+}
+
+// Project Role Request
 export interface ProjectRoleRequest {
   userId: bigint;
   projectId?: bigint;
   projectRole: string;
 }
 
+// Short Project Representation
 export interface ShortProject {
   id: bigint;
   streetAddress: string;
   clientName: string;
-  assignedRoles: {
-      id: number;
-      shortName: string;
-      profileImageUrl: string;
-      projectRole: string;
-      available: boolean;
-  }[];
-  stage: string;  // Changed from projectStage
-  city?: string;  // Optional since not in backend
-  state?: string; // Optional since not in backend
-  houseImageUrl?: string; // Optional
+  assignedRoles: AssignedRole[];
+  stage: ProjectStage;
+  city: string; 
+  state: string; 
+  houseImageUrl?: string;
 }
 
+// Detailed Project Interface
 export interface LongProject {
-  id: number;
+  id: bigint;
   projectName: string | null;
   clientName: string;
   clientEmail: string;
@@ -34,82 +64,116 @@ export interface LongProject {
   city: string;
   state: string;
   zipcode: string;
-  stage: string;
-  projectType: 'RESIDENTIAL' | 'COMMERCIAL';
+  stage: ProjectStage;
+  projectType: ProjectType;
   carrier: string;
-  assignedRoles: {
-      id: number;
-      shortName: string;
-      profileImageUrl: string | null;
-      projectRole: string;
-      available: boolean;
-  }[];
+  assignedRoles: AssignedRole[];
   houseImageUrl?: string;
 }
 
-export interface AssignedRoles {
-  id: bigint;
-  shortName: string;
-  profileImageUrl: string;
-  projectRole: string;
-  available: boolean;
-}
-
-export interface Project {
-    id: string;
-    name: string;
-    description: string;
-    status: 'active' | 'archived';
-    createdAt: string;
-  }
-
+// Bucket Interface for Project Grouping
 export interface ListBucket {
-  // id: bigint; not needed - id is for individual projects?
   name: string;
   total: number;
-  redTotal: number | 0;
-  yellowTotal: number | 0;
-  greenTotal: number | 0;
-  revenue: number | 25000;
+  redTotal: number;
+  yellowTotal: number;
+  greenTotal: number;
+  revenue: number;
 }
 
+// Filtered Project Details
 export type DetailsProps = Pick<LongProject, 'lossDate' | 'startDate'>;
 
+// Error Handling
 export interface FilterError {
   message: string;
   field?: string;
 }
 
+// Grouped Projects
 export interface GroupedProjects {
   groupKey: string;
-  projects:ShortProject[];
+  projects: LongProject[];
   count: number;
-};
+}
 
+export interface GroupedProjectState {
+  groupedProjects: GroupedProjects[];
+  loading: boolean;
+  error: string | null;
+}
 
+// Project State for Redux
+export interface ProjectState {
+  projects: ShortProject[];
+  currentProject: LongProject | null;
+  loading: boolean;
+  error: string | null;
+  overview: {
+    data: ShortProject | null;
+    loading: boolean;
+    error: string | null;
+  };
+  estimates?: {
+    data: Estimate[];
+    loading: boolean;
+    error: string | null;
+  };
+  workOrders?: {
+    data: WorkOrder[];
+    loading: boolean;
+    error: string | null;
+  };
+  timeline?: {
+    data: Timeline[];
+    loading: boolean;
+    error: string | null;
+  };
+  flags?: {
+    data: Flag[];
+    loading: boolean;
+    error: string | null;
+  };
+}
 
 export const filters = [
   {name: 'Stage', group: 'Group'},
-  {name: 'Pending Sale', group: 'Stage'},
-  {name: 'Scope', group: 'Group'},
-  {name: 'Mitigation', group: 'Scope'},
-  {name: 'Contents', group: 'Scope'},
-  {name: 'Reconstruction', group: 'Scope'},
-  {name: 'Flags', group: 'Group' },
-  {name: 'Urgent', group: 'Flags' },
-  {name: 'Action Needed', group: 'Flags' },
-  {name: 'Up to Date', group: 'Flags' },
-  {name: 'Invoice', group: 'Group' },
-  {name: 'Invoice Pending', group: 'Invoice' },
-  {name: 'Invoice Sent', group: 'Invoice' },
-  {name: 'Estimate', group: 'Group' },
-  {name: 'Estimate Pending', group: 'Estimate' },
-  {name: 'Estimate Complete', group: 'Estimate' },
+  {name: 'Project Scope', group: 'Group'},
   {name: 'Loss Type', group: 'Group' },
   {name: 'Project Type', group: 'Group' },
   {name: 'Carrier', group: 'Group' },
   {name: 'Manager', group: 'Group' },
-  {name: 'Adjuster', group: 'Group' },
   {name: 'Technician', group: 'Group' },
-  {name: 'Tommy Tech', group: 'Technician' },
-]
+  {name: 'Adjuster', group: 'Group' },
+  {name: 'Flags', group: 'Group' },
+  
+  {name: 'pending sale', group: 'Stage'},
+  {name: 'work in progress', group: 'Stage'},
+  {name: 'Acct Receivable', group: 'Stage'},
+  {name: 'Needs Approval', group: 'Stage'},
+  {name: 'Complete', group: 'Stage'},
+  {name: 'Mitigation', group: 'Project Scope'},
+  {name: 'Contents', group: 'Project Scope'},
+  {name: 'Reconstruction', group: 'Project Scope'},
+  {name: 'Urgent', group: 'Flags' },
+  {name: 'Action Needed', group: 'Flags' },
+  {name: 'Up to Date', group: 'Flags' }
+] as const;
+
+
+export interface Timeline {
+  id: bigint;
+  materialCode: string;
+  count: number;
+}
+export interface WorkOrder {
+  id: bigint;
+  contractor: AssignedRole[];
+  area: string;
+}
+export interface Flag {
+  id: bigint;
+  projectId: bigint;
+  issueType: string;
+  severity: string;
+}

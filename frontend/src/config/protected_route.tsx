@@ -17,7 +17,7 @@ export const ProtectedRoute = ({ children }: ProtectedRouteProps) => {
         
         // If no token and not already on login page, redirect to login
         if (!token && !pathname.includes('/auth/login,/auth/signup')) {
-            router.push('/');
+            router.push('/auth/login');
         }
     }, [router, pathname]);
 

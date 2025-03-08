@@ -1,0 +1,1200 @@
+{
+"metadata": {
+"version": "1.0.0",
+"generated": "2025-03-01",
+"currency": "USD",
+"disclaimer": "This is sample data for demonstration purposes only. Prices may vary by region, supplier, quantity, and market conditions."
+},
+"materials": [
+{
+"id": "LUM-001",
+"category": "Lumber",
+"name": "2x4 Pine Stud",
+"description": "Standard construction grade pine stud",
+"dimensions": "2 in x 4 in x 8 ft",
+"unit": "piece",
+"price": 5.82,
+"availability": "high"
+},
+{
+"id": "LUM-002",
+"category": "Lumber",
+"name": "2x6 Pine Stud",
+"description": "Standard construction grade pine stud",
+"dimensions": "2 in x 6 in x 8 ft",
+"unit": "piece",
+"price": 9.18,
+"availability": "high"
+},
+{
+"id": "LUM-003",
+"category": "Lumber",
+"name": "2x8 Pine Board",
+"description": "Standard construction grade pine board",
+"dimensions": "2 in x 8 in x 8 ft",
+"unit": "piece",
+"price": 12.45,
+"availability": "medium"
+},
+{
+"id": "LUM-004",
+"category": "Lumber",
+"name": "2x10 Pine Board",
+"description": "Standard construction grade pine board",
+"dimensions": "2 in x 10 in x 8 ft",
+"unit": "piece",
+"price": 18.72,
+"availability": "medium"
+},
+{
+"id": "LUM-005",
+"category": "Lumber",
+"name": "2x12 Pine Board",
+"description": "Standard construction grade pine board",
+"dimensions": "2 in x 12 in x 8 ft",
+"unit": "piece",
+"price": 24.97,
+"availability": "medium"
+},
+{
+"id": "LUM-006",
+"category": "Lumber",
+"name": "4x4 Pressure Treated Post",
+"description": "Pressure treated for ground contact",
+"dimensions": "4 in x 4 in x 8 ft",
+"unit": "piece",
+"price": 21.36,
+"availability": "high"
+},
+{
+"id": "LUM-007",
+"category": "Lumber",
+"name": "1x6 Cedar Board",
+"description": "Clear grade cedar board for exterior use",
+"dimensions": "1 in x 6 in x 8 ft",
+"unit": "piece",
+"price": 18.95,
+"availability": "medium"
+},
+{
+"id": "LUM-008",
+"category": "Lumber",
+"name": "Plywood Sheathing",
+"description": "CDX exterior grade plywood",
+"dimensions": "4 ft x 8 ft x 1/2 in",
+"unit": "sheet",
+"price": 42.68,
+"availability": "high"
+},
+{
+"id": "LUM-009",
+"category": "Lumber",
+"name": "OSB Sheathing",
+"description": "Oriented strand board sheathing",
+"dimensions": "4 ft x 8 ft x 7/16 in",
+"unit": "sheet",
+"price": 32.15,
+"availability": "high"
+},
+{
+"id": "LUM-010",
+"category": "Lumber",
+"name": "MDF Board",
+"description": "Medium-density fiberboard",
+"dimensions": "4 ft x 8 ft x 3/4 in",
+"unit": "sheet",
+"price": 48.76,
+"availability": "high"
+},
+{
+"id": "CON-001",
+"category": "Concrete",
+"name": "Portland Cement",
+"description": "General purpose portland cement",
+"dimensions": "Type I/II",
+"unit": "94 lb bag",
+"price": 13.25,
+"availability": "high"
+},
+{
+"id": "CON-002",
+"category": "Concrete",
+"name": "Ready-Mix Concrete",
+"description": "3000 PSI standard mix",
+"dimensions": "3000 PSI",
+"unit": "cubic yard",
+"price": 148.50,
+"availability": "high"
+},
+{
+"id": "CON-003",
+"category": "Concrete",
+"name": "Concrete Block",
+"description": "Standard concrete masonry unit",
+"dimensions": "8 in x 8 in x 16 in",
+"unit": "block",
+"price": 2.35,
+"availability": "high"
+},
+{
+"id": "CON-004",
+"category": "Concrete",
+"name": "Concrete Sand",
+"description": "Washed concrete sand",
+"dimensions": "Fine grade",
+"unit": "ton",
+"price": 48.75,
+"availability": "high"
+},
+{
+"id": "CON-005",
+"category": "Concrete",
+"name": "Gravel",
+"description": "3/4 inch crushed stone",
+"dimensions": "3/4 inch",
+"unit": "ton",
+"price": 42.50,
+"availability": "high"
+},
+{
+"id": "CON-006",
+"category": "Concrete",
+"name": "Rebar #3",
+"description": "Steel reinforcing bar",
+"dimensions": "3/8 in x 20 ft",
+"unit": "piece",
+"price": 9.85,
+"availability": "high"
+},
+{
+"id": "CON-007",
+"category": "Concrete",
+"name": "Rebar #4",
+"description": "Steel reinforcing bar",
+"dimensions": "1/2 in x 20 ft",
+"unit": "piece",
+"price": 14.65,
+"availability": "high"
+},
+{
+"id": "CON-008",
+"category": "Concrete",
+"name": "Wire Mesh",
+"description": "Concrete reinforcement mesh",
+"dimensions": "6 in x 6 in 10/10",
+"unit": "5 ft x 150 ft roll",
+"price": 182.35,
+"availability": "medium"
+},
+{
+"id": "CON-009",
+"category": "Concrete",
+"name": "Concrete Form Board",
+"description": "Reusable concrete form board",
+"dimensions": "2 in x 10 in x 8 ft",
+"unit": "piece",
+"price": 22.45,
+"availability": "high"
+},
+{
+"id": "CON-010",
+"category": "Concrete",
+"name": "Control Joint",
+"description": "PVC concrete control joint",
+"dimensions": "1/2 in x 10 ft",
+"unit": "piece",
+"price": 8.75,
+"availability": "high"
+},
+{
+"id": "INS-001",
+"category": "Insulation",
+"name": "Fiberglass Batt R-13",
+"description": "Kraft faced fiberglass insulation",
+"dimensions": "3.5 in x 15 in x 93 in",
+"unit": "bag (covers 88.12 sq ft)",
+"price": 52.98,
+"availability": "high"
+},
+{
+"id": "INS-002",
+"category": "Insulation",
+"name": "Fiberglass Batt R-19",
+"description": "Kraft faced fiberglass insulation",
+"dimensions": "6.25 in x 15 in x 93 in",
+"unit": "bag (covers 88.12 sq ft)",
+"price": 68.75,
+"availability": "high"
+},
+{
+"id": "INS-003",
+"category": "Insulation",
+"name": "Foam Board R-10",
+"description": "Rigid foam insulation board",
+"dimensions": "2 in x 4 ft x 8 ft",
+"unit": "sheet",
+"price": 38.95,
+"availability": "high"
+},
+{
+"id": "INS-004",
+"category": "Insulation",
+"name": "Spray Foam Insulation",
+"description": "2-component closed cell spray foam",
+"dimensions": "1 inch depth",
+"unit": "board foot",
+"price": 1.25,
+"availability": "medium"
+},
+{
+"id": "INS-005",
+"category": "Insulation",
+"name": "Blown-in Cellulose",
+"description": "Loose-fill cellulose insulation",
+"dimensions": "R-value 3.7 per inch",
+"unit": "30 lb bag",
+"price": 18.45,
+"availability": "high"
+},
+{
+"id": "DRY-001",
+"category": "Drywall",
+"name": "Drywall Panel 1/2-inch",
+"description": "Standard interior drywall panel",
+"dimensions": "4 ft x 8 ft x 1/2 in",
+"unit": "sheet",
+"price": 14.78,
+"availability": "high"
+},
+{
+"id": "DRY-002",
+"category": "Drywall",
+"name": "Drywall Panel 5/8-inch",
+"description": "Fire-resistant type X drywall panel",
+"dimensions": "4 ft x 8 ft x 5/8 in",
+"unit": "sheet",
+"price": 18.25,
+"availability": "high"
+},
+{
+"id": "DRY-003",
+"category": "Drywall",
+"name": "Mold Resistant Drywall",
+"description": "Mold and moisture resistant panel",
+"dimensions": "4 ft x 8 ft x 1/2 in",
+"unit": "sheet",
+"price": 22.65,
+"availability": "high"
+},
+{
+"id": "DRY-004",
+"category": "Drywall",
+"name": "Drywall Joint Compound",
+"description": "All-purpose joint compound",
+"dimensions": "Standard grade",
+"unit": "5 gallon bucket",
+"price": 18.35,
+"availability": "high"
+},
+{
+"id": "DRY-005",
+"category": "Drywall",
+"name": "Drywall Tape",
+"description": "Self-adhesive fiberglass mesh tape",
+"dimensions": "2 in x 300 ft",
+"unit": "roll",
+"price": 8.95,
+"availability": "high"
+},
+{
+"id": "DRY-006",
+"category": "Drywall",
+"name": "Drywall Screws",
+"description": "Coarse thread drywall screws",
+"dimensions": "1-5/8 in",
+"unit": "5 lb box",
+"price": 15.25,
+"availability": "high"
+},
+{
+"id": "DRY-007",
+"category": "Drywall",
+"name": "Corner Bead",
+"description": "Metal corner reinforcement",
+"dimensions": "1-1/4 in x 10 ft",
+"unit": "piece",
+"price": 3.45,
+"availability": "high"
+},
+{
+"id": "ROO-001",
+"category": "Roofing",
+"name": "Asphalt Shingles",
+"description": "3-tab asphalt roof shingles",
+"dimensions": "33.3 sq ft per bundle",
+"unit": "bundle",
+"price": 38.75,
+"availability": "high"
+},
+{
+"id": "ROO-002",
+"category": "Roofing",
+"name": "Architectural Shingles",
+"description": "Dimensional architectural shingles",
+"dimensions": "33.3 sq ft per bundle",
+"unit": "bundle",
+"price": 48.85,
+"availability": "high"
+},
+{
+"id": "ROO-003",
+"category": "Roofing",
+"name": "Roofing Underlayment",
+"description": "Synthetic roofing underlayment",
+"dimensions": "4 ft x 250 ft",
+"unit": "roll",
+"price": 175.45,
+"availability": "high"
+},
+{
+"id": "ROO-004",
+"category": "Roofing",
+"name": "Roof Flashing",
+"description": "Galvanized steel roof flashing",
+"dimensions": "14 in x 10 ft",
+"unit": "piece",
+"price": 12.65,
+"availability": "high"
+},
+{
+"id": "ROO-005",
+"category": "Roofing",
+"name": "Roof Vent",
+"description": "Static roof vent",
+"dimensions": "12 in x 12 in",
+"unit": "piece",
+"price": 22.35,
+"availability": "high"
+},
+{
+"id": "ROO-006",
+"category": "Roofing",
+"name": "Ridge Cap Shingles",
+"description": "Pre-formed ridge cap shingles",
+"dimensions": "12 in x 8 ft sections",
+"unit": "bundle",
+"price": 45.75,
+"availability": "high"
+},
+{
+"id": "ROO-007",
+"category": "Roofing",
+"name": "Metal Roofing Panel",
+"description": "Corrugated metal roofing",
+"dimensions": "3 ft x 8 ft",
+"unit": "panel",
+"price": 28.95,
+"availability": "high"
+},
+{
+"id": "ROO-008",
+"category": "Roofing",
+"name": "Roofing Tar",
+"description": "Asphalt roofing cement",
+"dimensions": "Wet application",
+"unit": "1 gallon can",
+"price": 14.25,
+"availability": "high"
+},
+{
+"id": "SID-001",
+"category": "Siding",
+"name": "Vinyl Siding",
+"description": "Standard vinyl clapboard siding",
+"dimensions": "4 in x 12 ft 6 in",
+"unit": "piece",
+"price": 7.95,
+"availability": "high"
+},
+{
+"id": "SID-002",
+"category": "Siding",
+"name": "Fiber Cement Siding",
+"description": "Durable fiber cement lap siding",
+"dimensions": "8.25 in x 12 ft",
+"unit": "piece",
+"price": 12.45,
+"availability": "high"
+},
+{
+"id": "SID-003",
+"category": "Siding",
+"name": "Cedar Shake Siding",
+"description": "Natural cedar shake siding",
+"dimensions": "7 in exposure",
+"unit": "square (100 sq ft)",
+"price": 325.75,
+"availability": "medium"
+},
+{
+"id": "SID-004",
+"category": "Siding",
+"name": "House Wrap",
+"description": "Weather resistant barrier",
+"dimensions": "9 ft x 150 ft",
+"unit": "roll",
+"price": 168.95,
+"availability": "high"
+},
+{
+"id": "SID-005",
+"category": "Siding",
+"name": "Aluminum Siding",
+"description": "Pre-finished aluminum siding",
+"dimensions": "8 in x 12 ft",
+"unit": "piece",
+"price": 9.75,
+"availability": "medium"
+},
+{
+"id": "FLO-001",
+"category": "Flooring",
+"name": "Engineered Hardwood",
+"description": "Oak engineered hardwood flooring",
+"dimensions": "3/8 in x 5 in",
+"unit": "square foot",
+"price": 5.85,
+"availability": "high"
+},
+{
+"id": "FLO-002",
+"category": "Flooring",
+"name": "Solid Hardwood",
+"description": "Solid oak hardwood flooring",
+"dimensions": "3/4 in x 3-1/4 in",
+"unit": "square foot",
+"price": 8.45,
+"availability": "medium"
+},
+{
+"id": "FLO-003",
+"category": "Flooring",
+"name": "Luxury Vinyl Plank",
+"description": "Waterproof vinyl plank flooring",
+"dimensions": "7 mm x 5.75 in",
+"unit": "square foot",
+"price": 3.95,
+"availability": "high"
+},
+{
+"id": "FLO-004",
+"category": "Flooring",
+"name": "Ceramic Tile",
+"description": "Glazed ceramic floor tile",
+"dimensions": "12 in x 12 in",
+"unit": "square foot",
+"price": 2.75,
+"availability": "high"
+},
+{
+"id": "FLO-005",
+"category": "Flooring",
+"name": "Porcelain Tile",
+"description": "Porcelain floor tile",
+"dimensions": "12 in x 24 in",
+"unit": "square foot",
+"price": 4.95,
+"availability": "high"
+},
+{
+"id": "FLO-006",
+"category": "Flooring",
+"name": "Carpet",
+"description": "Residential grade carpet",
+"dimensions": "Medium pile",
+"unit": "square foot",
+"price": 2.85,
+"availability": "high"
+},
+{
+"id": "FLO-007",
+"category": "Flooring",
+"name": "Carpet Padding",
+"description": "8 lb density foam carpet padding",
+"dimensions": "3/8 in thickness",
+"unit": "square foot",
+"price": 0.75,
+"availability": "high"
+},
+{
+"id": "FLO-008",
+"category": "Flooring",
+"name": "Laminate Flooring",
+"description": "AC3 rated laminate flooring",
+"dimensions": "8 mm thickness",
+"unit": "square foot",
+"price": 2.35,
+"availability": "high"
+},
+{
+"id": "FLO-009",
+"category": "Flooring",
+"name": "Floor Underlayment",
+"description": "Foam floor underlayment",
+"dimensions": "3 mm thickness",
+"unit": "100 sq ft roll",
+"price": 32.95,
+"availability": "high"
+},
+{
+"id": "PLU-001",
+"category": "Plumbing",
+"name": "PVC Pipe",
+"description": "Schedule 40 PVC pipe",
+"dimensions": "2 in x 10 ft",
+"unit": "piece",
+"price": 12.35,
+"availability": "high"
+},
+{
+"id": "PLU-002",
+"category": "Plumbing",
+"name": "Copper Pipe",
+"description": "Type L copper pipe",
+"dimensions": "3/4 in x 10 ft",
+"unit": "piece",
+"price": 32.75,
+"availability": "high"
+},
+{
+"id": "PLU-003",
+"category": "Plumbing",
+"name": "PEX Tubing",
+"description": "Cross-linked polyethylene tubing",
+"dimensions": "1/2 in x 100 ft",
+"unit": "roll",
+"price": 52.95,
+"availability": "high"
+},
+{
+"id": "PLU-004",
+"category": "Plumbing",
+"name": "ABS Pipe",
+"description": "ABS DWV pipe",
+"dimensions": "3 in x 10 ft",
+"unit": "piece",
+"price": 18.65,
+"availability": "high"
+},
+{
+"id": "PLU-005",
+"category": "Plumbing",
+"name": "Toilet",
+"description": "Two-piece elongated toilet",
+"dimensions": "Standard height",
+"unit": "piece",
+"price": 185.00,
+"availability": "high"
+},
+{
+"id": "PLU-006",
+"category": "Plumbing",
+"name": "Kitchen Sink",
+"description": "Stainless steel double bowl sink",
+"dimensions": "33 in x 22 in",
+"unit": "piece",
+"price": 145.75,
+"availability": "high"
+},
+{
+"id": "PLU-007",
+"category": "Plumbing",
+"name": "Bathroom Vanity",
+"description": "Pre-assembled bathroom vanity with top",
+"dimensions": "36 in width",
+"unit": "piece",
+"price": 385.00,
+"availability": "medium"
+},
+{
+"id": "PLU-008",
+"category": "Plumbing",
+"name": "Shower Pan",
+"description": "Fiberglass shower base",
+"dimensions": "32 in x 32 in",
+"unit": "piece",
+"price": 178.65,
+"availability": "high"
+},
+{
+"id": "PLU-009",
+"category": "Plumbing",
+"name": "Kitchen Faucet",
+"description": "Single handle pull-down kitchen faucet",
+"dimensions": "Standard size",
+"unit": "piece",
+"price": 128.95,
+"availability": "high"
+},
+{
+"id": "PLU-010",
+"category": "Plumbing",
+"name": "Bathroom Faucet",
+"description": "Two handle bathroom faucet",
+"dimensions": "4 in centerset",
+"unit": "piece",
+"price": 78.45,
+"availability": "high"
+},
+{
+"id": "ELE-001",
+"category": "Electrical",
+"name": "Romex Wire 12/2",
+"description": "Non-metallic sheathed cable",
+"dimensions": "12 AWG, 2 conductor with ground",
+"unit": "250 ft roll",
+"price": 118.50,
+"availability": "high"
+},
+{
+"id": "ELE-002",
+"category": "Electrical",
+"name": "Electrical Box",
+"description": "Single gang plastic electrical box",
+"dimensions": "3 in x 2 in x 3.5 in",
+"unit": "piece",
+"price": 1.45,
+"availability": "high"
+},
+{
+"id": "ELE-003",
+"category": "Electrical",
+"name": "Light Switch",
+"description": "Single pole light switch",
+"dimensions": "15 amp",
+"unit": "piece",
+"price": 3.25,
+"availability": "high"
+},
+{
+"id": "ELE-004",
+"category": "Electrical",
+"name": "Electrical Outlet",
+"description": "Grounded duplex outlet",
+"dimensions": "15 amp",
+"unit": "piece",
+"price": 3.75,
+"availability": "high"
+},
+{
+"id": "ELE-005",
+"category": "Electrical",
+"name": "Circuit Breaker",
+"description": "Single pole circuit breaker",
+"dimensions": "20 amp",
+"unit": "piece",
+"price": 9.85,
+"availability": "high"
+},
+{
+"id": "ELE-006",
+"category": "Electrical",
+"name": "Main Breaker Panel",
+"description": "200 amp main breaker panel",
+"dimensions": "30 space, 40 circuit",
+"unit": "piece",
+"price": 245.00,
+"availability": "medium"
+},
+{
+"id": "ELE-007",
+"category": "Electrical",
+"name": "Recessed Light",
+"description": "LED recessed light fixture",
+"dimensions": "6 in diameter",
+"unit": "piece",
+"price": 18.95,
+"availability": "high"
+},
+{
+"id": "ELE-008",
+"category": "Electrical",
+"name": "Ceiling Fan",
+"description": "Standard ceiling fan with light kit",
+"dimensions": "52 in diameter",
+"unit": "piece",
+"price": 125.85,
+"availability": "high"
+},
+{
+"id": "ELE-009",
+"category": "Electrical",
+"name": "GFCI Outlet",
+"description": "Ground fault circuit interrupter outlet",
+"dimensions": "15 amp",
+"unit": "piece",
+"price": 18.25,
+"availability": "high"
+},
+{
+"id": "PAI-001",
+"category": "Paint",
+"name": "Interior Latex Paint",
+"description": "Interior wall & ceiling paint, eggshell finish",
+"dimensions": "Medium base",
+"unit": "1 gallon",
+"price": 32.95,
+"availability": "high"
+},
+{
+"id": "PAI-002",
+"category": "Paint",
+"name": "Exterior Latex Paint",
+"description": "Exterior paint, satin finish",
+"dimensions": "Medium base",
+"unit": "1 gallon",
+"price": 42.75,
+"availability": "high"
+},
+{
+"id": "PAI-003",
+"category": "Paint",
+"name": "Primer",
+"description": "Interior/exterior latex primer",
+"dimensions": "White",
+"unit": "1 gallon",
+"price": 28.45,
+"availability": "high"
+},
+{
+"id": "PAI-004",
+"category": "Paint",
+"name": "Paint Roller Frame",
+"description": "Standard roller frame",
+"dimensions": "9 in width",
+"unit": "piece",
+"price": 5.25,
+"availability": "high"
+},
+{
+"id": "PAI-005",
+"category": "Paint",
+"name": "Paint Roller Cover",
+"description": "Medium nap roller cover",
+"dimensions": "9 in width",
+"unit": "3 pack",
+"price": 12.85,
+"availability": "high"
+},
+{
+"id": "PAI-006",
+"category": "Paint",
+"name": "Paint Brush",
+"description": "Angled sash brush",
+"dimensions": "2.5 in width",
+"unit": "piece",
+"price": 9.95,
+"availability": "high"
+},
+{
+"id": "PAI-007",
+"category": "Paint",
+"name": "Painter's Tape",
+"description": "Blue painter's tape",
+"dimensions": "1.88 in x 60 yd",
+"unit": "roll",
+"price": 7.85,
+"availability": "high"
+},
+{
+"id": "PAI-008",
+"category": "Paint",
+"name": "Drop Cloth",
+"description": "Canvas drop cloth",
+"dimensions": "9 ft x 12 ft",
+"unit": "piece",
+"price": 22.45,
+"availability": "high"
+},
+{
+"id": "DOO-001",
+"category": "Doors & Windows",
+"name": "Interior Door",
+"description": "Pre-hung hollow core door",
+"dimensions": "30 in x 80 in",
+"unit": "piece",
+"price": 98.50,
+"availability": "high"
+},
+{
+"id": "DOO-002",
+"category": "Doors & Windows",
+"name": "Exterior Entry Door",
+"description": "Steel entry door with frame",
+"dimensions": "36 in x 80 in",
+"unit": "piece",
+"price": 285.00,
+"availability": "high"
+},
+{
+"id": "DOO-003",
+"category": "Doors & Windows",
+"name": "Sliding Patio Door",
+"description": "Vinyl sliding patio door",
+"dimensions": "72 in x 80 in",
+"unit": "piece",
+"price": 685.00,
+"availability": "medium"
+},
+{
+"id": "DOO-004",
+"category": "Doors & Windows",
+"name": "Vinyl Window",
+"description": "Double-hung vinyl window",
+"dimensions": "36 in x 54 in",
+"unit": "piece",
+"price": 225.75,
+"availability": "high"
+},
+{
+"id": "DOO-005",
+"category": "Doors & Windows",
+"name": "Casement Window",
+"description": "Vinyl casement window",
+"dimensions": "24 in x 36 in",
+"unit": "piece",
+"price": 248.95,
+"availability": "high"
+},
+{
+"id": "DOO-006",
+"category": "Doors & Windows",
+"name": "Door Hardware",
+"description": "Interior door knob set",
+"dimensions": "Standard size",
+"unit": "piece",
+"price": 22.45,
+"availability": "high"
+},
+{
+"id": "DOO-007",
+"category": "Doors & Windows",
+"name": "Entry Door Hardware",
+"description": "Exterior door handle set with deadbolt",
+"dimensions": "Standard size",
+"unit": "piece",
+"price": 89.95,
+"availability": "high"
+},
+{
+"id": "DOO-008",
+"category": "Doors & Windows",
+"name": "Door Hinges",
+"description": "Door hinges, satin nickel finish",
+"dimensions": "3.5 in",
+"unit": "3 pack",
+"price": 12.85,
+"availability": "high"
+},
+{
+"id": "DOO-009",
+"category": "Doors & Windows",
+"name": "Window Screen",
+"description": "Replacement window screen",
+"dimensions": "36 in x 48 in",
+"unit": "piece",
+"price": 18.75,
+"availability": "high"
+},
+{
+"id": "DOO-010",
+"category": "Doors & Windows",
+"name": "Garage Door",
+"description": "Steel garage door",
+"dimensions": "9 ft x 7 ft",
+"unit": "piece",
+"price": 698.50,
+"availability": "medium"
+},
+{
+"id": "HVA-001",
+"category": "HVAC",
+"name": "Air Conditioner",
+"description": "Central air conditioning unit",
+"dimensions": "3 ton capacity",
+"unit": "piece",
+"price": 1850.00,
+"availability": "medium"
+},
+{
+"id": "HVA-002",
+"category": "HVAC",
+"name": "Furnace",
+"description": "Gas furnace",
+"dimensions": "80,000 BTU",
+"unit": "piece",
+"price": 1450.00,
+"availability": "medium"
+},
+{
+"id": "HVA-003",
+"category": "HVAC",
+"name": "Ductwork",
+"description": "Galvanized sheet metal duct",
+"dimensions": "6 in diameter x 5 ft",
+"unit": "piece",
+"price": 12.85,
+"availability": "high"
+},
+{
+"id": "HVA-004",
+"category": "HVAC",
+"name": "Air Filter",
+"description": "HVAC air filter",
+"dimensions": "20 in x 25 in x 1 in",
+"unit": "piece",
+"price": 12.45,
+"availability": "high"
+},
+{
+"id": "HVA-005",
+"category": "HVAC",
+"name": "Thermostat",
+"description": "Programmable thermostat",
+"dimensions": "Standard size",
+"unit": "piece",
+"price": 85.75,
+"availability": "high"
+},
+{
+"id": "HVA-006",
+"category": "HVAC",
+"name": "Refrigerant Line Set",
+"description": "Copper line set for AC/heat pump",
+"dimensions": "3/8 in x 3/4 in x 25 ft",
+"unit": "set",
+"price": 78.95,
+"availability": "high"
+},
+{
+"id": "HVA-007",
+"category": "HVAC",
+"name": "Heat Pump",
+"description": "Air source heat pump",
+"dimensions": "3 ton capacity",
+"unit": "piece",
+"price": 2250.00,
+"availability": "medium"
+},
+{
+"id": "HVA-008",
+"category": "HVAC",
+"name": "Register Vent",
+"description": "Floor register vent",
+"dimensions": "4 in x 10 in",
+"unit": "piece",
+"price": 8.95,
+"availability": "high"
+},
+{
+"id": "HVA-009",
+"category": "HVAC",
+"name": "Return Air Grille",
+"description": "Return air grille with filter slot",
+"dimensions": "20 in x 25 in",
+"unit": "piece",
+"price": 24.75,
+"availability": "high"
+},
+{
+"id": "CAB-001",
+"category": "Cabinets & Countertops",
+"name": "Base Cabinet",
+"description": "Kitchen base cabinet",
+"dimensions": "36 in width",
+"unit": "piece",
+"price": 195.00,
+"availability": "medium"
+},
+{
+"id": "CAB-002",
+"category": "Cabinets & Countertops",
+"name": "Wall Cabinet",
+"description": "Kitchen wall cabinet",
+"dimensions": "30 in width",
+"unit": "piece",
+"price": 145.00,
+"availability": "medium"
+},
+{
+"id": "CAB-003",
+"category": "Cabinets & Countertops",
+"name": "Pantry Cabinet",
+"description": "Tall pantry cabinet",
+"dimensions": "24 in width x 84 in height",
+"unit": "piece",
+"price": 425.00,
+"availability": "medium"
+},
+{
+"id": "CAB-004",
+"category": "Cabinets & Countertops",
+"name": "Cabinet Hardware",
+"description": "Cabinet knobs",
+"dimensions": "1.25 in diameter",
+"unit": "10 pack",
+"price": 24.95,
+"availability": "high"
+},
+{
+"id": "CAB-005",
+"category": "Cabinets & Countertops",
+"name": "Laminate Countertop",
+"description": "Pre-formed laminate countertop",
+"dimensions": "25.5 in depth",
+"unit": "linear foot",
+"price": 18.75,
+"availability": "high"
+},
+{
+"id": "CAB-006",
+"category": "Cabinets & Countertops",
+"name": "Granite Countertop",
+"description": "Granite countertop with bullnose edge",
+"dimensions": "25.5 in depth",
+"unit": "square foot",
+"price": 65.00,
+"availability": "medium"
+},
+{
+"id": "CAB-007",
+"category": "Cabinets & Countertops",
+"name": "Quartz Countertop",
+"description": "Engineered quartz countertop",
+"dimensions": "25.5 in depth",
+"unit": "square foot",
+"price": 75.00,
+"availability": "medium"
+},
+{
+"id": "CAB-008",
+"category": "Cabinets & Countertops",
+"name": "Cabinet Drawer Slides",
+"description": "Ball bearing drawer slides",
+"dimensions": "18 in length",
+"unit": "pair",
+"price": 12.85,
+"availability": "high"
+},
+{
+"id": "CAB-009",
+"category": "Cabinets & Countertops",
+"name": "Kitchen Drawer Box",
+"description": "Replacement drawer box",
+"dimensions": "24 in width x 4 in height",
+"unit": "piece",
+"price": 32.50,
+"availability": "medium"
+},
+{
+"id": "TIL-001",
+"category": "Tile",
+"name": "Subway Tile",
+"description": "White ceramic subway tile",
+"dimensions": "3 in x 6 in",
+"unit": "square foot",
+"price": 4.95,
+"availability": "high"
+},
+{
+"id": "TIL-002",
+"category": "Tile",
+"name": "Marble Tile",
+"description": "Natural marble floor tile",
+"dimensions": "12 in x 12 in",
+"unit": "square foot",
+"price": 12.85,
+"availability": "medium"
+},
+{
+"id": "TIL-003",
+"category": "Tile",
+"name": "Porcelain Floor Tile",
+"description": "Porcelain floor tile",
+"dimensions": "12 in x 24 in",
+"unit": "square foot",
+"price": 4.95,
+"availability": "high"
+},
+{
+"id": "TIL-004",
+"category": "Tile",
+"name": "Glass Mosaic Tile",
+"description": "Glass mosaic wall tile",
+"dimensions": "12 in x 12 in sheets",
+"unit": "square foot",
+"price": 14.95,
+"availability": "high"
+},
+{
+"id": "TIL-005",
+"category": "Tile",
+"name": "Tile Spacers",
+"description": "Plastic tile spacers",
+"dimensions": "1/8 in",
+"unit": "bag of 100",
+"price": 2.95,
+"availability": "high"
+},
+{
+"id": "TIL-006",
+"category": "Tile",
+"name": "Tile Mortar",
+"description": "Modified thinset mortar",
+"dimensions": "Standard grade",
+"unit": "50 lb bag",
+"price": 24.75,
+"availability": "high"
+},
+{
+"id": "TIL-007",
+"category": "Tile",
+"name": "Grout",
+"description": "Sanded tile grout",
+"dimensions": "Standard grade",
+"unit": "10 lb bag",
+"price": 15.85,
+"availability": "high"
+},
+{
+"id": "TIL-008",
+"category": "Tile",
+"name": "Tile Backer Board",
+"description": "Cement board tile underlayment",
+"dimensions": "3 ft x 5 ft x 1/4 in",
+"unit": "sheet",
+"price": 12.95,
+"availability": "high"
+},
+{
+"id": "TIL-009",
+"category": "Tile",
+"name": "Tile Edge Trim",
+"description": "Aluminum tile edge profile",
+"dimensions": "8 ft length",
+"unit": "piece",
+"price": 18.45,
+"availability": "high"
+},
+{
+"id": "SEA-001",
+"category": "Sealants & Adhesives",
+"name": "Construction Adhesive",
+"description": "Heavy duty construction adhesive",
+"dimensions": "Standard grade",
+"unit": "10 oz tube",
+"price": 5.85,
+"availability": "high"
+}
+]
+}

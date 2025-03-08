@@ -31,7 +31,7 @@ const ProjectGroupCard: React.FC<ListBucket> = ({
 
         {/* card title + icons section */}
         <div className="grid grid-cols-[auto_auto_1fr] items-center gap-4 w-1/3">
-          <div className={`text-lg font-semibold text-${getStatusColor()}`}>{name}</div>
+          <div className={`text-lg font-semibold text-black`}>{name}</div>
           <p className='text-[15px] text-slate-700'>{total}</p>
           <div className={`flex h-7 items-center mx-auto border-2 px-4 rounded-full gap-1 border-${getStatusColor()}`}>
             <Warning />

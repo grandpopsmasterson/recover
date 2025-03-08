@@ -4,7 +4,7 @@ import { Navbar, NavbarBrand, NavbarContent, NavbarItem, Link, DropdownItem, Dro
 import React, { useCallback, memo } from "react";
 import { usePathname, useRouter } from 'next/navigation';
 import NextLink from 'next/link';
-import { logoutApi } from "@/api/features/authApi";
+import { authApi } from "@/api/features/authApi";
 
 //interface for the NavLink props
 interface NavLinkProps {
@@ -58,7 +58,7 @@ const UserDropdown = memo(() => {
 
     const handleLogout = async () => {
         try {
-            await logoutApi.logout();
+            await authApi.logout();
             // Clear any local storage or auth state if needed
             router.push('/');
         } catch (error) {
