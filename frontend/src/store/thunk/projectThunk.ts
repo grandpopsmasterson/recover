@@ -1,14 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import { projectsApi } from "@/api/features/projectsApi";
-import {
-  ListBucket,
-  ShortProject, 
-  Estimate,
-  Timeline,
-  Work Orders, 
-  Progress
-} from "@/types/project";
 import { CreateProject } from "@/types/createProject";
 import { User } from "@/components/buttons/AssignButton";
 import { RootState } from "../store";
@@ -112,7 +104,7 @@ export const prefetchProjectSectionsThunk = createAsyncThunk(
 // Fetch financial reports
 export const fetchEstimatesThunk = createAsyncThunk(
   'projects/estimate',
-  async (projectId: string, { getState, rejectWithValue }) => {
+  async (projectId: string, { rejectWithValue }) => {
     try {
       return await projectsApi.getEstimate(projectId);
     } catch (error) {
@@ -124,7 +116,7 @@ export const fetchEstimatesThunk = createAsyncThunk(
 // Fetch progress reports
 export const fetchTimelineThunk = createAsyncThunk(
   'projects/timeline',
-  async (projectId: string, { getState, rejectWithValue }) => {
+  async (projectId: string, { rejectWithValue }) => {
     try {
       return await projectsApi.getTimeline(projectId);
     } catch (error) {

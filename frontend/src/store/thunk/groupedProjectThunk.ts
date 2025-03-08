@@ -1,43 +1,27 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { apiClient } from "@/api/clients";
-import { determineGroupBy, buildQueryParams } from "@/api/utils/filterFunctions";
-import { GroupedProjects } from "@/types/project";
+import { filterApi } from "@/api/features/filterApi";
 import { createAsyncThunk } from "@reduxjs/toolkit";
-import qs from "qs";
 
 export const getGroupedProjectsThunk = createAsyncThunk(
-    "projects/groupedProjects",
+    "projects/group",
     async (filters: string[], { rejectWithValue }) => {
-        const groupBy = determineGroupBy(filters);
-        const query = buildQueryParams(filters);
         try {
-            const { data } = await apiClient.get<GroupedProjects[]>("/projects", {
-                //TODO DAVE FIGURE OUT THE ENDPOINT FOR THIS ------------^ its currently returning all the projects, no bucket with count and groupKey
-                params: { groupBy, ...query, },
-                paramsSerializer: (params) => qs.stringify(params, { arrayFormat: "repeat" }),
-            });
-
-            console.log(data)
-            return data;
+            const groupedData = await filterApi.group(filters);
+            return groupedData;
         } catch (error: any) {
-            return rejectWithValue(error.response?.data || 'Error fetching grouped projects')
+            return rejectWithValue(error.response?.data || 'Error fetching grouped projects');
         }
     }
 );
 
 export const getMultiQueryThunk = createAsyncThunk(
-    "projects/queryProjects",
+    "projects/search",
     async (filters: string[], { rejectWithValue }) => {
-        const groupBy = determineGroupBy(filters);
-        const query = buildQueryParams(filters);
         try {
-            const { data } = await apiClient.get<GroupedProjects[]>("projects/multi-query-filter", {
-                params: { groupBy, ...query, },
-                paramsSerializer: (params) => qs.stringify(params, { arrayFormat: "repeat" }),
-            });
-            return data;
+            const projects = await filterApi.search(filters);
+            return projects;
         } catch (error: any) {
-            return rejectWithValue(error.response?.data || 'Error fetching grouped projects')
+            return rejectWithValue(error.response?.data || 'Error fetching projects');
         }
     }
 );

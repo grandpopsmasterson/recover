@@ -8,7 +8,7 @@ import {
 // Import all reducers
 import projectReducer from './slice/projectSlice';
 import authReducer from './slice/authSlice';
-import userReducer from './slice/userSlice';
+// import userReducer from './slice/userSlice';
 import groupedProjectReducer from './slice/groupedProjectSlice';
 
 // Create the store
@@ -16,7 +16,7 @@ export const store = configureStore({
   reducer: {
     projects: projectReducer,
     auth: authReducer,
-    user: userReducer,
+    // user: userReducer,
     groupedProject: groupedProjectReducer,
   },
   
@@ -52,5 +52,5 @@ export const useAppSelector: TypedUseSelectorHook<RootState> = useSelector;
 // Optional: Selector functions for common state selections
 export const selectProjectState = (state: RootState) => state.projects;
 export const selectAuthState = (state: RootState) => state.auth;
-export const selectUserState = (state: RootState) => state.user;
+// export const selectUserState = (state: RootState) => state.user;
 export const selectGroupedProjectState = (state: RootState) => state.groupedProject;

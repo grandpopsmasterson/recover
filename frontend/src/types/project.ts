@@ -93,7 +93,7 @@ export interface FilterError {
 // Grouped Projects
 export interface GroupedProjects {
   groupKey: string;
-  projects: LongProject[];
+  projects: ShortProject[];
   count: number;
 }
 
@@ -157,7 +157,8 @@ export const filters = [
   {name: 'Reconstruction', group: 'Project Scope'},
   {name: 'Urgent', group: 'Flags' },
   {name: 'Action Needed', group: 'Flags' },
-  {name: 'Up to Date', group: 'Flags' }
+  {name: 'Up to Date', group: 'Flags' },
+  {name: 'Last 30 Days', group: 'Date'}
 ] as const;
 
 

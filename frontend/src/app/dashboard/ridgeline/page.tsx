@@ -3,15 +3,13 @@
 import React, { useEffect, useState } from 'react'
 import FilterComponent from '@/components/filters/FilterComponent'
 import ProjectCardBuckets from '@/components/cards/ProjectCardBuckets'
-import { FilterError, GroupedProjects, ShortProject, filters } from '@/types/project'
-import { filterApi } from '@/api/features/filterApi'
+import { FilterError, GroupedProjects, LongProject } from '@/types/project'
 import ListView from '@/components/ui/ListView'
 import { useFilterPersistence } from '@/hooks/filters/useFilterPersistence'
 import ProjectGroupCard from '@/components/cards/ProjectGroupCard'
 import { useAppDispatch, useAppSelector } from '@/hooks/hooks'
 import { fetchProjectsThunk } from '@/store/thunk/projectThunk'
 import { getGroupedProjectsThunk, getMultiQueryThunk } from '@/store/thunk/groupedProjectThunk'
-
 
 const Ridgeline = () => {
     // State 
@@ -24,43 +22,54 @@ const Ridgeline = () => {
     const [inputValue, setInputValue] = useState<string>('');
 
     // Pulling from global store
-    const project = useAppSelector(state => state.projects.projects);
-    const groupedProjects = useAppSelector(state => state.groupedProject);
+    const projects = useAppSelector(state => state.projects.projects);
+    const groupedProjects = useAppSelector(state => state.groupedProject.groupedProjects);
+    const isStoreLoading = useAppSelector(state => 
+        state.projects.loading || state.groupedProject.loading
+    );
+    const storeError = useAppSelector(state => 
+        state.projects.error || state.groupedProject.error
+    );
     const dispatch = useAppDispatch();
 
-    // Only fetch projects after filters are initialized from localStorage
+    // Update local loading/error state from store
     useEffect(() => {
-            const fetchProjects = async (filter: string[]) => {
-                setIsLoading(true);
-                setError(null);
-                try {
-                    if (filter.length === 0) {
-                        await dispatch(fetchProjectsThunk())
-                        setDisplayType('List');
-                    } else if (filter.length === 1) {
-                        await dispatch(getGroupedProjectsThunk(filter));
-                        setDisplayType('ListCard');
-                    } else if (filter.length >= 1) {
-                        await dispatch(getMultiQueryThunk(filter));
-                        setDisplayType('List');
-                    }
-                } catch (error) {
-                    setError(error instanceof Error ? error.message : 'An error occurred');
-                    console.error('Error fetching projects: ', error);
-                } finally {
-                    setIsLoading(false);
-                }
-            }
-            if (isInitialized) {
+        setIsLoading(isStoreLoading);
+    }, [isStoreLoading]);
 
-                const debounceTimeout = setTimeout(() => {
-                    fetchProjects(selectedFilters);
-                }, 300);
-                return () => clearTimeout(debounceTimeout);
+    useEffect(() => {
+        setError(storeError);
+    }, [storeError]);
+
+    useEffect(() => {
+        if (!isInitialized) return;
+    
+        const fetchProjects = async () => {
+            try {
+                if (selectedFilters.length === 0) {
+                    // Use fetchProjectsThunk with pagination when no filters are applied
+                    await dispatch(fetchProjectsThunk({ page: 1, pageSize: 10 }));
+                    setDisplayType('List');
+                } else if (selectedFilters.length === 1) {
+                    await dispatch(getGroupedProjectsThunk(selectedFilters));
+                    setDisplayType('ListCard');
+                } else {
+                    await dispatch(getMultiQueryThunk(selectedFilters));
+                    setDisplayType('List');
+                }
+            } catch (error) {
+                console.error('Error fetching projects: ', error);
             }
+        };
+    
+        const debounceTimeout = setTimeout(() => {
+            fetchProjects();
+        }, 300);
+        
+        return () => clearTimeout(debounceTimeout);
     }, [selectedFilters, isInitialized, dispatch]);
 
-    
+    // Handle pending selection
     useEffect(() => {
         if (pendingSelection && !selectedFilters.includes(pendingSelection)) {
             setSelectedFilters([...selectedFilters, pendingSelection]);
@@ -84,37 +93,57 @@ const Ridgeline = () => {
                     setInputValue={setInputValue}
                 />
             </div>
-            <div className='space-y-2'>
-                {displayType === 'ListCard' && groupedProjects.groupedProjects.map((projects) => (
-                    <ProjectGroupCard 
-                        key={projects.groupKey} 
-                        name={projects.groupKey} 
-                        total={projects.count} 
-                        redTotal={4} 
-                        yellowTotal={18} 
-                        greenTotal={19} 
-                        revenue={68354} 
-                    />
-                ))}
-                {displayType === 'Card' && groupedProjects.groupedProjects.map((projects) => (
-                    <ProjectCardBuckets 
-                        key={projects.groupKey} 
-                        projects={projects.projects} 
-                        groupKey={projects.groupKey} 
-                        count={projects.count} 
-                    />
-                ))}
-                {displayType === 'List' && (
-                    <ListView 
-                        key={'list'} 
-                        groupKey={'key'} 
-                        count={0} 
-                        projects={project} 
-                    />
-                )}
-            </div>
+            
+            {/* Error display */}
+            {error && (
+                <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded">
+                    {typeof error === 'string' ? error : error.message}
+                </div>
+            )}
+            
+            {/* Loading indicator */}
+            {isLoading && (
+                <div className="flex justify-center py-4">
+                    <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-blue-500"></div>
+                </div>
+            )}
+            
+            {/* Content display based on type */}
+            {!isLoading && (
+                <div className='space-y-2'>
+                    {displayType === 'ListCard' && groupedProjects.map((group) => (
+                        <ProjectGroupCard 
+                            key={group.groupKey} 
+                            name={group.groupKey} 
+                            total={group.count} 
+                            redTotal={4} 
+                            yellowTotal={18} 
+                            greenTotal={19} 
+                            revenue={68354} 
+                        />
+                    ))}
+                    
+                    {displayType === 'Card' && groupedProjects.map((group) => (
+                        <ProjectCardBuckets 
+                            key={group.groupKey} 
+                            projects={group.projects} 
+                            groupKey={group.groupKey} 
+                            count={group.count} 
+                        />
+                    ))}
+                    
+                    {displayType === 'List' && (
+                        <ListView 
+                            key={'list'} 
+                            groupKey={'all_projects'} 
+                            count={projects.length} 
+                            projects={projects} 
+                        />
+                    )}
+                </div>
+            )}
         </div>
     );
-}
+};
 
 export default Ridgeline;

@@ -11,8 +11,6 @@ import { Alert, AlertDescription } from '@/components/shadcn/ui/alert'
 import { useSelector } from 'react-redux'
 
 export default function ProjectDetailPage() {
-    const projectContext = useContext(ProjectContext);
-    const ShortProject = useSelector(selectShortProject);
     const params = useParams()
     const [project, setProject] = useState<LongProject | null>(null)
     const [isLoading, setIsLoading] = useState(true)

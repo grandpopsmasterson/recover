@@ -3,7 +3,7 @@ import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { fetchEstimatesThunk, fetchFlagsThunk, fetchProjectsThunk, fetchTimelineThunk, fetchWorkOrdersThunk, updateProjectThunk } from "../thunk/projectThunk";
 
 const initialState: ProjectState = {
-  projects: [] as ShortProject[],
+  projects: [] as LongProject[],
   currentProject: null as LongProject | null,
   loading: false,
   error: null,
@@ -72,6 +72,7 @@ const projectsSlice = createSlice({
           state.error = null;
         })
         .addCase(updateProjectThunk.fulfilled, (state, action: PayloadAction<LongProject>) => {
+          state.loading = false; // Add this line
           const index = state.projects.findIndex((p) => p.id === action.payload.id);
           if (index !== -1) {
             state.projects[index] = action.payload;
@@ -140,5 +141,5 @@ const projectsSlice = createSlice({
     },
   });
 
-  export const { setCurrentProject } = projectsSlice.actions;
+  export const { setCurrentProject, clearProjectOverview } = projectsSlice.actions;
   export default projectsSlice.reducer; 
