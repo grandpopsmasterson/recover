@@ -8,6 +8,8 @@ import {
 // Import all reducers
 import projectReducer from './slice/projectSlice';
 import authReducer from './slice/authSlice';
+import longProjectReducer from './slice/longProjectSlice'
+import allLongProjectsReducer from './slice/allLongProjectsSlice'
 // import userReducer from './slice/userSlice';
 // import groupedProjectReducer from './slice/groupedProjectSlice';
 
@@ -16,6 +18,8 @@ export const store = configureStore({
   reducer: {
     projects: projectReducer,
     auth: authReducer,
+    longProject: longProjectReducer,//single long project
+    allLongProjects: allLongProjectsReducer, // multiple long projects (filter usage on ridgeline)
     // user: userReducer,
     // groupedProject: groupedProjectReducer,
   },

@@ -48,7 +48,7 @@ export const fetchProjectDetailsThunk = createAsyncThunk(
     'projects/fetchProjectOverview',
     async (projectId: string, { dispatch, rejectWithValue }) => {
       try {
-        const detailsData = await projectsApi.getProject(projectId);
+        const detailsData = await projectsApi.getFullProject(projectId);
         
         // Background fetches for key sections
         dispatch(prefetchProjectSectionsThunk(projectId));

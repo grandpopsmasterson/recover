@@ -1,11 +1,14 @@
 'use client'
 
 import { SearchIcon } from '@/components/ui/icons/SearchIcon';
+import { useAppSelector } from '@/store/store';
 import { Boundaries, Marker, Position } from '@/types/estimate';
+import { LongProject, Project, Rooms } from '@/types/project';
 import { Button } from '@heroui/button';
 import { Autocomplete, AutocompleteItem, AutocompleteSection, Divider, Tab, Tabs } from '@heroui/react';
 import { AnimatePresence, motion } from 'framer-motion';
 import Image from 'next/image';
+import { useParams } from 'next/navigation';
 import React, { useEffect, useRef, useState } from 'react';
 
 
@@ -35,12 +38,34 @@ export default function EstimateBuilder() {
     const [isloading, setIsLoading] = useState(false); // No need for the actual use of loading yet
     const [error, setError] = useState<string | null>(null); // Same for errors -- will come in good time
 
+    // Room and Floor state
+    const [room, setRoom] = useState('');
+    // const [floor, setFloor] = useState('');
+
     // Refs
     const containerRef = useRef<HTMLDivElement>(null);
     const imageContainerRef = useRef<HTMLDivElement>(null);
     const imageRef = useRef<HTMLImageElement>(null);
     const optionsRef = useRef<HTMLDivElement | null>(null);
     const anchorRef = useRef<{ [key: number]: HTMLElement }>({});
+
+    // Setting selected project based on ID from URL
+    const { id } = useParams();
+    const [project, setProject] = useState<LongProject['details'] | null>(null);
+    const proj = useAppSelector(state => state.projects.projects)
+
+    useEffect(() => {
+        if (id) {
+            try {
+                const idString = Array.isArray(id) ? id[0] : id
+                const paramsId = Number(idString);
+                const foundProject = proj.find(project => project.id === paramsId)
+                setProject(foundProject || null)
+            } catch (error) {
+                console.log(error)
+            }
+        }
+    }, [id, proj]);
     
 //USE EFFECT HOOKS
     // Materials logic
@@ -271,6 +296,7 @@ export default function EstimateBuilder() {
         const imgCoords = screenToImageCoords(clickPosition.x, clickPosition.y);
         
         const newMarker: Marker = {
+            matterportRoomId: room,
             id: Date.now(),
             position: {
                 x: imgCoords.x, // Ensure within bounds
@@ -314,6 +340,10 @@ export default function EstimateBuilder() {
         setEditingMarkerId(id);
         setIsOptionsOpen(true);
         console.log(id)
+    };
+
+    const handleRoomSelect = (room: Rooms) => {
+        setRoom(room.matterportRoomId)
     };
 
     return (
@@ -559,12 +589,13 @@ export default function EstimateBuilder() {
                                 onMouseLeave={() => setSelectedMarkerId(null)}
                             >
                                 <div className="flex justify-between items-start">
-                                    <div>
+                                    
+                                        <div key={material.id}>
                                         <h3 className='font-bold'>{material.name}</h3>
                                         <p className='text-gray-600'>{material.description}</p>
                                         <p className='text-gray-500 text-sm'>{count !== 0 ? `Amount: ${count}` : ''}</p>
                                         <p className='text-gray-500 text-sm'>Cost: ${count * material.price}</p>
-                                    </div>
+                                    </div>                                    
                                     <div className="flex space-x-1">
                                         <button
                                             onClick={() => markers.forEach(m => handleRemoveMarker(m.id))}
@@ -588,98 +619,27 @@ export default function EstimateBuilder() {
                     tabContent: 'group-data-[selected=true]:text-white rounded-md',
                     tab: 'rounded-md'
                 }}>
-                        <Tab key='floor1' title='First Floor' className='max-h-65' >
-                            <div className='flex flex-wrap gap-2 overflow-y-auto h-full'>
-                                <div className='bg-secondary p-0.5 rounded-sm text-center'>
-                                    <Image
-                                        ref={imageRef}
-                                        src={panorama}
-                                        alt='Panorama'
-                                        width={300}
-                                        height={75}
-                                        className='pointer-events-none rounded-sm'
-                                        priority
-                                    />
-                                    Room 1
+                        {project?.floorObject && project?.floorObject.length > 0 ? (
+                            project.floorObject.map((floor) => (
+                            <Tab key={floor.floor.floorLevel} title={floor.floor.floorName}>
+                                <div className='flex flex-wrap gap-2 overflow-y-auto h-full'>
+                                    {floor.rooms.map((room) => (
+                                        <div key={room.matterportRoomId} className='bg-secondary p-0.5 rounded-sm text-center'>
+                                        <Image
+                                            ref={imageRef}
+                                            src={panorama}
+                                            alt='Panorama'
+                                            width={300}
+                                            height={75}
+                                            className='pointer-events-none rounded-sm'
+                                            priority
+                                        />
+                                        {room.matterportRoomId.replace(/_/g, ' ').replace(/(^\w|\s\w)/g, m => m.toUpperCase())}
+                                    </div>
+                                    ))}
                                 </div>
-                                <div className='bg-secondary p-0.5 rounded-sm text-center'>
-                                    <Image
-                                        ref={imageRef}
-                                        src={panorama}
-                                        alt='Panorama'
-                                        width={300}
-                                        height={75}
-                                        className='pointer-events-none rounded-sm'
-                                        priority
-                                    />
-                                    Room 2
-                                </div>
-                                <div className='bg-secondary p-0.5 rounded-sm text-center'>
-                                    <Image
-                                        ref={imageRef}
-                                        src={panorama}
-                                        alt='Panorama'
-                                        width={300}
-                                        height={75}
-                                        className='pointer-events-none rounded-sm'
-                                        priority
-                                    />
-                                    Room 3
-                                </div>
-                                <div className='bg-secondary p-0.5 rounded-sm text-center'>
-                                    <Image
-                                        ref={imageRef}
-                                        src={panorama}
-                                        alt='Panorama'
-                                        width={300}
-                                        height={75}
-                                        className='pointer-events-none rounded-sm'
-                                        priority
-                                    />
-                                    Room 4
-                                </div>
-                                <div className='bg-secondary p-0.5 rounded-sm text-center'>
-                                    <Image
-                                        ref={imageRef}
-                                        src={panorama}
-                                        alt='Panorama'
-                                        width={300}
-                                        height={75}
-                                        className='pointer-events-none rounded-sm'
-                                        priority
-                                    />
-                                    Room 5
-                                </div>
-                            </div>
-                        </Tab>
-                        <Tab key='floor2' title='Second Floor'>
-                        <div className='flex flex-wrap gap-2 overflow-y-auto h-full'>
-                                <div className='bg-secondary p-0.5 rounded-sm text-center'>
-                                    <Image
-                                        ref={imageRef}
-                                        src={panorama}
-                                        alt='Panorama'
-                                        width={300}
-                                        height={75}
-                                        className='pointer-events-none rounded-sm'
-                                        priority
-                                    />
-                                    Kitchen
-                                </div>
-                                <div className='bg-secondary p-0.5 rounded-sm text-center'>
-                                    <Image
-                                        ref={imageRef}
-                                        src={panorama}
-                                        alt='Panorama'
-                                        width={300}
-                                        height={75}
-                                        className='pointer-events-none rounded-sm'
-                                        priority
-                                    />
-                                    Bathroom
-                                </div>
-                            </div>
-                        </Tab>
+                            </Tab>
+                        ))): (<Tab key={`NoInfo`} title='No Info'>No floor information available for this project</Tab>)}
                     </Tabs>
                     </Tab>
             </Tabs>

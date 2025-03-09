@@ -1,5 +1,5 @@
 import { apiService } from '@/api/service/apiService';
-import { GroupedProjects, Project } from "@/types/project";
+import { GroupedProjects, LongProject, Project } from "@/types/project";
 import { buildQueryParams, determineGroupBy } from "../utils/filter";
 import qs from "qs";
 
@@ -26,7 +26,7 @@ export const filterApi = {
         return transformedData;
     },
     
-    async search(filters: string[]): Promise<Project[]> {
+    async search(filters: string[]): Promise<LongProject[]> {
         const ransackParams = buildQueryParams(filters);
         
         return apiService.get('/projects/search', {

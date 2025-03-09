@@ -1,7 +1,8 @@
 export interface Marker {
+    matterportRoomId: string;
     id: number;
     position: { x: number; y: number };
-    details: Materials[];
+    details: Materials;
 }
 
 export interface Position {

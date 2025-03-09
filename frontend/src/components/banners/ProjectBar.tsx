@@ -1,12 +1,11 @@
 import React from 'react'
-import { Project, Project } from '@/types/project'
-import { Plus } from 'lucide-react'
+import { LongProject } from '@/types/project'
 import { Image } from '@heroui/react'
 import { useParams } from 'next/navigation'
 //import AssignUserBtn from '../buttons/AssignButton'
 import PhotoStack from '../buttons/PhotoStack'
 
-export const ProjectBar = ({clientName, houseImage, streetAddress, city, state, stage }: Project) => {
+export const ProjectBar = ({clientName, houseImage, streetAddress, /*city, state, stage */ }: LongProject["details"]) => {
 
     const params = useParams();
         const projectId = params.id as string;

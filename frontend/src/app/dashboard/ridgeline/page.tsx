@@ -3,7 +3,7 @@
 import React, { useEffect, useState } from 'react'
 import FilterComponent from '@/components/filters/FilterComponent'
 import ProjectCardBuckets from '@/components/cards/ProjectCardBuckets'
-import { FilterError } from '@/types/project'
+import { FilterError, filters } from '@/types/project'
 import ListView from '@/components/ui/ListView'
 import { useFilterPersistence } from '@/hooks/filters/useFilterPersistence'
 import ProjectGroupCard from '@/components/cards/ProjectGroupCard'
@@ -53,7 +53,11 @@ const Ridgeline = () => {
                     // Use fetchProjectsThunk with pagination when no filters are applied
                     await dispatch(fetchProjectsThunk({ page: 1, pageSize: 10 }));
                     setDisplayType('List');
-                } else if (selectedFilters.length === 1) {
+                } else if (selectedFilters.length === 1 ) {
+                    if (filters.find(item => item.name === selectedFilters.toString() && item.group !== 'Group' )) {
+                        await dispatch(getMultiQueryThunk(selectedFilters));
+                        return;
+                    }
                     await dispatch(getGroupedProjectsThunk(selectedFilters));
                     setDisplayType('ListCard');
                 } else {

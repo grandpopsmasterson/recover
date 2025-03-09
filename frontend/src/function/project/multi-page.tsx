@@ -1,19 +1,17 @@
 'use client'
-import { Dropdown, DropdownTrigger, AvatarGroup, Avatar, DropdownMenu, DropdownItem, User, Tabs, Tab, divider} from '@heroui/react';
+import {  Tabs, Tab } from '@heroui/react';
 import { Project } from "@/types/project";
-import { DownArrow } from "@/components/ui/icons/DownArrow";
-import Details from './projectContent/Details';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 
 export default function MultiApp({
-    id,
+    //id,
     //projectName,
     // clientName,
     // clientEmail,
     // clientPhone,
-    startDate,
-    lossDate,
+    //startDate,
+    //lossDate,
     // streetAddress,
     // city,
     // state,
@@ -21,18 +19,18 @@ export default function MultiApp({
     // stage,
     // projectType,
     // carrier,
-    assignedRoles,
+    //assignedRoles,
     }: Project) {
         const router = useRouter();
 
     // const defaultImage = '/house1.png';
-    const defaultUser = './user-svgrepo-com.png';
+    // const defaultUser = './user-svgrepo-com.png';
 
     const tabs: {id: string, label: string}[] = [
         {id: 'estimate', label: 'Estimate'},
         {id: 'timeline', label: 'Timeline'},
         {id: 'compliance', label: 'Compliance'},
-        {id: 'work orders', label: 'Work Orders'},
+        {id: 'workOrders', label: 'Work Orders'},
         {id: 'progress', label: 'Progress'},
         {id: 'reporting', label: 'Reporting'},
         {id: 'materials', label: 'Materials'},
@@ -70,13 +68,13 @@ export default function MultiApp({
                     </div>
                 )
             case 'compliance':
-                return ( <Details startDate={startDate} lossDate={lossDate} /> ) // TODO LAZY LOADING FOR ALL OF THESE
-            case 'work orders':
-                return ( <div>Progress Content</div> )
+                return ( <div>Compliance Content</div> ) // TODO LAZY LOADING FOR ALL OF THESE
+            case 'workOrders':
+                return ( <div>Work Orders Content</div> )
             case 'progress':
                 return ( <div>Progress Content</div> )
             case 'reporting':
-                return ( <div>Contact Content</div> )
+                return ( <div>Reporting Content</div> )
             case 'materials':
                 return ( <div>Materials Content</div> )
             

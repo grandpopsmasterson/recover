@@ -1,8 +1,8 @@
 import { apiService } from '@/api/service/apiService';
-import { User } from '@/components/buttons/AssignButton';
 import { CreateProject } from '@/types/createProject';
-import { Project, Project, ListBucket, Timeline, Flag, WorkOrder } from '@/types/project';
+import { Project, ListBucket, Timeline, Flag, WorkOrder, LongProject } from '@/types/project';
 import { Estimate } from '@/types/estimate';
+import { User } from '@/types/user';
 
 export const projectsApi = {
   async createProject(request: CreateProject): Promise<Project> {
@@ -17,8 +17,8 @@ export const projectsApi = {
     return apiService.get<Project[]>(`/projects?page=${page}&per_page=${pageSize}`);
   },
 
-  async getProject(projectId: string): Promise<Project> {
-    return apiService.get<Project>(`/projects/${projectId}`);
+  async getFullProject(projectId: string): Promise<LongProject> {
+    return apiService.get<LongProject>(`/projects/${projectId}`);
   },
 
   async getAllBuckets(): Promise<ListBucket[]> {

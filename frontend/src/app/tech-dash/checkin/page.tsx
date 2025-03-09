@@ -1,21 +1,27 @@
 'use client'
-import { docusignApi } from '@/api/features/docusignApi';
+import { DocusignForm } from '@/components/docusign/Docusign';
 import { CustomCheckbox } from '@/components/ui/CustomCheckbox';
+import { forms } from '@/types/docusign';
 import { CheckInType, MicroForm } from '@/types/techDash';
 import { Button } from '@heroui/button';
 import { Checkbox, CheckboxGroup, Input } from '@heroui/react';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
-import React, { ChangeEvent, useEffect, useState } from 'react';
+import React, { ChangeEvent, useState } from 'react';
 
 export default function Checkin() {
     const [count, setCount] = useState<number>(0);
-    const [signingUrl, setSigningUrl] = useState<string | undefined>(undefined);
-    const [loading, setLoading] = useState<boolean>(false);
     const [error, setError] = useState<string | null>(null);
+    const [selectedForm, setSelectedForm] = React.useState<string | null>(null);
 
     const [isEditing, setIsEditing] = useState<boolean>(false);
     const [selectedValuesScope, setSelectedValuesScope] = useState<Set<string>>(new Set());
+
+    const placeHolderData = {
+        firstName: "first",
+        lastName: 'last',
+        email: 'email'
+    }
 
     const [formData, setFormData] = useState<CheckInType>({
         checkIn: false,
@@ -30,31 +36,6 @@ export default function Checkin() {
 
     const router = useRouter();
     const scope: string[] = ['Mitigation', 'Restoration', 'Contents']
-
-    const fetchSigningUrl = async () => {
-        setLoading(true);
-        setError(null);
-        try {
-            const response = await docusignApi.fetchDocusign();
-            if (!response.ok) {
-                throw new Error('Failed to load signing URL');
-            }
-            setSigningUrl(response.url);
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        } catch(err: any) {
-            setError(err.message);
-        } finally {
-            setLoading(false);
-        }
-    };
-
-    const handleRetry = () => {
-        fetchSigningUrl();
-    }
-
-    useEffect(() => {
-        fetchSigningUrl();
-    }, []);
 
     const handleCheckboxCheckIn = (e: ChangeEvent<HTMLInputElement>) => {
         setFormData({...formData, checkIn: e.target.checked});
@@ -86,6 +67,11 @@ export default function Checkin() {
     const handleSave = () => {
         setIsEditing(false); // TODO make an api call to send the data to the db
     };
+
+    const onComplete = () => {
+        setSelectedForm(null);
+        //TODO navigate to next section???
+    }
 
     const steps = [
         {
@@ -180,24 +166,30 @@ export default function Checkin() {
             title: 'Docusign for work authorizatrion',
             component: () => (
                 <div className='space-y-4'>
-                    <h1>Signature for work authentication</h1>
-                    {loading ? (
-                        <div>Loading...</div>
-                    ) : error ? (
-                            <div>
-                                <p>Error: {error}</p>
-                                <Button onPress={handleRetry}>Retry</Button>
-                            </div>
+                    <h1>Select a work authentication to sign</h1>
+                    {selectedForm ? (
+                        <DocusignForm 
+                        clientInfo={placeHolderData}
+                        formId={selectedForm}
+                        onComplete={() => {
+                            setSelectedForm(null);
+                            onComplete();
+                        }}
+                        />
                     ) : (
-                        <div>
-                            <iframe 
-                                src={signingUrl} 
-                                width='100%'
-                                height='600px'
-                                title='DocuSign Signing'
-                            ></iframe>
+                        <div className='space-y-4'>
+                            {forms.map(form => (
+                                <Button
+                                key={form.id}
+                                className="w-full px-4 py-2 text-left border rounded hover:bg-gray-100"
+                                onPress={() => setSelectedForm(form.id)}
+                                >
+                                    {form.name}
+                                </Button>
+                            ))}
                         </div>
-                    )}
+                    )
+                    }
                 </div>
             )
         }
