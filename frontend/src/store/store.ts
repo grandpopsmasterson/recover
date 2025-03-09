@@ -9,7 +9,7 @@ import {
 import projectReducer from './slice/projectSlice';
 import authReducer from './slice/authSlice';
 // import userReducer from './slice/userSlice';
-import groupedProjectReducer from './slice/groupedProjectSlice';
+// import groupedProjectReducer from './slice/groupedProjectSlice';
 
 // Create the store
 export const store = configureStore({
@@ -17,7 +17,7 @@ export const store = configureStore({
     projects: projectReducer,
     auth: authReducer,
     // user: userReducer,
-    groupedProject: groupedProjectReducer,
+    // groupedProject: groupedProjectReducer,
   },
   
   // Middleware configuration
@@ -53,4 +53,4 @@ export const useAppSelector: TypedUseSelectorHook<RootState> = useSelector;
 export const selectProjectState = (state: RootState) => state.projects;
 export const selectAuthState = (state: RootState) => state.auth;
 // export const selectUserState = (state: RootState) => state.user;
-export const selectGroupedProjectState = (state: RootState) => state.groupedProject;
+// export const selectGroupedProjectState = (state: RootState) => state.groupedProject;

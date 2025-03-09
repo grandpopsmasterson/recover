@@ -2,22 +2,22 @@ package com.recover.project.event;
 
 import org.springframework.context.ApplicationEvent;
 
-import com.recover.project.dto.project.ShortProjectDto;
+import com.recover.project.dto.project.ProjectDto;
 import com.recover.project.dto.user.AssignedRoleDto;
 
 
 public class ProjectAssignedEvent extends ApplicationEvent {
 
-    private final ShortProjectDto project;
+    private final ProjectDto project;
     private final AssignedRoleDto employee;
     
-        public ProjectAssignedEvent(Object source, ShortProjectDto project, AssignedRoleDto employee) {
+        public ProjectAssignedEvent(Object source, ProjectDto project, AssignedRoleDto employee) {
             super(source);
             this.project = project;
             this.employee = employee;
     }
 
-    public ShortProjectDto getProject() {
+    public ProjectDto getProject() {
         return project;
     }
 

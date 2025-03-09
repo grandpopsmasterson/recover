@@ -8,7 +8,7 @@ import com.recover.project.model.enums.LossType;
 import com.recover.project.model.enums.Scope;
 import com.recover.project.dto.user.AssignedRoleDto;
 
-public record ShortProjectDto(
+public record ProjectDto(
    Long id,
    ProjectStage stage,
    Scope scope,

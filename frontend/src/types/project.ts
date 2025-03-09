@@ -1,4 +1,6 @@
+
 import { Estimate } from "./estimate";
+import { Dispatch, SetStateAction } from "react";
 
 // Define string literal types for better type safety
 export type ProjectStage = 
@@ -39,20 +41,8 @@ export interface ProjectRoleRequest {
   projectRole: string;
 }
 
-// Short Project Representation
-export interface ShortProject {
-  id: bigint;
-  streetAddress: string;
-  clientName: string;
-  assignedRoles: AssignedRole[];
-  stage: ProjectStage;
-  city: string; 
-  state: string; 
-  houseImageUrl?: string;
-}
-
 // Detailed Project Interface
-export interface LongProject {
+export interface Project {
   id: bigint;
   projectName: string | null;
   clientName: string;
@@ -79,10 +69,12 @@ export interface ListBucket {
   yellowTotal: number;
   greenTotal: number;
   revenue: number;
+  setSelectedFilters: Dispatch<SetStateAction<string[]>>;
+  setDisplayType: Dispatch<SetStateAction<"ListCard" | "List" | "Card">>;
 }
 
 // Filtered Project Details
-export type DetailsProps = Pick<LongProject, 'lossDate' | 'startDate'>;
+export type DetailsProps = Pick<Project, 'lossDate' | 'startDate'>;
 
 // Error Handling
 export interface FilterError {
@@ -93,7 +85,7 @@ export interface FilterError {
 // Grouped Projects
 export interface GroupedProjects {
   groupKey: string;
-  projects: ShortProject[];
+  projects: Project[];
   count: number;
 }
 
@@ -105,12 +97,12 @@ export interface GroupedProjectState {
 
 // Project State for Redux
 export interface ProjectState {
-  projects: ShortProject[];
-  currentProject: LongProject | null;
+  projects: Project[];
+  groupedProject: GroupedProjectState;
   loading: boolean;
   error: string | null;
   overview: {
-    data: ShortProject | null;
+    data: Project | null;
     loading: boolean;
     error: string | null;
   };

@@ -3,7 +3,7 @@
 import React, { useEffect, useState } from 'react'
 import FilterComponent from '@/components/filters/FilterComponent'
 import ProjectCardBuckets from '@/components/cards/ProjectCardBuckets'
-import { FilterError, GroupedProjects, LongProject } from '@/types/project'
+import { FilterError } from '@/types/project'
 import ListView from '@/components/ui/ListView'
 import { useFilterPersistence } from '@/hooks/filters/useFilterPersistence'
 import ProjectGroupCard from '@/components/cards/ProjectGroupCard'
@@ -12,6 +12,8 @@ import { fetchProjectsThunk } from '@/store/thunk/projectThunk'
 import { getGroupedProjectsThunk, getMultiQueryThunk } from '@/store/thunk/groupedProjectThunk'
 
 const Ridgeline = () => {
+
+    
     // State 
     const [displayType, setDisplayType] = useState<'ListCard'|'List'|'Card'>('ListCard');
     const { selectedFilters, setSelectedFilters, isInitialized } = useFilterPersistence();
@@ -23,12 +25,12 @@ const Ridgeline = () => {
 
     // Pulling from global store
     const projects = useAppSelector(state => state.projects.projects);
-    const groupedProjects = useAppSelector(state => state.groupedProject.groupedProjects);
+    const groupedProjects = useAppSelector(state => state.projects.groupedProject.groupedProjects);
     const isStoreLoading = useAppSelector(state => 
-        state.projects.loading || state.groupedProject.loading
+        state.projects.loading || state.projects.groupedProject.loading
     );
     const storeError = useAppSelector(state => 
-        state.projects.error || state.groupedProject.error
+        state.projects.error || state.projects.groupedProject.error
     );
     const dispatch = useAppDispatch();
 
@@ -46,6 +48,7 @@ const Ridgeline = () => {
     
         const fetchProjects = async () => {
             try {
+                await(dispatch(fetchProjectsThunk({page: 1, pageSize: 10})))
                 if (selectedFilters.length === 0) {
                     // Use fetchProjectsThunk with pagination when no filters are applied
                     await dispatch(fetchProjectsThunk({ page: 1, pageSize: 10 }));
@@ -120,6 +123,8 @@ const Ridgeline = () => {
                             yellowTotal={18} 
                             greenTotal={19} 
                             revenue={68354} 
+                            setSelectedFilters={setSelectedFilters} 
+                            setDisplayType={setDisplayType} 
                         />
                     ))}
                     

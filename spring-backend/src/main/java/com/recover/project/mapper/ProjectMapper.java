@@ -11,10 +11,10 @@ import org.mapstruct.Mapping;
 import org.mapstruct.Mappings;
 
 import com.recover.project.dto.project.CreateProject;
-import com.recover.project.dto.project.LongProjectDto;
+import com.recover.project.dto.project.ProjectDto;
 import com.recover.project.dto.project.ProjectBucketDto;
 import com.recover.project.dto.project.ProjectListDto;
-import com.recover.project.dto.project.ShortProjectDto;
+import com.recover.project.dto.project.ProjectDto;
 import com.recover.project.model.Project;
 import com.recover.project.model.enums.LossType;
 import com.recover.project.model.enums.ProjectStage;
@@ -44,15 +44,15 @@ public interface ProjectMapper {
 
 
     @Mapping(source = "roles", target = "assignedRoles")  // assignedRoles creates role DTOs in the RoleMapper.class and passes them back
-    LongProjectDto toLongDto(Project project);
+    ProjectDto toLongDto(Project project);
 
-    List<LongProjectDto> toLongDtoList(List<Project> projects);
+    List<ProjectDto> toLongDtoList(List<Project> projects);
 
     @Mapping(source = "roles", target = "assignedRoles")  // assigned roles is a dto that was packaged and passed in from RoleMapper
-    ShortProjectDto toShortDto(Project project);
+    ProjectDto toShortDto(Project project);
 
-    //List<ShortProjectDto> toShortDtoList(List<Project> projects);
-    default List<ShortProjectDto> toShortDtoList(List<Project> projects) {
+    //List<ProjectDto> toShortDtoList(List<Project> projects);
+    default List<ProjectDto> toShortDtoList(List<Project> projects) {
         if (projects == null) {
             return Collections.emptyList();
         }

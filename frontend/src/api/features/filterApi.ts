@@ -1,5 +1,5 @@
 import { apiService } from '@/api/service/apiService';
-import { GroupedProjects, ShortProject } from "@/types/project";
+import { GroupedProjects, Project } from "@/types/project";
 import { buildQueryParams, determineGroupBy } from "../utils/filter";
 import qs from "qs";
 
@@ -7,7 +7,7 @@ export const filterApi = {
     async group(filters: string[]): Promise<GroupedProjects[]> {
         const groupBy = determineGroupBy(filters);
         const ransackParams = buildQueryParams(filters);
-        const response = await apiService.get<Record<string, { count: number, projects: ShortProject[] }>>(
+        const response = await apiService.get<Record<string, { count: number, projects: Project[] }>>(
             '/projects/group', 
             {
                 group_by: groupBy,
@@ -26,7 +26,7 @@ export const filterApi = {
         return transformedData;
     },
     
-    async search(filters: string[]): Promise<ShortProject[]> {
+    async search(filters: string[]): Promise<Project[]> {
         const ransackParams = buildQueryParams(filters);
         
         return apiService.get('/projects/search', {

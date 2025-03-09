@@ -10,10 +10,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 import org.springframework.security.core.context.SecurityContextHolder;
 import com.recover.project.dto.project.CreateProject;
-import com.recover.project.dto.project.LongProjectDto;
+import com.recover.project.dto.project.ProjectDto;
 import com.recover.project.dto.project.ProjectBucketDto;
 import com.recover.project.dto.project.ProjectListDto;
-import com.recover.project.dto.project.ShortProjectDto;
+import com.recover.project.dto.project.ProjectDto;
 import com.recover.project.dto.user.ShortUser;
 import com.recover.project.mapper.ProjectMapper;
 import com.recover.project.mapper.UserMapper;
@@ -54,7 +54,7 @@ public class ProjectService {
 
 
     @Transactional
-    public ShortProjectDto createProject(CreateProject request) {
+    public ProjectDto createProject(CreateProject request) {
         Project project = projectRepository.save(projectMapper.toEntity(request));
         if (request.getAssignedUsers() == null || request.getAssignedUsers().isEmpty()) {
             Role defaultRole = Role.builder()
@@ -125,10 +125,10 @@ public class ProjectService {
         }
     }
 
-    public Set<ShortProjectDto> getAllProjectsById(Long userId) {
+    public Set<ProjectDto> getAllProjectsById(Long userId) {
         try {
             logger.info("Fetching projects for userId: {}", userId);   
-            Set<ShortProjectDto> projects = projectRepository.findAllProjectsByUserId(userId)
+            Set<ProjectDto> projects = projectRepository.findAllProjectsByUserId(userId)
                 .stream()
                 .map(projectMapper::toShortDto)
                 .collect(Collectors.toSet()); 
@@ -141,20 +141,20 @@ public class ProjectService {
         }
     }
 
-    public List<ShortProjectDto> getProjectsListByRole(Long userId, ProjectRole projectRole) {
+    public List<ProjectDto> getProjectsListByRole(Long userId, ProjectRole projectRole) {
         return projectRepository.findProjectsByUserIdAndRole(userId, projectRole)
             .stream()
             .map(projectMapper::toShortDto)
             .collect(Collectors.toList());
     }
 
-    public ShortProjectDto getShortProjectById(Long projectId) {
+    public ProjectDto getProjectById(Long projectId) {
         return projectRepository.findById(projectId)
             .map(projectMapper::toShortDto)
             .orElseThrow(() -> new ResourceNotFoundException("Project not found with id: " + projectId));
     }
 
-    public LongProjectDto getLongProjectById(Long projectId) {
+    public ProjectDto getProjectById(Long projectId) {
         return projectRepository.findById(projectId)
             .map(projectMapper::toLongDto)
             .orElseThrow(() -> new ResourceNotFoundException("Project not found with id: " + projectId));

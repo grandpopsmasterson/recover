@@ -168,7 +168,7 @@
           - StepThree.tsx
           - StepTwo.tsx
       - project
-        - LongProjectPage.tsx
+        - ProjectPage.tsx
         - projectContent
           - Details.tsx
       - tech-dash
@@ -296,10 +296,10 @@
                   - NotificationDTO.java
                 - project
                   - CreateProject.java
-                  - LongProjectDto.java
+                  - ProjectDto.java
                   - ProjectBucketDto.java
                   - ProjectListDto.java
-                  - ShortProjectDto.java
+                  - ProjectDto.java
                   - UpdateProject.java
                 - user
                   - AssignedRoleDto.java
@@ -459,10 +459,10 @@
                 - NotificationDTO.class
               - project
                 - CreateProject.class
-                - LongProjectDto.class
+                - ProjectDto.class
                 - ProjectBucketDto.class
                 - ProjectListDto.class
-                - ShortProjectDto.class
+                - ProjectDto.class
                 - UpdateProject.class
               - user
                 - AssignedRoleDto.class

@@ -53,13 +53,7 @@ export default function EstimateBuilder() {
                     throw new Error (`HTTP error! Status: ${response.status}`);
                 }
                 const text = await response.text();
-                //console.log('Raw response: ', text);
-                // if (text.trim()) {
-                //     const data = JSON.parse(text);
-                //     console.log('parsed ---',data)
-                // }
                 const data = JSON.parse(text);
-                //console.log(response)
 
                 if (data.materials && Array.isArray(data.materials)) {
                     setMaterials(data.materials);
@@ -276,9 +270,6 @@ export default function EstimateBuilder() {
         // Convert screen position to image coordinates
         const imgCoords = screenToImageCoords(clickPosition.x, clickPosition.y);
         
-        // Ensure coordinates are valid (for debugging)
-        // console.log('New marker coords:', imgCoords);
-        
         const newMarker: Marker = {
             id: Date.now(),
             position: {
@@ -295,36 +286,6 @@ export default function EstimateBuilder() {
         setInputValue('');
         setIsOptionsOpen(false);
     };
-
-    //Modify marker position
-    // const getMarkerPosition = (marker: Marker): {left: string, top: string} => {
-    //     if (!imageDimensions) {
-    //         return {left: `${marker.position.x}%`, top: `${marker.position.y}%`};
-    //     }
-    //     const { naturalWidth, naturalHeight} = imageDimensions;
-    //     const containerWidth = containerRef.current?.offsetWidth || 0;
-    //     const containerHeight = containerRef.current?.offsetHeight || 0;
-
-    //     const containerRatio = containerWidth / containerHeight;
-    //     const imageRatio = naturalWidth / naturalHeight;
-
-    //     let xPos, yPos;
-
-    //     if (containerRatio > imageRatio) {
-    //         const visibleHeight = (naturalWidth / containerWidth) * containerHeight;
-    //         const yOffset = (naturalHeight - visibleHeight) / 2;
-
-    //         xPos = marker.position.x;
-    //         yPos = ((marker.position.y / 100 * naturalHeight - yOffset) / visibleHeight) * 100;
-    //     } else {
-    //         const visibleWidth = (naturalHeight / containerHeight) * containerWidth;
-    //         const xOffset = (naturalWidth - visibleWidth) / 2;
-
-    //         xPos = ((marker.position.x / 100 * naturalWidth - xOffset) / visibleWidth) * 100;
-    //         yPos = marker.position.y;
-    //     }
-    //     return { left: `${xPos}%`, top: `${yPos}&`};
-    // }
     
     // Remove a marker
     const handleRemoveMarker = (id: number, event?: React.MouseEvent): void => {

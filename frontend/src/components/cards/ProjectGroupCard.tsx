@@ -14,8 +14,10 @@ const ProjectGroupCard: React.FC<ListBucket> = ({
     redTotal,
     yellowTotal,
     greenTotal,
-    revenue
-}) => {
+    revenue,
+    setDisplayType,
+    setSelectedFilters,
+}: ListBucket) => {
   const getStatusColor = (): string => {
     const maxCount = Math.max(yellowTotal, redTotal, greenTotal);
     if (maxCount === redTotal) return 'red-500';
@@ -77,10 +79,10 @@ const ProjectGroupCard: React.FC<ListBucket> = ({
               <li className="text-right">Total projects: 47</li>
             </ul>
             <div className="border-2 rounded-md mt-2 p-1 px-4 text-sm">
-              <a href="/buckets" className="flex items-center gap-2">
+              <button onClick={() => { setDisplayType("Card"); setSelectedFilters([name]) } } className="flex items-center gap-2">
                 Go to bucket
               <RightArrow />
-              </a>
+              </button>
             </div>
           </div>
         </div>

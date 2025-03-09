@@ -10,7 +10,7 @@ import com.recover.project.model.enums.ProjectType;
 import lombok.Data;
 
 @Data
-public class LongProjectDto {
+public class ProjectDto {
     private Long id;
     private String projectName;
     private String clientName;

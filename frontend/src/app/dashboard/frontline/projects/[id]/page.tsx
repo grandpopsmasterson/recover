@@ -1,22 +1,28 @@
 'use client'
-import { useContext, useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useParams } from 'next/navigation'
 import { projectsApi } from '@/api/features/projectsApi'
-import { LongProject } from '@/types/project'
+import { Project } from '@/types/project'
 import MultiPage from '@/function/project/multi-page'
 //import ActivityBox from '@/components/widgets/RecentActivity'
 import { ProjectBar } from '@/components/banners/ProjectBar'
 import { Skeleton } from '@/components/shadcn/ui/skeleton'
 import { Alert, AlertDescription } from '@/components/shadcn/ui/alert'
-import { useSelector } from 'react-redux'
+import { useAppDispatch } from '@/store/store'
+import { setCurrentProject } from '@/store/slice/projectSlice'
 
 export default function ProjectDetailPage() {
     const params = useParams()
-    const [project, setProject] = useState<LongProject | null>(null)
+    const [project, setProject] = useState<Project | null>(null)
     const [isLoading, setIsLoading] = useState(true)
     const [error, setError] = useState<string | null>(null)
+    const {id} = useParams();
 
+    const dispatch = useAppDispatch();
+    
+    
     useEffect(() => {
+        dispatch(setCurrentProject(params.id))
         const fetchProject = async () => {
             try {
                 setIsLoading(true)
@@ -30,7 +36,7 @@ export default function ProjectDetailPage() {
         }
 
         fetchProject()
-    }, [params.id])
+    }, [params.id, dispatch, id])
 
     if (isLoading) {
         return (

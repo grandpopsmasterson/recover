@@ -1,12 +1,17 @@
-import { GroupedProjects, ShortProject, LongProject, ProjectState } from "@/types/project";
+import { GroupedProjects, GroupedProjectState, Project, Project, ProjectState } from "@/types/project";
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { fetchEstimatesThunk, fetchFlagsThunk, fetchProjectsThunk, fetchTimelineThunk, fetchWorkOrdersThunk, updateProjectThunk } from "../thunk/projectThunk";
+import { getGroupedProjectsThunk, getMultiQueryThunk } from "../thunk/groupedProjectThunk";
 
 const initialState: ProjectState = {
-  projects: [] as LongProject[],
-  currentProject: null as LongProject | null,
+  projects: [] as Project[],
   loading: false,
   error: null,
+  groupedProject: {
+    groupedProjects: [],
+    loading: false,
+    error: null,
+  },
   overview: {
     data: null,
     loading: false,
@@ -33,15 +38,32 @@ const initialState: ProjectState = {
     error: null
   }
 };
+function normalizeId(payload: string | string[] | undefined): string | null {
+  if (Array.isArray(payload)) {
+    return payload[0] ?? null
+  }
+  return payload ?? null
+}
+const bigIntConverter = (id: string | string[] | undefined) => {
+        if (id && typeof id === 'string') {
+            return BigInt(id);
+        }
+        return null;
+    }
 
 const projectsSlice = createSlice({
     name: 'projects',
     initialState,
     reducers: {
-      setCurrentProject: (state, action: PayloadAction<bigint | null>) => {
-        state.currentProject = state.projects.find((p) => p.id === action.payload) 
-      ? { ...state.projects.find((p) => p.id === action.payload)} as LongProject 
-      : null;
+      setCurrentProject: (state, action: PayloadAction<string | string[] | undefined>) => {
+        const idString = normalizeId(action.payload)
+        if (!idString) {
+          state.currentProject = null;
+          return;
+        }
+        const id = bigIntConverter ? bigIntConverter(idString) : idString;
+        const foundProject = state.projects.find((p) => p.id === id);
+        state.currentProject = foundProject ? {...foundProject} : null;
       },
       clearProjectOverview: (state) => {
         state.overview = {
@@ -58,7 +80,7 @@ const projectsSlice = createSlice({
           state.loading = true;
           state.error = null;
         })
-        .addCase(fetchProjectsThunk.fulfilled, (state, action: PayloadAction<ShortProject[]>) => {
+        .addCase(fetchProjectsThunk.fulfilled, (state, action: PayloadAction<Project[]>) => {
           state.loading = false;
           state.projects = action.payload;
         })
@@ -71,7 +93,7 @@ const projectsSlice = createSlice({
           state.loading = true;
           state.error = null;
         })
-        .addCase(updateProjectThunk.fulfilled, (state, action: PayloadAction<LongProject>) => {
+        .addCase(updateProjectThunk.fulfilled, (state, action: PayloadAction<Project>) => {
           state.loading = false; // Add this line
           const index = state.projects.findIndex((p) => p.id === action.payload.id);
           if (index !== -1) {
@@ -82,6 +104,37 @@ const projectsSlice = createSlice({
           state.loading = false;
           state.error = action.payload as string;
         })
+        .addCase(getGroupedProjectsThunk.pending, (state) => {
+                    state.groupedProject.loading = true;
+                    state.groupedProject.error = null;
+                })
+                .addCase(getGroupedProjectsThunk.fulfilled, (state, action: PayloadAction<GroupedProjects[]>) => {
+                    state.groupedProject.loading = false;
+                    state.groupedProject.groupedProjects = action.payload;
+                })
+                .addCase(getGroupedProjectsThunk.rejected, (state, action) => {
+                    state.groupedProject.loading = false;
+                    state.groupedProject.error = action.payload as string;
+                })
+                
+                // Multi-query thunk - also updates groupedProjects
+                .addCase(getMultiQueryThunk.pending, (state) => {
+                    state.groupedProject.loading = true;
+                    state.groupedProject.error = null;
+                })
+                .addCase(getMultiQueryThunk.fulfilled, (state, action: PayloadAction<Project[]>) => {
+                    // Transform Project[] to a single GroupedProjects entry
+                    state.groupedProject.groupedProjects = [{
+                        groupKey: 'search_results',
+                        count: action.payload.length,
+                        projects: action.payload,
+                    }];
+                    state.groupedProject.loading = false;
+                })
+                .addCase(getMultiQueryThunk.rejected, (state, action) => {
+                    state.groupedProject.loading = false;
+                    state.groupedProject.error = action.payload as string; 
+                })
 
         // Estimate Reducers
         .addCase(fetchEstimatesThunk.pending, (state) => {

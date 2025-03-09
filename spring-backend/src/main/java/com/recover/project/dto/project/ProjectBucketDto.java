@@ -13,7 +13,7 @@ import java.util.List;
 @NoArgsConstructor
 public class ProjectBucketDto {
     private String groupKey;  // More generic than just 'stage'
-    private List<ShortProjectDto> projects;
+    private List<ProjectDto> projects;
     private long count;
     //private List<Flag> flags;
 }

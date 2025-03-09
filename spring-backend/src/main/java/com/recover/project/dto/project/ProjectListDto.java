@@ -11,7 +11,7 @@ import java.util.List;
 @NoArgsConstructor
 public class ProjectListDto {
 
-    private List<ShortProjectDto> projects;
+    private List<ProjectDto> projects;
     private Integer count;
     //private List<Flag> flags;
 }

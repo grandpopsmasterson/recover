@@ -3,7 +3,7 @@
 import React, { useState, useEffect } from 'react'
 import { filterApi } from '@/api/features/filterApi';
 import ProjectCardBuckets from '@/components/cards/ProjectCardBuckets';
-import { GroupedProjects, ShortProject } from '@/types/project';
+import { GroupedProjects, Project } from '@/types/project';
 import { Button } from '@heroui/button'
 import { useRouter } from 'next/navigation'
 

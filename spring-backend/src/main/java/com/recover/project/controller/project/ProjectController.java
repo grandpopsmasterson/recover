@@ -6,8 +6,8 @@ import java.util.Map;
 import com.docusign.esign.client.ApiException;
 // import com.recover.project.config.DocuSignConfig;
 import com.recover.project.dto.project.CreateProject;
-import com.recover.project.dto.project.LongProjectDto;
-import com.recover.project.dto.project.ShortProjectDto;
+import com.recover.project.dto.project.ProjectDto;
+import com.recover.project.dto.project.ProjectDto;
 import com.recover.project.dto.user.ShortUser;
 import com.recover.project.model.Project;
 import com.recover.project.dto.user.AssignedRoleDto;
@@ -42,14 +42,14 @@ public class ProjectController {
 
     @PostMapping("/create-project")
     //@PreAuthorize("hasRole('MANAGER')")
-    public ResponseEntity<ShortProjectDto> createProject(
+    public ResponseEntity<ProjectDto> createProject(
             @Valid @RequestBody CreateProject request) {
         return ResponseEntity.ok(projectService.createProject(request));
     }
     
     @GetMapping("/{projectId}")
-    public ResponseEntity<LongProjectDto> getProject(@PathVariable Long projectId) {
-        return ResponseEntity.ok(projectService.getLongProjectById(projectId));
+    public ResponseEntity<ProjectDto> getProject(@PathVariable Long projectId) {
+        return ResponseEntity.ok(projectService.getProjectById(projectId));
     }
 
     @GetMapping("/available-technicians")

@@ -1,12 +1,12 @@
 import React from 'react'
-import { LongProject, ShortProject } from '@/types/project'
+import { Project, Project } from '@/types/project'
 import { Plus } from 'lucide-react'
 import { Image } from '@heroui/react'
 import { useParams } from 'next/navigation'
-import AssignUserBtn from '../buttons/AssignButton'
+//import AssignUserBtn from '../buttons/AssignButton'
 import PhotoStack from '../buttons/PhotoStack'
 
-export const ProjectBar = ({clientName, houseImage, streetAddress, city, state, stage }: LongProject) => {
+export const ProjectBar = ({clientName, houseImage, streetAddress, city, state, stage }: Project) => {
 
     const params = useParams();
         const projectId = params.id as string;
@@ -57,7 +57,7 @@ export const ProjectBar = ({clientName, houseImage, streetAddress, city, state, 
 
             <div className="col-start-3 flex flex-row gap-5 items-start">
             
-                <AssignUserBtn projectId={projectId} className="w-1/2"/>
+                {/* <AssignUserBtn projectId={projectId} className="w-1/2"/> */}
                 <button className="border-1 border-blue-400 text-gray-500 shadow-sm rounded-xl px-6 py-2 font-sans ">
                     Continue progress
                 </button>

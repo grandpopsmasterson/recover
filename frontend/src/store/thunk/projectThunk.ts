@@ -1,9 +1,6 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import { projectsApi } from "@/api/features/projectsApi";
 import { CreateProject } from "@/types/createProject";
-import { User } from "@/components/buttons/AssignButton";
-import { RootState } from "../store";
 
 export const fetchProjectsThunk = createAsyncThunk(
     'projects/fetchProjects',
@@ -27,6 +24,7 @@ export const createProjectThunk = createAsyncThunk(
     try {
       return await projectsApi.createProject(projectData);
     } catch (error) {
+      console.error(error)
       return rejectWithValue('Failed to create project');
     }
   }
@@ -39,6 +37,7 @@ export const updateProjectThunk = createAsyncThunk(
     try {
       return await projectsApi.updateProject(projectId, projectData);
     } catch (error) {
+      console.error(error)
       return rejectWithValue('Failed to update project');
     }
   }
@@ -56,6 +55,7 @@ export const fetchProjectDetailsThunk = createAsyncThunk(
         
         return detailsData;
       } catch (error) {
+        console.error(error)
         return rejectWithValue('Failed to fetch project overview');
       }
     }
@@ -68,6 +68,7 @@ export const fetchBucketsThunk = createAsyncThunk(
     try {
       return await projectsApi.getAllBuckets();
     } catch (error) {
+      console.error(error)
       return rejectWithValue('Failed to fetch buckets');
     }
   }
@@ -80,6 +81,7 @@ export const fetchUsersThunk = createAsyncThunk(
     try {
       return await projectsApi.getAllUsers();
     } catch (error) {
+      console.error(error)
       return rejectWithValue('Failed to fetch users');
     }
   }
@@ -108,6 +110,7 @@ export const fetchEstimatesThunk = createAsyncThunk(
     try {
       return await projectsApi.getEstimate(projectId);
     } catch (error) {
+      console.error(error)
       return rejectWithValue('Failed to fetch estimates');
     }
   }
@@ -120,6 +123,7 @@ export const fetchTimelineThunk = createAsyncThunk(
     try {
       return await projectsApi.getTimeline(projectId);
     } catch (error) {
+      console.error(error)
       return rejectWithValue('Failed to fetch timeline');
     }
   }
@@ -132,6 +136,7 @@ export const fetchFlagsThunk = createAsyncThunk(
     try {
       return await projectsApi.getFlags(projectId);
     } catch (error) {
+      console.error(error)
       return rejectWithValue('Failed to fetch flagged issues');
     }
   }
@@ -144,6 +149,7 @@ export const fetchWorkOrdersThunk = createAsyncThunk(
       try {
         return await projectsApi.getWorkOrders(projectId);
       } catch (error) {
+        console.error(error)
         return rejectWithValue('Failed to fetch work orders');
       }
     }

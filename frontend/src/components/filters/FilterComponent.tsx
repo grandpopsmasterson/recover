@@ -4,7 +4,7 @@ import { CardDisplay } from '@/components/ui/icons/CardDisplay';
 import { ListCardDisplay } from '@/components/ui/icons/ListCardDisplay';
 import { ListDisplay } from '@/components/ui/icons/ListDisplay';
 import { SearchIcon } from '@/components/ui/icons/SearchIcon';
-import { FilterProps } from '@/types/dashboard';
+import { FilterProps } from '@/types/filter';
 import { filters } from '@/types/project';
 import { Autocomplete, AutocompleteItem, AutocompleteSection, Button, Chip } from '@heroui/react'
 import { useEffect } from 'react';

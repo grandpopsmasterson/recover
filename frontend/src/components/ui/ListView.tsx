@@ -1,4 +1,4 @@
-import { GroupedProjects, ShortProject } from '@/types/project';
+import { GroupedProjects, Project } from '@/types/project';
 import { Table, TableColumn, TableHeader, SortDescriptor, TableBody, TableRow, TableCell, getKeyValue, Button, Link } from '@heroui/react';
 import React, { useEffect, useState } from 'react'
 
@@ -14,7 +14,7 @@ export default function ListView({projects}: GroupedProjects) {
 
     const handleSort = (descriptor: SortDescriptor) => {
         const sorted = [...projects].sort((a,b) => {
-            const key = descriptor.column as keyof ShortProject;
+            const key = descriptor.column as keyof Project;
             const first = (a[key] ?? '').toString();
             const second = (b[key] ?? '').toString();
 

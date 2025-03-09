@@ -1,13 +1,11 @@
 'use client'
 import Button1 from "@/components/buttons/ButtonC";
-import {useRouter} from "next/navigation"
+import {useRouter} from "next/navigation";
 import { Card, CardHeader, CardBody, CardFooter, Image, Dropdown, DropdownTrigger, AvatarGroup, Avatar, DropdownMenu, DropdownItem, User} from '@heroui/react'
-import { ShortProject } from "@/types/project";
+import { Project } from "@/types/project";
 import { DownArrow } from "@/components/ui/icons/DownArrow";
 //import './../../images/house1.png';
 // const recoverGreen = "#4ade80";
-
-
 
 export default function ProjectCard({
     id,
@@ -18,13 +16,12 @@ export default function ProjectCard({
     city = '',
     state = '',
     houseImageUrl,
-}: ShortProject) {
+}: Project) {
 
     const router = useRouter();
     const defaultImage = '/house1.png';
     const defaultUser = './user-svgrepo-com.png'
-    //console.log('Card props:', { streetAddress, clientName, assignedRoles, stage, city, state }); // Debug log
-
+    
     const handleViewProject = () => {
         router.push(`/dashboard/frontline/projects/${id}`);  // Navigate to project detail page
     };
