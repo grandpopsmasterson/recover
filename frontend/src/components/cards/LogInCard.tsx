@@ -7,6 +7,8 @@ import { LoginCredentials } from "@/types/login";
 import { authApi } from "@/api/features/authApi";
 import { LoginError } from "@/types/auth";
 import { EyeFilledIcon, EyeSlashFilledIcon } from "../ui/icons/eyePasswordIcon";
+import { useAppDispatch } from "@/store/store";
+import { loginFailure, loginStart, loginSuccess } from "@/store/slice/userSlice";
 
 
 
@@ -22,8 +24,7 @@ export default function LogInCard() {
         usernameOrEmail:'',
         password: '',
     })
-    
-    //TODO add error40 handlers (email format, blank fields)
+    const dispatach = useAppDispatch();
 
     useEffect(() => {
         const token = localStorage.getItem('token');
@@ -41,6 +42,7 @@ export default function LogInCard() {
         if (!validateInput()) return;
         setIsLoading(true);
         try {
+            dispatach(loginStart());
             const response = await authApi.login({
                 usernameOrEmail: loginData.usernameOrEmail,
                 password: loginData.password
@@ -49,11 +51,13 @@ export default function LogInCard() {
             
             const token = localStorage.getItem('token');
             if (token) {
+                // TODO  -- var within response needs to be proper USER type dispatchEvent(loginSuccess(response.data))
                 router.push('/dashboard');
             } else {
                 setServerError('Authentication failed. Please try again.');
             }
         } catch (error) {
+            dispatach(loginFailure(error))
             if (error instanceof Error) {
                 setServerError(error.message);
             } else {

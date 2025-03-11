@@ -10,6 +10,7 @@ import ProjectGroupCard from '@/components/cards/ProjectGroupCard'
 import { useAppDispatch, useAppSelector } from '@/hooks/hooks'
 import { fetchProjectsThunk } from '@/store/thunk/projectThunk'
 import { getGroupedProjectsThunk, getMultiQueryThunk } from '@/store/thunk/groupedProjectThunk'
+import { Spinner } from '@heroui/react'
 
 const Ridgeline = () => {
 
@@ -48,7 +49,6 @@ const Ridgeline = () => {
     
         const fetchProjects = async () => {
             try {
-                await(dispatch(fetchProjectsThunk({page: 1, pageSize: 10})))
                 if (selectedFilters.length === 0) {
                     // Use fetchProjectsThunk with pagination when no filters are applied
                     await dispatch(fetchProjectsThunk({ page: 1, pageSize: 10 }));
@@ -110,8 +110,8 @@ const Ridgeline = () => {
             
             {/* Loading indicator */}
             {isLoading && (
-                <div className="flex justify-center py-4">
-                    <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-blue-500"></div>
+                <div className="flex justify-center py-10">
+                    <Spinner variant="default" />
                 </div>
             )}
             

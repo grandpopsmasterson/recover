@@ -43,24 +43,6 @@ export const updateProjectThunk = createAsyncThunk(
   }
 );
 
-// Fetch a specific project by ID
-export const fetchProjectDetailsThunk = createAsyncThunk(
-    'projects/fetchProjectOverview',
-    async (projectId: string, { dispatch, rejectWithValue }) => {
-      try {
-        const detailsData = await projectsApi.getFullProject(projectId);
-        
-        // Background fetches for key sections
-        dispatch(prefetchProjectSectionsThunk(projectId));
-        
-        return detailsData;
-      } catch (error) {
-        console.error(error)
-        return rejectWithValue('Failed to fetch project overview');
-      }
-    }
-  );
-
 // Fetch all buckets
 export const fetchBucketsThunk = createAsyncThunk(
   'projects/fetchBuckets',

@@ -14,7 +14,7 @@ export default {
 	theme: {
 		extend: {
 			colors: {
-				background: '#F7F7F7',
+				background: '#ffffff',
 				foreground: '(var(--foreground))',
 				recovernavy: '#184475',
 				card: {
@@ -64,7 +64,7 @@ export default {
 					'5': 'hsl(var(--chart-5))'
 				},
 				sidebar: {
-					DEFAULT: '#F7F7F7',
+					DEFAULT: '#ffffff',
 					foreground: 'hsl(var(--sidebar-foreground))',
 					primary: 'hsl(var(--sidebar-primary))',
 					'primary-foreground': 'hsl(var(--sidebar-primary-foreground))',

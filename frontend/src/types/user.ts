@@ -11,6 +11,7 @@ export interface User {
 
 export interface UserState {
     user: User | null;
-    status?: "idle" | "loading" | "succeeded" | "failed";
+    isAuthenticated: boolean;
+    loading: boolean;
     error: string | null
 }

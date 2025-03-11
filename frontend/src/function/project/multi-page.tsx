@@ -3,6 +3,7 @@ import {  Tabs, Tab } from '@heroui/react';
 import { Project } from "@/types/project";
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
+import ReleaseTimeline from '@/components/timeline/timelineTest';
 
 export default function MultiApp({
     //id,
@@ -59,12 +60,7 @@ export default function MultiApp({
             case 'timeline':
                 return ( 
                     <div className="h-[45rem] relative">
-                        <Image 
-                            src="/jiraroadmap.jpg" 
-                            alt="Description" 
-                            className="w-full h-full rounded-lg" 
-                            fill
-                        />
+                        <ReleaseTimeline />
                     </div>
                 )
             case 'compliance':
@@ -77,6 +73,8 @@ export default function MultiApp({
                 return ( <div>Reporting Content</div> )
             case 'materials':
                 return ( <div>Materials Content</div> )
+            case 'team':
+                return ( <div>Team Content</div> )
             
         }
     }

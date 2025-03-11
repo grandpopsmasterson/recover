@@ -5,16 +5,14 @@ import { useParams } from 'next/navigation'
 //import AssignUserBtn from '../buttons/AssignButton'
 import PhotoStack from '../buttons/PhotoStack'
 
-export const ProjectBar = ({clientName, houseImage, streetAddress, /*city, state, stage */ }: LongProject["details"]) => {
+export const ProjectBar = ({clientName, houseImage, street_address, /*city, state, stage */ }: LongProject["project"]) => {
 
     const params = useParams();
-        const projectId = params.id as string;
+    const projectId = params.id as string;
     
-        if (!projectId) {
-            return <div>Loading...</div>;
-        }
-
-    
+    if (!projectId) {
+        return <div>Loading...</div>;
+    }
     
 
     const defaultImage = '/house1.png';
@@ -41,7 +39,6 @@ export const ProjectBar = ({clientName, houseImage, streetAddress, /*city, state
                         <PhotoStack 
                             className={thumbnailStyles}
                             count={12} 
-                            navigationPath="./photos"
                         />
                         <button className="col-span-2 border-blue-400 border-1 w-full py-3 font-sans rounded-xl hover:bg-blue-200 transition-all duration-200">
                             See Photos
@@ -50,7 +47,7 @@ export const ProjectBar = ({clientName, houseImage, streetAddress, /*city, state
                 </div>
             </div>
             <div className="text-h1 font-thin">
-                <span className="text-h1">{streetAddress}</span><br />
+                <span className="text-h1">{street_address}</span><br />
                 <span className="text-h2">{clientName}</span>
             </div>
 

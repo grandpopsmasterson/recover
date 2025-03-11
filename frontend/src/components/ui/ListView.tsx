@@ -1,3 +1,4 @@
+import { formatDate, stringFormat } from '@/api/utils/stringFormat';
 import { GroupedProjects, Project } from '@/types/project';
 import { Table, TableColumn, TableHeader, SortDescriptor, TableBody, TableRow, TableCell, getKeyValue, Button, Link } from '@heroui/react';
 import React, { useEffect, useState } from 'react'
@@ -64,12 +65,6 @@ export default function ListView({projects}: GroupedProjects) {
                     Client Name
                 </TableColumn>
                 <TableColumn
-                    key='carrier'
-                    allowsSorting
-                >
-                    Carrier
-                </TableColumn>
-                <TableColumn
                     key='lossDate'
                     allowsSorting
                 >
@@ -97,7 +92,12 @@ export default function ListView({projects}: GroupedProjects) {
             {(item) => (
                 <TableRow key={item.id}>
                     {(columnKey) => columnKey !== 'id' 
-                        ? (<TableCell>{getKeyValue(item, columnKey)}</TableCell>) 
+                        ? columnKey === 'street_address' ? (<TableCell>{getKeyValue(item, columnKey)}</TableCell>) 
+                            : columnKey === 'projectType' || columnKey === 'stage'
+                                ? (<TableCell>{stringFormat(getKeyValue(item, columnKey))}</TableCell>)
+                                : columnKey === 'lossDate' || columnKey === 'startDate' || columnKey === 'receivedDate'
+                                    ? (<TableCell>{formatDate(getKeyValue(item, columnKey))}</TableCell>)
+                                    : (<TableCell>{getKeyValue(item, columnKey)}</TableCell>)
                         : (<TableCell><Button as={Link} color="secondary" href={`./frontline/projects/${item.id}`}>View</Button></TableCell>)}
                 </TableRow>
             )}    

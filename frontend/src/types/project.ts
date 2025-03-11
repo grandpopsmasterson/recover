@@ -82,7 +82,7 @@ export interface Project {
   clientEmail: string;
   clientPhone: string;
   startDate?: Date | null;
-  streetAddress: string;
+  street_address: string;
   city: string;
   state: string;
   zipcode: string;
@@ -104,7 +104,7 @@ export interface ProjectState {
 
 export interface LongProject {
   id: number;
-  details: Project;
+  project: Project;
   insurance: Insurance;
   overview: {
     data: Project | null;

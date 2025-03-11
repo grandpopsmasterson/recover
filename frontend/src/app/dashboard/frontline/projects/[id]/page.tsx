@@ -1,31 +1,29 @@
 'use client'
 import { useEffect, useState } from 'react'
 import { useParams } from 'next/navigation'
-import { projectsApi } from '@/api/features/projectsApi'
-import { LongProject } from '@/types/project'
 import MultiPage from '@/function/project/multi-page'
 //import ActivityBox from '@/components/widgets/RecentActivity'
 import { ProjectBar } from '@/components/banners/ProjectBar'
 import { Skeleton } from '@/components/shadcn/ui/skeleton'
 import { Alert, AlertDescription } from '@/components/shadcn/ui/alert'
-import { useAppDispatch } from '@/store/store'
+import { useAppDispatch, useAppSelector } from '@/store/store'
+import { fetchProjectDetailsThunk } from '@/store/thunk/longProjectThunk'
 
 export default function ProjectDetailPage() {
     const params = useParams()
-    const [project, setProject] = useState<LongProject | null>(null)
     const [isLoading, setIsLoading] = useState(true)
     const [error, setError] = useState<string | null>(null)
     const {id} = useParams();
 
     const dispatch = useAppDispatch();
+    const project = useAppSelector(state => state.longProject)
     
     
     useEffect(() => {
         const fetchProject = async () => {
             try {
                 setIsLoading(true)
-                const projectData = await projectsApi.getFullProject(params.id as string)
-                setProject(projectData)
+                dispatch(fetchProjectDetailsThunk(params.id as string))
             } catch (err) {
                 setError(`Failed to fetch project details: ${err}`)
             } finally {
@@ -71,11 +69,11 @@ export default function ProjectDetailPage() {
     return (
         <div>
             <div className="flex flex-col">
-                <ProjectBar {...project.details} />
+                <ProjectBar {...project.longProject.project} />
                 
                 <div className="flex flex-col">
                     <div className="flex-grow min-h-[clamp(20rem,20vw+10rem,45rem)]">
-                        <MultiPage {...project.details} /> {/**, project.estimate so on and so forth for the further population of the pages*/}
+                        <MultiPage {...project.longProject.project} /> {/**, project.estimate so on and so forth for the further population of the pages*/}
                     </div>  
                 </div>
             </div>

@@ -1,21 +1,21 @@
 'use client'
-import Button1 from "@/components/buttons/ButtonC";
 import {useRouter} from "next/navigation";
-import { Card, CardHeader, CardBody, CardFooter, Image, Dropdown, DropdownTrigger, AvatarGroup, Avatar, DropdownMenu, DropdownItem, User} from '@heroui/react'
+import { Card, CardHeader, CardBody, CardFooter, Image, Dropdown, DropdownTrigger, AvatarGroup, Avatar, DropdownMenu, DropdownItem, User, Button} from '@heroui/react'
 import { Project } from "@/types/project";
 import { DownArrow } from "@/components/ui/icons/DownArrow";
+import { stringFormat } from "@/api/utils/stringFormat";
 //import './../../images/house1.png';
 // const recoverGreen = "#4ade80";
 
 export default function ProjectCard({
     id,
-    streetAddress,
+    street_address,
     clientName,
     assignedRoles,
     stage,
     city = '',
     state = '',
-    houseImageUrl,
+    //houseImageUrl,
 }: Project) {
 
     const router = useRouter();
@@ -28,29 +28,29 @@ export default function ProjectCard({
 
     return (
         <div>
-            <Card className="bg-white flex flex-col justify-center items-center p-3 space-y-3" radius="sm">
+            <Card className="bg-white flex flex-col justify-center items-center p-3 space-y-3 shadow-lg shadow-r-lg" radius="sm">
                 <CardHeader className="w-full p-0 m-0">
                     <Image 
                         alt='house picture'
                         className="w-full h-[12vw] object-cover" 
-                        src={houseImageUrl || defaultImage} 
+                        src={/*houseImageUrl ||*/ defaultImage} 
                         radius="md"
                     />
                 </CardHeader>
-                <CardBody className="flex flex-col bg-gray-100 h-full w-full rounded-md">
-                    <span className="absolute top-2 right-2 pt-1 text-xs text-gray-100">{stage}</span>
-                    <p className="text-xs text-white">{streetAddress}</p>
-                    <p className="text-xs text-white">{`${city}, ${state}`}</p>
-                    <p className="text-xs text-purple-500">{clientName}</p> <br/><br/>
+                <CardBody className="flex flex-col bg-gray-200 h-full w-full rounded-md">
+                    <span className="absolute top-2 right-2 pt-1 text-xs text-recovernavy">{stringFormat(stage)}</span>
+                    <p className="text-xs text-recovernavy">{street_address}</p>
+                    <p className="text-xs text-recovernavy">{`${city}, ${state}`}</p>
+                    <p className="text-xs text-primary">{clientName}</p> <br/><br/>
                     <CardFooter className="w-full p-0 rounded-b-sm flex justify-between">
                         <div className="overflow-hidden">
-                            <Button1 
-                                color='success' 
-                                className="border-white font-semibold h-6 w-10 rounded-sm rounded-b-sm"
+                            <Button 
+                                color='secondary'
+                                className="font-semibold h-6 w-10 rounded-sm rounded-b-sm text-primary"
                                 onPress={handleViewProject}
                             >
                                 View
-                            </Button1>
+                            </Button>
                         </div>
                         {assignedRoles && assignedRoles.length > 0 && (
                             <div className="flex rounded-md">
